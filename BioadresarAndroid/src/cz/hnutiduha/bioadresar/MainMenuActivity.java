@@ -17,15 +17,9 @@
 
 package cz.hnutiduha.bioadresar;
 
-import cz.hnutiduha.bioadresar.about.AboutActivity;
-import cz.hnutiduha.bioadresar.config.ConfigActivity;
 import cz.hnutiduha.bioadresar.data.DatabaseHelper;
 import cz.hnutiduha.bioadresar.data.LocationCache;
-import cz.hnutiduha.bioadresar.list.ListActivity;
-import cz.hnutiduha.bioadresar.map.MapActivity;
 import android.app.Activity;
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -63,12 +57,14 @@ public class MainMenuActivity extends Activity implements OnClickListener {
         String defaultActivity = PreferenceManager.getDefaultSharedPreferences(this).getString("defaultActivity", "Menu");
         if (defaultActivity.equals("Mapa"))
         {
-        	showActivity(R.id.mapLink);
+        	MenuHandler.showActivity(this, R.id.mapLink);
         }
-        if (defaultActivity.equals("Seznam"))
+        else if (defaultActivity.equals("Seznam"))
         {
-        	showActivity(R.id.listLink);
+        	MenuHandler.showActivity(this, R.id.listLink);
         }
+        else 
+        	MenuHandler.showActivity(this, R.id.configLink);
     }
     
     public void onResume()
@@ -80,45 +76,17 @@ public class MainMenuActivity extends Activity implements OnClickListener {
     
     public void refreshLocation()
     {
-    	LocationCache.centerOnGps(this);
+    	MenuHandler.refreshLocation(this);
+    	
     	if (LocationCache.hasRealLocation())
     		location.setText(getString(R.string.renewLocationLabel) + " (" + getString(R.string.realLocation) + ")");
     	else
     		location.setText(getString(R.string.renewLocationLabel) + " (" + getString(R.string.virtualLocation) + ")");
     }
         
-    private void showActivity(int id)
-    {
-		Intent target = null;
-		switch (id)
-		{
-		case R.id.listLink:
-			target = new Intent(this, ListActivity.class);
-			break;
-		case R.id.mapLink:
-			target = new Intent(this, MapActivity.class);
-			break;
-		case R.id.configLink:
-			target = new Intent(this, ConfigActivity.class);
-			break;
-		case R.id.aboutLink:
-			target = new Intent(this, AboutActivity.class);
-			break;
-		}
-		
-		if (target != null)
-			startActivity(target);	
-    }
 	@Override
 	public void onClick(View v) {
-		int id = v.getId();
-		if (id == R.id.locationLabel)
-		{
-			refreshLocation();
-		}
-		else
-		{
-			showActivity(id);
-		}
+		MenuHandler.idActivated(this,v.getId());
+
 	}
 }

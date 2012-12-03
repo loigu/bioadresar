@@ -19,7 +19,6 @@
 <resources>
 
     <string-array name="activityList">
-        <item>Menu</item>
         <item>Mapa</item>
         <item>Seznam</item>
     </string-array>
