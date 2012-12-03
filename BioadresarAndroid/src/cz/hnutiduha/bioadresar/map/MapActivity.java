@@ -19,6 +19,9 @@ package cz.hnutiduha.bioadresar.map;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
 
@@ -27,6 +30,21 @@ public class MapActivity extends com.google.android.maps.MapActivity {
 	public static final String mapNodePropertyName = "farmIdToShow";
 	
 	private FarmMapView mapView;
+	
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu)
+    {
+    	MenuHandler.fillMenu(menu);
+    	menu.removeItem(R.id.mapLink);
+    	
+    	return true;
+    }
+    
+    @Override
+	public boolean onMenuItemSelected(final int featureId, final MenuItem item)
+    {
+    	return MenuHandler.idActivated(this, item.getItemId());
+	}
 	
 	
     /** Called when the activity is first created. */

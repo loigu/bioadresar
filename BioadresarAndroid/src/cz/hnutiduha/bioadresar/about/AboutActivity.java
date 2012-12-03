@@ -17,10 +17,13 @@
 
 package cz.hnutiduha.bioadresar.about;
 
+import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.util.Linkify;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -44,4 +47,19 @@ public class AboutActivity extends Activity {
         item = this.findViewById(R.id.betaNoticeText);
         Linkify.addLinks((TextView)item, Linkify.EMAIL_ADDRESSES);
     }
+    
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu)
+    {
+    	MenuHandler.fillMenu(menu);
+    	menu.removeItem(R.id.aboutLink);
+    	
+    	return true;
+    }
+    
+    @Override
+	public boolean onMenuItemSelected(final int featureId, final MenuItem item)
+    {
+    	return MenuHandler.idActivated(this, item.getItemId());
+	}
 }

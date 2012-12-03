@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.DatabaseHelper;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
@@ -32,6 +33,8 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -191,6 +194,22 @@ public class ListActivity extends Activity implements View.OnClickListener{
 	Button next25Button;
 	Context context;
 	AsyncTask<Void, FarmInfo, Boolean> farmsLoader = null;
+	
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu)
+    {
+    	MenuHandler.fillMenu(menu);
+    	menu.removeItem(R.id.listLink);
+    	
+    	return true;
+    }
+    
+    @Override
+	public boolean onMenuItemSelected(final int featureId, final MenuItem item)
+    {
+    	return MenuHandler.idActivated(this, item.getItemId());
+	}
+
 	 
     /** Called when the activity is first created. */
     @Override

@@ -1,11 +1,14 @@
 package cz.hnutiduha.bioadresar.config;
 
+import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.LocationCache;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 
 public class ConfigActivity extends PreferenceActivity implements OnPreferenceChangeListener {
 	protected void onCreate(Bundle savedInstanceState) {
@@ -22,5 +25,20 @@ public class ConfigActivity extends PreferenceActivity implements OnPreferenceCh
 			LocationCache.centerOnGps(this);
 		}
 		return false;
+	}
+	
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu)
+    {
+    	MenuHandler.fillMenu(menu);
+    	menu.removeItem(R.id.configLink);
+    	
+    	return true;
+    }
+    
+    @Override
+	public boolean onMenuItemSelected(final int featureId, final MenuItem item)
+    {
+    	return MenuHandler.idActivated(this, item.getItemId());
 	}
 }
