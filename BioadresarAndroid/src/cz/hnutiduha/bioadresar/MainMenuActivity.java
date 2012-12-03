@@ -22,8 +22,6 @@ import cz.hnutiduha.bioadresar.data.LocationCache;
 import android.app.Activity;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
@@ -61,24 +59,13 @@ public class MainMenuActivity extends Activity implements OnClickListener {
         {
         	MenuHandler.showActivity(this, R.id.mapLink);
         }
-        if (defaultActivity.equals("Seznam"))
+        else if (defaultActivity.equals("Seznam"))
         {
         	MenuHandler.showActivity(this, R.id.listLink);
         }
+        else 
+        	MenuHandler.showActivity(this, R.id.configLink);
     }
-    
-    @Override
-    public boolean onCreateOptionsMenu(final Menu menu)
-    {
-    	return MenuHandler.fillMenu(menu);
-    }
-    
-    @Override
-	public boolean onMenuItemSelected(final int featureId, final MenuItem item)
-    {
-    	return MenuHandler.idActivated(this, item.getItemId());
-    }
-    
     
     public void onResume()
     {

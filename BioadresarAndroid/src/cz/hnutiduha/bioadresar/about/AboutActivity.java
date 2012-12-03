@@ -53,6 +53,7 @@ public class AboutActivity extends Activity {
     {
     	MenuHandler.fillMenu(menu);
     	menu.removeItem(R.id.aboutLink);
+    	menu.removeItem(R.id.locationLabel);
     	
     	return true;
     }

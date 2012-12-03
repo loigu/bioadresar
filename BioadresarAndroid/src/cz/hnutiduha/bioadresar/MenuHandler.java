@@ -3,6 +3,7 @@ package cz.hnutiduha.bioadresar;
 import android.content.Context;
 import android.content.Intent;
 import android.view.Menu;
+import android.view.MenuItem;
 import cz.hnutiduha.bioadresar.about.AboutActivity;
 import cz.hnutiduha.bioadresar.config.ConfigActivity;
 import cz.hnutiduha.bioadresar.data.LocationCache;
@@ -13,11 +14,22 @@ public class MenuHandler {
 	
 	public static boolean fillMenu(final Menu menu)
 	{
-        menu.add(0, R.id.mapLink, Menu.NONE, R.string.map_tab_title);
-        menu.add(0, R.id.listLink, Menu.NONE, R.string.list_tab_title);
-		menu.add(0, R.id.configLink, Menu.NONE, R.string.config_label);
-		menu.add(0, R.id.aboutLink, Menu.NONE, R.string.about_label);
-		menu.add(0, R.id.locationLabel, Menu.NONE, R.string.renewLocationLabel);
+		// TODO: do this by xml
+		MenuItem item;
+        item =menu.add(0, R.id.mapLink, Menu.NONE, R.string.map_tab_title);
+        item.setIcon(android.R.drawable.ic_menu_mapmode);
+        
+        item = menu.add(0, R.id.listLink, Menu.NONE, R.string.list_tab_title);
+        item.setIcon(android.R.drawable.ic_menu_agenda);
+        
+		item = menu.add(0, R.id.locationLabel, Menu.NONE, R.string.renewLocationLabel);
+		item.setIcon(android.R.drawable.ic_menu_mylocation);
+		
+		item = menu.add(0, R.id.configLink, Menu.NONE, R.string.config_label);
+		item.setIcon(android.R.drawable.ic_menu_manage);
+		
+		item = menu.add(0, R.id.aboutLink, Menu.NONE, R.string.about_label);
+		item.setIcon(android.R.drawable.ic_menu_info_details);
 
 		return true;
 	}

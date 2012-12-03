@@ -32,6 +32,7 @@ public class ConfigActivity extends PreferenceActivity implements OnPreferenceCh
     {
     	MenuHandler.fillMenu(menu);
     	menu.removeItem(R.id.configLink);
+    	menu.removeItem(R.id.locationLabel);
     	
     	return true;
     }
