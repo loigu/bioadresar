@@ -35,8 +35,6 @@ public class MainMenuActivity extends Activity implements OnClickListener {
         super.onCreate(savedInstanceState);
         
         setContentView(R.layout.main_menu);
-        
-	    DatabaseHelper.setContext(this);
 	    
 	    // current location is default center of everything :)
 	    if (LocationCache.getCenter() == null)

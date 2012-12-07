@@ -59,7 +59,7 @@ class AddAllFarms extends AsyncTask<Void, FarmInfo, Boolean> {
         	return Boolean.FALSE;
         }
 
-        DatabaseHelper defaultDb = DatabaseHelper.getDefaultDb();
+        DatabaseHelper defaultDb = DatabaseHelper.getDefaultDb(activity);
     	TreeSet<FarmInfo> allFarms =  defaultDb.getAllFarmsSortedByDistance(loc);
         for (FarmInfo farm : allFarms)
         {
@@ -113,7 +113,7 @@ class AddNext25 extends AddAllFarms
         	return Boolean.FALSE;
         }
         
-        DatabaseHelper defaultDb = DatabaseHelper.getDefaultDb();
+        DatabaseHelper defaultDb = DatabaseHelper.getDefaultDb(activity);
         
         TreeSet<FarmInfo> currentFarms = defaultDb.getAllFarmsSortedByDistance(loc);
           
@@ -154,7 +154,7 @@ class AddFarmsInRectangle extends AddAllFarms
 	@Override
 	protected Boolean doInBackground(Void... params) {
 		Log.d("list", "starting background task");
-        DatabaseHelper defaultDb = DatabaseHelper.getDefaultDb();
+        DatabaseHelper defaultDb = DatabaseHelper.getDefaultDb(activity);
 		
         // TODO: get location from map
         loc = LocationCache.getCenter();
@@ -300,12 +300,13 @@ public class ListActivity extends Activity implements View.OnClickListener{
 	
 	protected void rectangleLoaded()
 	{
+		final Context context = this;
 		// preload all
     	new AsyncTask<Void, Void, Void>() {
 
 			@Override
 			protected Void doInBackground(Void... params) {
-				DatabaseHelper.getDefaultDb().getAllFarmsSortedByDistance(LocationCache.getCenter());
+				DatabaseHelper.getDefaultDb(context).getAllFarmsSortedByDistance(LocationCache.getCenter());
 				return null;
 			}
     	}.execute();

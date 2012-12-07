@@ -1,4 +1,5 @@
 #!/bin/bash
+# FIXME: this is really slooooow
 
 export MYSQL_SCRIPT="$1"
 export TARGET_DB="$2"
@@ -45,9 +46,9 @@ function reportError()
 
 function createBaseLayout()
 {
-	echo "CREATE TABLE android_metadata' (locale TEXT DEFAULT 'cs_CZ');" | callSqlite
+	echo "CREATE TABLE android_metadata (locale TEXT DEFAULT 'cs_CZ');" | callSqlite
 	echo "CREATE TABLE config (variable TEXT UNIQUE NOT NULL, value TEXT);" | callSqlite
-	echo "INSERT INTO config(variable, value) VALUES ('lastUpdated', '$(date +%s)'" | callSqlite
+	echo "INSERT INTO config(variable, value) VALUES ('lastUpdated', '$(date +%s)');" | callSqlite
 }
 
 function addCategoriesToProducts()
@@ -281,7 +282,7 @@ function addLocations()
 
 function addContacts()
 {
-	# add contact types
+	# add contact types. NOTE: api 
 	echo 'CREATE TABLE contactTypes (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT);' | callSqlite
 	CITY=1
 	STREET=2
@@ -291,14 +292,15 @@ function addContacts()
 	PHONE=6
 	echo "INSERT INTO contactTypes(_id, name) VALUES (${CITY}, 'city'), (${STREET}, 'street'), (${EMAIL}, 'email'), (${WEB}, 'web'), (${ESHOP}, 'eshop'), (${PHONE}, 'phone');" | callSqlite
 
+	# FIXME: what about two divizions with one producent?
 	# create table contacts
 	echo 'CREATE TABLE contacts (_id INTEGER PRIMARY KEY AUTOINCREMENT, locationId INTEGER, type INTEGER, contact TEXT, UNIQUE (locationId, type, contact));' | callSqlite
 
 	# fill contacts
-	echo "SELECT divize.id, kontakt.mobil, kontakt.web, kontakt.web2, kontakt.web_eshop, kontakt.ulice, kontakt.mesto FROM producent, divize, kontakt WHERE producent.id = divize.producent_id and  kontakt.divize_id = divize.id ;" \
+	echo "SELECT divize.id, kontakt.mobil, kontakt.email, kontakt.web, kontakt.web2, kontakt.web_eshop, kontakt.ulice, kontakt.mesto FROM producent, divize, kontakt WHERE producent.id = divize.producent_id and  kontakt.divize_id = divize.id ;" \
 		| callMysql \
 		| sed -e 's/\t/\;/g' \
-		| while IFS=';' read locationId phone web web2 eshop street city; do 
+		| while IFS=';' read locationId phone email web web2 eshop street city; do 
 			notNULL "${city}" && echo "INSERT INTO contacts(locationId, type, contact) VALUES (${locationId}, ${CITY}, '${city}');" | callSqlite
 			notNULL "${street}" && echo "INSERT INTO contacts(locationId, type, contact) VALUES (${locationId}, ${STREET}, '${street}');" | callSqlite
 			notNULL "${email}" && echo "INSERT INTO contacts(locationId, type, contact) VALUES (${locationId}, ${EMAIL}, '${email}');" | callSqlite
@@ -331,6 +333,7 @@ function addProductsToLocations()
 		| while read locationId productId note; do
 			echo "INSERT INTO location_product(locationId, productId, comment) VALUES(${locationId}, ${productId}, '${note}');" | callSqlite
 			
+			# TODO: this could be done by distinct in one call, not repeating million times
 			categoryId=$(echo "select categoryId from products where _id=${productId};" | callSqlite)
 			notNULL "${categoryId}" && echo "INSERT INTO location_category(locationId, categoryId) VALUES(${locationId}, ${categoryId});" | callSqlite &>/dev/null
 		done

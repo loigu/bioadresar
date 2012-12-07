@@ -98,7 +98,7 @@ public class DetailActivity extends Activity{
         
         StringBuilder products = new StringBuilder();
 		Iterator<Long> productsIterator = currentFarm.products.iterator();
-		DatabaseHelper db = DatabaseHelper.getDefaultDb();
+		DatabaseHelper db = DatabaseHelper.getDefaultDb(this);
 		while (productsIterator.hasNext())
 		{
 			products.append(db.getProductName(productsIterator.next()));

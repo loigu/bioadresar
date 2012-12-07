@@ -49,7 +49,6 @@ public class FarmInfo implements OnClickListener{
 	
 	// call DatabaseHelper.fillDetails to obtain these
 	public String description;
-	public String type;
 	public FarmContact contact;
 	public List<Long> products;
 	
@@ -90,7 +89,7 @@ public class FarmInfo implements OnClickListener{
 	
 	public void goToDetail(View parent)
 	{
-		DatabaseHelper helpMeeeFillMeee = DatabaseHelper.getDefaultDb();
+		DatabaseHelper helpMeeeFillMeee = DatabaseHelper.getDefaultDb(parent.getContext());
 		helpMeeeFillMeee.fillDetails(this);
 		Context context = parent.getContext();
 		DetailActivity.setFarm(this);

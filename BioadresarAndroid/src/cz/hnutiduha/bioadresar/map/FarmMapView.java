@@ -120,7 +120,7 @@ public class FarmMapView extends TapControlledMapView {
 	
 	private void refreshPoints()
 	{
-		DatabaseHelper db = DatabaseHelper.getDefaultDb();
+		DatabaseHelper db = DatabaseHelper.getDefaultDb(this.getContext());
 		if (db == null)
 		{
 			Log.e("db", "Fatal, can't get default db");

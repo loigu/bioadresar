@@ -45,8 +45,6 @@ public class MainTabbedActivity extends TabActivity {
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    
-	    DatabaseHelper.setContext(this);
-	    
 	    // current location is default center of everything :)
 	    if (LocationCache.getCenter() == null)
 	    	LocationCache.centerOnGps(this);
@@ -103,7 +101,7 @@ public class MainTabbedActivity extends TabActivity {
 	}
 	
 	private void testDbHelper() {
-		DatabaseHelper dbHelper = DatabaseHelper.getDefaultDb();
+		DatabaseHelper dbHelper = DatabaseHelper.getDefaultDb(this);
 
 		try {
 			dbHelper.createDb();

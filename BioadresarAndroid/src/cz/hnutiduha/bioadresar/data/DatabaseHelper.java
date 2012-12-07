@@ -17,6 +17,7 @@
 
 package cz.hnutiduha.bioadresar.data;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +28,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.TreeSet;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -42,8 +44,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static String DB_NAME = "bioadr";
 	
-	private static int DB_VERSION = 1;
-	
 	private static DatabaseHelper defaultDb = null;
 
 	private static Context appContext = null;
@@ -54,21 +54,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	
 	private HashMap<Long, String> products = null;
 	
-	public DatabaseHelper() {
-		super(appContext, DB_NAME, null, DB_VERSION);
+	private static final int databaseVersion = 3;
+	
+	public DatabaseHelper(Context context) {
+		super(context, DB_NAME, null, databaseVersion);
 	}
 	
-	public static void setContext(Context context)
+	public static DatabaseHelper getDefaultDb(Context context)
 	{
-		appContext = context;
-	}
-	
-	public static DatabaseHelper getDefaultDb()
-	{
-		if (defaultDb == null && appContext != null)
+		if (defaultDb == null)
 		{
 			try {
-				defaultDb = new DatabaseHelper();
+				appContext = context;
+				defaultDb = new DatabaseHelper(context);
 				defaultDb.createDb();
 				defaultDb.openDb();
 			} catch (IOException e) {
@@ -84,17 +82,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			defaultDb.close();
 		defaultDb = null;
 	}
-
+	
 	/**
 	 * Creates a empty database on the system and rewrites it with your own
 	 * database.
 	 * */
 	public void createDb() throws IOException {
-		boolean dbExist = checkDb();
-
-		if (dbExist) {
-			// do nothing - database already exist
-		} else {
+		if (!checkDb())
+		{
+			File db = new File(DB_PATH + DB_NAME);
+			if (db.exists())
+				db.delete();
+			
 			this.getReadableDatabase();
 
 			try {
@@ -102,7 +101,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			} catch (IOException e) {
 				throw new Error("Error copying database");
 			}
+			Log.d("db", "new database installed");
 		}
+		
+		openDb();
+		ContentValues values = new ContentValues();
+		values.put("variable", "databaseVersion");
+		values.put("value", String.valueOf(databaseVersion));
+		db.insert("config",  null, values);
+		
 	}
 
 	/**
@@ -115,17 +122,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		SQLiteDatabase checkDB = null;
 
 		try {
-			String myPath = DB_PATH + DB_NAME;
-			checkDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
+			checkDB = SQLiteDatabase.openDatabase(DB_PATH + DB_NAME, null, SQLiteDatabase.OPEN_READONLY);
 		} catch (SQLiteException e) {
-			// database does't exist yet.
+			Log.d("db", "database doesn't exist");
+			return false;
 		}
+		
+		int version = 1;
+		try {
+			String[] columns = new String[] { "value" };
+			Cursor c = checkDB.query("config", columns, "variable='databaseVersion'", null, null, null, "_id");
+			
+			
+			c.moveToNext();
+			if(!c.isAfterLast())
+			{
+				version = Integer.decode(c.getString(0));
+				Log.d("db", "found old db version " + version);
+			}
+			
+			c.close();
+		} catch (Exception e){}
+	
+		checkDB.close();
 
-		if (checkDB != null) {
-			checkDB.close();
-		}
-
-		return checkDB != null ? true : false;
+		return version == databaseVersion;
 	}
 
 	/**
@@ -164,16 +185,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		super.close();
 	}
 
-	@Override
-	public void onCreate(SQLiteDatabase db) {
-		// nothing to do
-	}
-
-	@Override
-	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		// nothing to do
-	}
-
 	public void setFilter(DataFilter filter) {
 		//TODO: implement this
 	}
@@ -183,13 +194,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 	
 	public Hashtable<Long, FarmInfo> getFarmsInRectangle(double lat1, double lon1, double lat2, double lon2) {
-		String[] columns = new String[] { "_id", "name", "gps_lat", "gps_long" };
-		String selection = "gps_lat >= ? AND gps_long >= ? AND gps_lat <= ? AND gps_long <= ?";
+		String[] columns = new String[] { "_id", "name", "gpsLatitude", "gpsLongtitude" };
+		String selection = "gpsLatitude >= ? AND gpsLongtitude >= ? AND gpsLatitude <= ? AND gpsLongtitude <= ?";
 		String[] args = new String[] {
 				Double.toString(Math.min(lat1, lat2)), Double.toString(Math.min(lon1, lon2)),
 				Double.toString(Math.max(lat1, lat2)), Double.toString(Math.max(lon1, lon2))
 		};
-		Cursor c = db.query("farm", columns, selection, args, null, null, "gps_lat, gps_long");
+		Cursor c = db.query("locations", columns, selection, args, null, null, "gpsLatitude, gpsLongtitude");
 		Hashtable<Long, FarmInfo> result = new Hashtable<Long, FarmInfo>();
 		
 		c.moveToNext();
@@ -219,8 +230,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		
 		ArrayList<FarmInfo> res = new ArrayList<FarmInfo>();
 		
-		String[] columns = new String[] { "_id", "name", "gps_lat", "gps_long" };
-		Cursor c = db.query("farm", columns, null, null, null, null, "gps_lat, gps_long");
+		String[] columns = new String[] { "_id", "name", "gpsLatitude", "gpsLongtitude" };
+		Cursor c = db.query("locations", columns, null, null, null, null, "gpsLatitude, gpsLongtitude");
 		c.moveToNext();
 		while (!c.isAfterLast()) {
 			FarmInfo farmInfo = new FarmInfo();
@@ -263,12 +274,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 	
 	private List<Long> getCategoriesByFarmId(long id) {
-		String[] columns = new String[] { "category_id" };
+		String[] columns = new String[] { "categoryId" };
 		List<Long> categories = new ArrayList<Long>();
 		// TODO add category "Others" (164) and join with products (and find by products too - because product has category assigned too)
-		Cursor c = db.query("farm_category", columns,
-				"farm_id = ?", new String[] { (id + "") },
-				null, null, "category_id"
+		Cursor c = db.query("location_category", columns,
+				"locationId = ?", new String[] { (id + "") },
+				null, null, "categoryId"
 		);
 		
 		c.moveToNext();
@@ -280,59 +291,72 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		
 		return categories;
 	}
+	
+	// NOTE: api defined in transform.sh
+	private static final int LOC_CITY = 1;
+	private static final int LOC_STREET = 2;
+	private static final int LOC_PHONE = 6;
+	private static final int LOC_EMAIL = 3;
+	private static final int LOC_WEB = 4;
+	private static final int LOC_ESHOP = 5;
 
 	public void fillDetails(FarmInfo info) {
 		if (info.contact != null)
 			return;
 		
-		String[] columns = new String[] { "type", "desc" };
+		String[] columns = new String[] { "description"};
 		String selection = "_id = ?";
 		String[] args = new String[] { Long.toString(info.id) };
-		Cursor c = db.query("farm", columns, selection, args, null, null, null);
+		Cursor c = db.query("locations", columns, selection, args, null, null, null);
 		FarmContact farmContact = new FarmContact();
 		List<Long> products = new ArrayList<Long>();
 		
 		c.moveToNext();
 		if (!c.isAfterLast()) {
-			info.type = c.getString(0);
-			info.description = c.getString(1);
+			info.description = c.getString(0);
 		}
 		c.close();
 		
 		farmContact.phoneNumbers = new ArrayList<String>();
 		columns = new String[] { "type", "contact" };
-		selection = "farm_id = ?";
-		c = db.query("contact", columns, selection, args, null, null, null);
+		selection = "locationId = ?";
+		c = db.query("contacts", columns, selection, args, null, null, null);
 		c.moveToNext();
 		while (!c.isAfterLast()) {
-			String type = c.getString(0);
+			int type = c.getInt(0);
 			String contact = c.getString(1);
 			
-			if (type.equals("city")) {
-				farmContact.city = contact;
+			switch (type) {
+				case LOC_CITY:
+					farmContact.city = contact;
+					break;
+				case LOC_STREET:
+					farmContact.street = contact;
+					break;
+				case LOC_EMAIL:
+					farmContact.email = contact;
+					break;
+				case LOC_ESHOP:
+					farmContact.eshop = contact;
+					break;
+				case LOC_PHONE:
+					farmContact.phoneNumbers.add(contact);
+					break;
+				case LOC_WEB:
+					farmContact.web = contact;
+					break;
+				default:
+					Log.d("db", "unknown location type " + type);
+					break;
 			}
-			else if (type.equals("email")) {
-				farmContact.email = contact;
-			}
-			else if (type.equals("eshop")) {
-				farmContact.eshop = contact;
-			}
-			else if (type.equals("phone")) {
-				farmContact.phoneNumbers.add(contact);
-			}
-			else if (type.equals("street")) {
-				farmContact.street = contact;
-			}
-			else if (type.equals("web")) {
-				farmContact.web = contact;
-			}
+			
 			c.moveToNext();
 		}
 		c.close();
 		info.contact = farmContact;
 		
-		columns = new String[] { "product_id" };
-		c = db.query("farm_product", columns, "farm_id = ?", args, null, null, "product_id");
+		columns = new String[] { "productId" };
+		c = db.query("location_product", columns, "locationId = ?", args, null, null, "productId");
 		c.moveToNext();
 		while (!c.isAfterLast()) {
 			products.add(c.getLong(0));
@@ -352,7 +376,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	
 	private void loadProductNames() {
 		String[] columns = new String[] { "_id", "name" };
-		Cursor c = db.query("product", columns, null, null, null, null, "_id");
+		Cursor c = db.query("products", columns, null, null, null, null, "_id");
 		
 		products = new HashMap<Long, String>();
 		c.moveToNext();
@@ -373,7 +397,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private void loadCategoryNames() {
 		String[] columns = new String[] { "_id", "name" };
-		Cursor c = db.query("category", columns, null, null, null, null, "_id");
+		Cursor c = db.query("categories", columns, null, null, null, null, "_id");
 		
 		categories = new HashMap<Long, String>();
 		c.moveToNext();
@@ -383,5 +407,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		}
 		c.close();
 	}
+	
+	@Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
+	@Override
+	public void onCreate(SQLiteDatabase db){}
 
 }
