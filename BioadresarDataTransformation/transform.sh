@@ -339,6 +339,28 @@ function addProductsToLocations()
 		done
 }
 
+function deleteLocation()
+{
+	echo "delete from location_product where locationId = $1;" | callSqlite
+	echo "delete from locations where locationId = $1;" | callSqlite
+	echo "delete from contacts where locationId = $1;" | callSqlite
+}
+
+function moveProductionFromId()
+{
+	echo "update location_product set locationId = $2 where locationId = $1;" | callSqlite
+}
+
+function fixtures_v4()
+{
+	moveProductionFromId 601 639
+	moveProductionFromId 494 631
+
+	for location in 543 542 601 494; do
+		deleteLocation ${location}
+	done
+}
+
 #cinnost -> TODO, zatim ignorujeme
 #dela -> TODO: match mezi divizema a cinnostmy (s poznamkou), zatim ignorujeme
 
@@ -351,6 +373,8 @@ addContacts
 addProductsToLocations
 
 removeMysql
+
+fixtures_v4
 
 #kraje -> ignorovat (souradnice na stredy kraju)
 #kraje_old -> ignorovat (zkratky pro kraje)
