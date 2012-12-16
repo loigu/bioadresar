@@ -28,8 +28,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import cz.hnutiduha.bioadresar.R;
+import cz.hnutiduha.bioadresar.data.ActivityWithComment;
 import cz.hnutiduha.bioadresar.data.DatabaseHelper;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
+import cz.hnutiduha.bioadresar.data.ProductWithComment;
+import cz.hnutiduha.bioadresar.data.StringifiedFromDb;
 
 public class DetailActivity extends Activity{
 	
@@ -85,6 +88,16 @@ public class DetailActivity extends Activity{
     	}
     }
     
+    private void fillListFromIterator(StringBuilder out, DatabaseHelper db, Iterator it)
+    {
+    	while(it.hasNext())
+    	{
+			out.append(((StringifiedFromDb)it.next()).toString(db));
+			if (it.hasNext())
+				out.append(", ");
+    	}
+    }
+    
     private void fillFarmInfo()
     {
 
@@ -96,16 +109,27 @@ public class DetailActivity extends Activity{
     	
     	setFieldTextOrHideEmpty(currentFarm.description, NO_LINKIFY, R.id.descriptionLabel, R.id.descriptionText);
         
-        StringBuilder products = new StringBuilder();
-		Iterator<Long> productsIterator = currentFarm.products.iterator();
 		DatabaseHelper db = DatabaseHelper.getDefaultDb(this);
-		while (productsIterator.hasNext())
-		{
-			products.append(db.getProductName(productsIterator.next()));
-			if (productsIterator.hasNext())
-				products.append(", ");
+		
+        StringBuilder products = new StringBuilder();
+		fillListFromIterator(products, db, currentFarm.products.iterator());
+		
+		
+		// if there is no products, try to use categories
+		Iterator<Long> it = currentFarm.categories.iterator();
+		if (products.length() == 0)	{
+			while (it.hasNext()) {
+				products.append(db.getCategoryName(it.next()));
+				if (it.hasNext())
+					products.append(", ");
+			}
 		}
+
+        StringBuilder activities = new StringBuilder();
+		fillListFromIterator(activities, db, currentFarm.activities.iterator());
+		
     	setFieldTextOrHideEmpty(products.toString(), NO_LINKIFY, R.id.productionLabel, R.id.productionText);
+    	setFieldTextOrHideEmpty(activities.toString(), NO_LINKIFY, R.id.activitiesLabel, R.id.activitiesText);
     	
     	setFieldTextOrHideEmpty(currentFarm.contact.email, Linkify.EMAIL_ADDRESSES, R.id.emailLabel, R.id.emailText);
     	setFieldTextOrHideEmpty(currentFarm.contact.web, Linkify.WEB_URLS, R.id.webLabel, R.id.webText);

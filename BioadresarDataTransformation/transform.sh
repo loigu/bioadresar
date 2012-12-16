@@ -3,6 +3,7 @@
 
 export MYSQL_SCRIPT="$1"
 export TARGET_DB="$2"
+export EXPORT_DATE=$(date --date $(echo ${MYSQL_SCRIPT} | sed -e 's/.*-\([^.]*\).*/\1/') +%s)
 
 
 # dump to mysql
@@ -13,8 +14,22 @@ export MYDB_PASS="importer"
 function notNULL()
 {
 	cont=$(echo $* | tr -d ' \t')
-	[ ! -z "${cont}" -a "${cont}" != "NULL" ] && return 0
+	[ ! -z "${cont}" -a "${cont}" != "NULL" -a "${cont}" != "null" ] && return 0
 	return 1
+}
+
+function emptyToNull()
+{
+	if notNULL $*; then
+		echo "'$*'"
+	else
+		echo "null"
+	fi
+}
+
+function log()
+{
+	echo "$(date): $*"
 }
 
 function importMysql()
@@ -46,13 +61,15 @@ function reportError()
 
 function createBaseLayout()
 {
+	log "creating base layout"
 	echo "CREATE TABLE android_metadata (locale TEXT DEFAULT 'cs_CZ');" | callSqlite
 	echo "CREATE TABLE config (variable TEXT UNIQUE NOT NULL, value TEXT);" | callSqlite
-	echo "INSERT INTO config(variable, value) VALUES ('lastUpdated', '$(date +%s)');" | callSqlite
+	echo "INSERT INTO config(variable, value) VALUES ('lastUpdated', '${EXPORT_DATE}');" | callSqlite
 }
 
 function addCategoriesToProducts()
 {
+	log "adding categories to products"
 	# NOTE manually created links between categories and products
 	zelenina=$(echo "SELECT id FROM produkt WHERE nazev='zelenina'" | callMysql)
 	ovoce=$(echo "SELECT id FROM produkt WHERE nazev='ovoce'" | callMysql)
@@ -229,6 +246,7 @@ UPDATE products SET categoryId=${ostatni} WHERE name='sterilované výrobky';
 
 function addProducts()
 {
+	log "adding products"
 	#create categories
 	echo 'CREATE TABLE categories (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE);' | callSqlite
 	
@@ -238,30 +256,54 @@ function addProducts()
 	echo 'SELECT id,je_kategorie,nazev FROM produkt;' | callMysql \
 		| sed -e 's/\t/\;/g' | while IFS=';' read id kategorie nazev; do 
 			if [ "${kategorie}" = "ano" ]; then
-				echo "insert into categories(_id,name) values(${id},'${nazev}');" | callSqlite
-				[ "$?" != 0 ] && reportError "inserting category ${nazev} with id ${id} failed"
+				echo "insert into categories(_id,name) values(${id},'${nazev}');"
+				# | callSqlite
+				# [ "$?" != 0 ] && reportError "inserting category ${nazev} with id ${id} failed"
 			else
-				echo "insert into products(_id,name) values(${id},'${nazev}');" | callSqlite
-				[ "$?" != 0 ] && reportError "inserting product ${nazev} with id ${id} failed"
+				echo "insert into products(_id,name) values(${id},'${nazev}');"
+				# | callSqlite
+				# [ "$?" != 0 ] && reportError "inserting product ${nazev} with id ${id} failed"
 			fi
-		done
+		done | callSqlite
 
 	addCategoriesToProducts
+}
+
+function addActivities()
+{
+	log "adding activities"
+	#create activities
+	echo 'CREATE TABLE activities (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE);' | callSqlite
+	
+	echo 'SELECT id,nazev FROM cinnost;' | callMysql \
+		| while read id nazev; do 
+			echo "insert into activities(_id,name) values(${id},'${nazev}');"
+			# | callSqlite
+			# [ "$?" != 0 ] && reportError "inserting product ${nazev} with id ${id} failed"
+		done | callSqlite
 }
 
 
 function addLocations()
 {
+	log "adding locations"
 	# add location types
 	echo 'CREATE TABLE locationTypes (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT);' | callSqlite
 	[ "$?" != 0 ] && reportError "failed to create table locationTypes"
+	local id=0
+	local tt=$(mktemp ./locType.XXXXXX)
 	echo "select distinct(typ) from divize;" | callMysql | while read type; do 
-		echo "insert into locationTypes(name) values('${type}');" | callSqlite; 
-		[ "$?" != 0 ] && reportError "failed add location type ${type}"
-	done
+		echo "insert into locationTypes(_id, name) values(${id}, '${type}');"
+		echo "export typ_${type}=${id}" >> ${tt}
+		id=$(expr ${id} + 1)
+		# | callSqlite; 
+		# [ "$?" != 0 ] && reportError "failed add location type ${type}"
+	done | callSqlite
+	source ${tt}
+	rm ${tt}
 	
 	# create locations
-	echo 'CREATE TABLE locations (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, gpsLatitude REAL NOT NULL, gpsLongtitude REAL NOT NULL, description TEXT, typeId INTEGER);' | callSqlite
+	echo 'CREATE TABLE locations (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, gpsLatitude REAL NOT NULL, gpsLongtitude REAL NOT NULL, description TEXT, typeId INTEGER);' | callSqlite
 	[ "$?" != 0 ] && reportError "failed to create table locations"
 	
 	# fill locations
@@ -270,18 +312,18 @@ function addLocations()
 		| sed -e 's/\t/\;/g' \
 		| while IFS=';' read locationId typ lat lon name divizionName comment; do 
 			notNULL "${divizionName}" && name="${name} (${divizionName})"
-			typeId=$(echo "select _id from locationTypes WHERE name='${typ}';" | callSqlite)
-			[ "$?" != 0 ] && echo "failed to find out typeId for type ${type}"
-			echo "INSERT INTO locations(_id, name, gpsLatitude, gpsLongtitude, description, typeId) VALUES(${locationId}, '${name}', ${lat}, ${lon}, '${comment}', ${typeId});" | callSqlite
-			[ "$?" != 0 ] && reportError "failed to insert location ${name}"
-		done
-		
+			typeId=$(eval echo \$\{typ_${typ}\})
+			echo "INSERT INTO locations(_id, name, gpsLatitude, gpsLongtitude, description, typeId) VALUES(${locationId}, '${name}', ${lat}, ${lon}, $(emptyToNull ${comment}), ${typeId});"
+			# | callSqlite
+			# [ "$?" != 0 ] && reportError "failed to insert location ${name}"
+		done | callSqlite
 }
 
 
 
 function addContacts()
 {
+	log "adding contacts"
 	# add contact types. NOTE: api 
 	echo 'CREATE TABLE contactTypes (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT);' | callSqlite
 	CITY=1
@@ -301,29 +343,26 @@ function addContacts()
 		| callMysql \
 		| sed -e 's/\t/\;/g' \
 		| while IFS=';' read locationId phone email web web2 eshop street city; do 
-			notNULL "${city}" && echo "INSERT INTO contacts(locationId, type, contact) VALUES (${locationId}, ${CITY}, '${city}');" | callSqlite
-			notNULL "${street}" && echo "INSERT INTO contacts(locationId, type, contact) VALUES (${locationId}, ${STREET}, '${street}');" | callSqlite
-			notNULL "${email}" && echo "INSERT INTO contacts(locationId, type, contact) VALUES (${locationId}, ${EMAIL}, '${email}');" | callSqlite
-			notNULL "${phone}" && echo "INSERT INTO contacts(locationId, type, contact) VALUES (${locationId}, ${PHONE}, '${phone}');" | callSqlite
-			notNULL "${eshop}" && echo "INSERT INTO contacts(locationId, type, contact) VALUES (${locationId}, ${ESHOP}, '${eshop}');" | callSqlite
+			notNULL "${city}" && echo "INSERT INTO contacts(locationId, type, contact) VALUES (${locationId}, ${CITY}, '${city}');"
+			notNULL "${street}" && echo "INSERT INTO contacts(locationId, type, contact) VALUES (${locationId}, ${STREET}, '${street}');"
+			notNULL "${email}" && echo "INSERT INTO contacts(locationId, type, contact) VALUES (${locationId}, ${EMAIL}, '${email}');"
+			notNULL "${phone}" && echo "INSERT INTO contacts(locationId, type, contact) VALUES (${locationId}, ${PHONE}, '${phone}');"
+			notNULL "${eshop}" && echo "INSERT INTO contacts(locationId, type, contact) VALUES (${locationId}, ${ESHOP}, '${eshop}');"
 			
 			if notNULL "${web}" && notNULL "${web2}"; then
-				echo "INSERT INTO contacts(locationId, type, contact) VALUES (${locationId}, ${WEB}, '${web} ${web2}');" | callSqlite
+				echo "INSERT INTO contacts(locationId, type, contact) VALUES (${locationId}, ${WEB}, '${web} ${web2}');"
 			else
-				notNULL "${web}" && echo "INSERT INTO contacts(locationId, type, contact) VALUES (${locationId}, ${WEB}, '${web}');" | callSqlite
-				notNULL "${web2}" && echo "INSERT INTO contacts(locationId, type, contact) VALUES (${locationId}, ${WEB}, '${web2}');" | callSqlite
+				notNULL "${web}" && echo "INSERT INTO contacts(locationId, type, contact) VALUES (${locationId}, ${WEB}, '${web}');"
+				notNULL "${web2}" && echo "INSERT INTO contacts(locationId, type, contact) VALUES (${locationId}, ${WEB}, '${web2}');"
 			fi
-		done
+		done | callSqlite
 }
-
 
 function addProductsToLocations()
 {
+	log "adding products to locations"
 	#create farm:product table
-	echo 'CREATE TABLE location_product (_id INTEGER PRIMARY KEY AUTOINCREMENT, locationId INTEGER, productId INTEGER, comment TEXT, UNIQUE (locationId, productId));' | callSqlite
-	
-	#create farm:category table (can be computed from farm:product, but this is faster...
-	echo 'CREATE TABLE location_category (_id INTEGER PRIMARY KEY AUTOINCREMENT, locationId INTEGER, categoryId INTEGER, UNIQUE (locationId, categoryId));' | callSqlite
+	echo 'CREATE TABLE location_product (_id INTEGER PRIMARY KEY AUTOINCREMENT, locationId INTEGER NOT NULL, productId INTEGER NOT NULL, comment TEXT, UNIQUE (locationId, productId));' | callSqlite
 	
 	echo "SELECT _id FROM categories;" | callSqlite | while read id; do
 		echo "DELETE FROM produkuje where produkt_id=${id};" | callMysql
@@ -331,50 +370,132 @@ function addProductsToLocations()
 	
 	echo 'SELECT divize_id, produkt_id, poznamka FROM produkuje;' | callMysql \
 		| while read locationId productId note; do
-			echo "INSERT INTO location_product(locationId, productId, comment) VALUES(${locationId}, ${productId}, '${note}');" | callSqlite
-			
-			# TODO: this could be done by distinct in one call, not repeating million times
-			categoryId=$(echo "select categoryId from products where _id=${productId};" | callSqlite)
-			notNULL "${categoryId}" && echo "INSERT INTO location_category(locationId, categoryId) VALUES(${locationId}, ${categoryId});" | callSqlite &>/dev/null
+			echo "INSERT INTO location_product(locationId, productId, comment) VALUES(${locationId}, ${productId}, $(emptyToNull ${note}));"
+		done | callSqlite
+}
+
+function addCategoriesToLocations()
+{
+	#helper table, not really needed
+	log "adding categories to locations"
+	#create farm:category table (can be computed from farm:product, but this is faster...
+	echo 'CREATE TABLE location_category (_id INTEGER PRIMARY KEY AUTOINCREMENT, locationId INTEGER NOT NULL, categoryId INTEGER NOT NULL, UNIQUE (locationId, categoryId));' | callSqlite
+
+	# sqlite is fucked up, we can't read and write at the same time
+	local tt=$(mktemp locat.XXXXXX)
+	echo "select distinct products.categoryId, location_product.locationId from products, location_product where products._id = location_product.productId;" | callSqlite \
+		| while IFS="|" read categoryId locationId; do
+			notNULL "${categoryId}" && echo "INSERT INTO location_category(locationId, categoryId) VALUES(${locationId}, ${categoryId});" >> ${tt}
 		done
+		
+		cat ${tt} | callSqlite
+		rm ${tt}
+}
+
+function addActivitiesToLocations()
+{
+	log "adding activities to locations"
+	#create farm:activity table
+	echo 'CREATE TABLE location_activity (_id INTEGER PRIMARY KEY AUTOINCREMENT, locationId INTEGER NOT NULL, activityId INTEGER NOT NULL, comment TEXT, UNIQUE (locationId, activityId));' | callSqlite
+
+	echo 'SELECT divize_id, cinnost_id, poznamka FROM dela;' | callMysql \
+		| while read locationId activityId note; do
+			echo "INSERT INTO location_activity(locationId, activityId, comment) VALUES(${locationId}, ${activityId}, $(emptyToNull ${note}));"
+		done | callSqlite
 }
 
 function deleteLocation()
 {
-	echo "delete from location_product where locationId = $1;" | callSqlite
-	echo "delete from locations where locationId = $1;" | callSqlite
-	echo "delete from contacts where locationId = $1;" | callSqlite
+	log "deleting location $1"
+	for tab in contacts location_product location_category location_activity; do
+		echo "delete from ${tab} where locationId = $1;" | callSqlite
+	done
+	echo "delete from locations where _id = $1;" | callSqlite
 }
 
-function moveProductionFromId()
+function deleteProduct()
 {
-	echo "update location_product set locationId = $2 where locationId = $1;" | callSqlite
+	log "deleting product $1"
+	echo "delete from products where _id=$1;" | callSqlite
+	echo "delete from location_product where productId=$1;" | callSqlite
+}
+
+function joinProducts()
+{
+	log "changing product $2 to $1"
+	echo "update location_product set productId=$1 where productId=$2;" | callSqlite
+	deleteProduct $2
+}
+
+function joinFarms()
+{
+	log "moving production from farm $1 to farm $2"
+	for tab in product category activity; do
+		echo "update location_${tab} set locationId = $2 where locationId = $1;" | callSqlite
+	done
 }
 
 function fixtures_v4()
 {
-	moveProductionFromId 601 639
-	moveProductionFromId 494 631
+	joinFarms 601 639
+	joinFarms 494 631
 
 	for location in 543 542 601 494; do
 		deleteLocation ${location}
 	done
 }
 
-#cinnost -> TODO, zatim ignorujeme
-#dela -> TODO: match mezi divizema a cinnostmy (s poznamkou), zatim ignorujeme
+function fixtures_v5()
+{
+	# found in products
+	# (60, 'farma Trpola', 'ne', 'ano'),
+	# (66, 'švestky test', 'ne', 'ano'),
+	# (96, 'test', 'ne', 'ano'),
+	for i in 60 66 96; do
+		deleteProduct $i
+	done
 
-importMysql
+	# (12, 'luskoviny', '', 'ano'),
+	# (22, 'luštěniny', '', 'ano'),
+	joinProducts 22 12
 
-createBaseLayout
-addProducts
-addLocations
-addContacts
-addProductsToLocations
+	echo "update contacts set contact='www.ekofarma-arnika.estranky.cz' where contact='www,ekofarma-arnika.estranky.cz';" | callSqlite
 
-removeMysql
+	# (85, 'skopové', 'ne', 'ano'),
+	# (89, 'skopové', 'ne', 'ano'),
+	joinProducts 85 89
 
-fixtures_v4
+	# (62, 'rajčata', 'ne', 'ano'),
+	# (129, 'rajčata', 'ne', 'ano'),
+	joinProducts 62 129
+	
+	# TODO:
+	# (105, 'velký výběr zeleniny', 'ne', 'ano'),
+	# ^ neni to totez co kategorie 'zelenina'?
+	# (84, 'masné výrobky', 'ne', 'ano'),
+	# ^ neduplikuji mirne kategorii maso?
+}
+
+function call()
+{
+	importMysql
+
+	createBaseLayout
+	addProducts
+	addActivities
+	addLocations
+	addContacts
+	addProductsToLocations
+	addCategoriesToLocations
+	addActivitiesToLocations
+
+	removeMysql
+
+	fixtures_v4
+	fixtures_v5
+}
+
+call
 
 #kraje -> ignorovat (souradnice na stredy kraju)
 #kraje_old -> ignorovat (zkratky pro kraje)

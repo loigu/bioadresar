@@ -22,9 +22,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -48,13 +48,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static Context appContext = null;
 	
-	private SQLiteDatabase db;
+	protected SQLiteDatabase db;
 	
 	private HashMap<Long, String> categories = null;
-	
 	private HashMap<Long, String> products = null;
+	private HashMap<Long, String> activities = null;
 	
-	private static final int databaseVersion = 4;
+	private static final int databaseVersion = 6;
 	
 	public DatabaseHelper(Context context) {
 		super(context, DB_NAME, null, databaseVersion);
@@ -228,7 +228,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		if (allFarmsList != null)
 			return allFarmsList;
 		
-		ArrayList<FarmInfo> res = new ArrayList<FarmInfo>();
+		LinkedList<FarmInfo> res = new LinkedList<FarmInfo>();
 		
 		String[] columns = new String[] { "_id", "name", "gpsLatitude", "gpsLongtitude" };
 		Cursor c = db.query("locations", columns, null, null, null, null, "gpsLatitude, gpsLongtitude");
@@ -275,7 +275,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	
 	private List<Long> getCategoriesByFarmId(long id) {
 		String[] columns = new String[] { "categoryId" };
-		List<Long> categories = new ArrayList<Long>();
+		List<Long> categories = new LinkedList<Long>();
 		// TODO add category "Others" (164) and join with products (and find by products too - because product has category assigned too)
 		Cursor c = db.query("location_category", columns,
 				"locationId = ?", new String[] { (id + "") },
@@ -292,6 +292,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return categories;
 	}
 	
+	private void fillProducts(FarmInfo info, String[] locationIdInArray) {
+		List<ProductWithComment> products = new LinkedList<ProductWithComment>();
+		String[] columns = new String[] { "productId", "comment" };
+		Cursor c = db.query("location_product", columns, "locationId = ?", locationIdInArray, null, null, null);
+		c.moveToNext();
+		while (!c.isAfterLast()) {
+			String comment = null;
+			if (!c.isNull(1))
+				comment = c.getString(1);
+			products.add(new ProductWithComment(c.getLong(0), comment));
+			c.moveToNext();
+		}
+		c.close();
+		info.products = products;
+	}
+	
+	private void fillActivities(FarmInfo info, String[] locationIdInArray) {
+		List<ActivityWithComment> activities = new LinkedList<ActivityWithComment>();
+		String[] columns = new String[] { "activityId", "comment" };
+		Cursor c = db.query("location_activity", columns, "locationId = ?", locationIdInArray, null, null, null);
+		c.moveToNext();
+		while (!c.isAfterLast()) {
+			String comment = null;
+			if (!c.isNull(1))
+				comment = c.getString(1);
+			activities.add(new ActivityWithComment(c.getLong(0), comment));
+			c.moveToNext();
+		}
+		c.close();
+		info.activities = activities;
+	}
+	
 	// NOTE: api defined in transform.sh
 	private static final int LOC_CITY = 1;
 	private static final int LOC_STREET = 2;
@@ -299,28 +331,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private static final int LOC_EMAIL = 3;
 	private static final int LOC_WEB = 4;
 	private static final int LOC_ESHOP = 5;
-
-	public void fillDetails(FarmInfo info) {
-		if (info.contact != null)
-			return;
-		
-		String[] columns = new String[] { "description"};
-		String selection = "_id = ?";
-		String[] args = new String[] { Long.toString(info.id) };
-		Cursor c = db.query("locations", columns, selection, args, null, null, null);
+	
+	private void fillContact(FarmInfo info, String[] locationIdInArray) {
 		FarmContact farmContact = new FarmContact();
-		List<Long> products = new ArrayList<Long>();
-		
-		c.moveToNext();
-		if (!c.isAfterLast()) {
-			info.description = c.getString(0);
-		}
-		c.close();
-		
-		farmContact.phoneNumbers = new ArrayList<String>();
-		columns = new String[] { "type", "contact" };
-		selection = "locationId = ?";
-		c = db.query("contacts", columns, selection, args, null, null, null);
+		farmContact.phoneNumbers = new LinkedList<String>();
+		String[] columns = new String[] { "type", "contact" };
+		Cursor c = db.query("contacts", columns, "locationId = ?", locationIdInArray, null, null, null);
 		c.moveToNext();
 		while (!c.isAfterLast()) {
 			int type = c.getInt(0);
@@ -354,16 +370,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		}
 		c.close();
 		info.contact = farmContact;
-		
-		columns = new String[] { "productId" };
-		c = db.query("location_product", columns, "locationId = ?", args, null, null, "productId");
+	}
+	
+	private void fillDescription(FarmInfo info, String[] locationIdInArray) {
+		Cursor c = db.query("locations", new String[] { "description"}, "_id = ?", locationIdInArray, null, null, null);
 		c.moveToNext();
-		while (!c.isAfterLast()) {
-			products.add(c.getLong(0));
-			c.moveToNext();
+		
+		if (!c.isAfterLast()) {
+			info.description = c.getString(0);
 		}
 		c.close();
-		info.products = products;
+	}
+
+	public void fillDetails(FarmInfo info) {
+		if (info.contact != null)
+			return;
+		
+		String[] args = new String[] { Long.toString(info.id) };
+		
+		fillDescription(info, args);
+		fillProducts(info, args);
+		fillActivities(info, args);
+		fillContact(info, args);
 	}
 	
 	public String getProductName(Long id) {
@@ -374,6 +402,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return products.get(id);
 	}
 	
+	public String getActivityName(Long id) {
+		if (this.activities == null) {
+			this.loadActivityNames();
+		}
+		
+		return activities.get(id);
+	}
+	
 	private void loadProductNames() {
 		String[] columns = new String[] { "_id", "name" };
 		Cursor c = db.query("products", columns, null, null, null, null, "_id");
@@ -382,6 +418,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		c.moveToNext();
 		while(!c.isAfterLast()) {
 			products.put(c.getLong(0), c.getString(1));
+			c.moveToNext();
+		}
+		c.close();
+	}
+	
+	private void loadActivityNames() {
+		String[] columns = new String[] { "_id", "name" };
+		Cursor c = db.query("activities", columns, null, null, null, null, "_id");
+		
+		activities = new HashMap<Long, String>();
+		c.moveToNext();
+		while(!c.isAfterLast()) {
+			activities.put(c.getLong(0), c.getString(1));
 			c.moveToNext();
 		}
 		c.close();

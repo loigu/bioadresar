@@ -50,7 +50,8 @@ public class FarmInfo implements OnClickListener{
 	// call DatabaseHelper.fillDetails to obtain these
 	public String description;
 	public FarmContact contact;
-	public List<Long> products;
+	public List<ProductWithComment> products;
+	public List<ActivityWithComment> activities;
 	
 	private static final int viewTagTarget = 0xdeadbeef;
 	private static final String viewTargetMap = "map";

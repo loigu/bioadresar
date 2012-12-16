@@ -53,5 +53,6 @@
     <string name="virtualLocation">zadaná</string>
     <string name="versionName">Beta 2</string>
     <string name="next25">Dalších 25</string>
+    <string name="activities">Aktivity</string>
 
 </resources>

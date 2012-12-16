@@ -7,7 +7,8 @@
 	<META NAME="AUTHOR" CONTENT="loki ">
 	<META NAME="CREATED" CONTENT="20120819;18483400">
 	<META NAME="CHANGEDBY" CONTENT="loki ">
-	<META NAME="CHANGED" CONTENT="20121203;20313600">
+	<META NAME="CHANGED" CONTENT="20121216;21141600">
+	<META NAME="CHANGEDBY" CONTENT="loki ">
 	<META NAME="CHANGEDBY" CONTENT="loki ">
 	<META NAME="CHANGEDBY" CONTENT="loki ">
 	<META NAME="CHANGEDBY" CONTENT="loki ">
@@ -31,12 +32,18 @@ chyby</FONT></FONT></P>
 <UL>
 	<LI><P>v seznamu, první puštění “dalších 25” načte 25 –
 	count(zobrazené farmy)</P>
+	<LI><P>načtení nové polohy v mapě a seznamu nerefreshuje
+	vzdálenosti (pořadí)</P>
 </UL>
 <P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Changelog
 Beta2 – Beta3</FONT></FONT></P>
 <UL>
-	<LI><P STYLE="margin-top: 0.17in"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3>klasicke
+	<LI><P STYLE="margin-top: 0.17in"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3>klasické
 	menu</FONT></FONT></P>
+	<LI><P STYLE="margin-top: 0.17in"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3>aktualizace
+	a pročištění databáze</FONT></FONT></P>
+	<LI><P>přidány poznámky k produkci</P>
+	<LI><P>přidány aktivity (činnosti)</P>
 </UL>
 <P STYLE="margin-top: 0.17in"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Changelog
 Beta1 – Beta2</FONT></FONT></P>
@@ -52,7 +59,6 @@ Beta1 – Beta2</FONT></FONT></P>
 <P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>TODO
 list</FONT></FONT></P>
 <UL>
-	<LI><P>nova databaze</P>
 	<LI><P>vytvořit pořádné stránky</P>
 	<UL>
 		<LI><P>jak funguje nacitani listu</P>
@@ -61,10 +67,9 @@ list</FONT></FONT></P>
 		<LI><P>co s daty</P>
 		<LI><P>posilejte nam vlastni farmy :)</P>
 	</UL>
-	<LI><P>includnout z databaze</P>
-	<UL>
-		<LI><P>cinnosti (jizdy, prohlidky, prodej ze dvora, ...)</P>
-	</UL>
+	<LI><P>zmerit, jestli by tabulka contacts nesla zoptimalizovat</P>
+	<LI><P>foreign keys</P>
+	<LI><P>zkontrolovat farmy bez produkce / aktivit</P>
 	<LI><P>vizualizovat z databaze</P>
 	<UL>
 		<LI><P>typy divize (eshop, farma, bioklub, ...) 
@@ -73,7 +78,7 @@ list</FONT></FONT></P>
 	<LI><P>cachování map (bude možná potřebovat přejít na
 	<A HREF="https://code.google.com/p/osmdroid/">https://code.google.com/p/osmdroid/</A>
 	nebo bing nebo amazon or whatever)</P>
-	<LI><P>normal menu &amp;&amp; reset view on location change</P>
+	<LI><P>reset view on location change</P>
 	<LI><P>poradne nacitani polohy 
 	</P>
 	<LI><P>send crash dump</P>
