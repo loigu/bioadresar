@@ -22,7 +22,7 @@ public class ConfigActivity extends PreferenceActivity implements OnPreferenceCh
 	public boolean onPreferenceChange(Preference preference, Object newValue) {
 		if (preference.getKey().equals("defaultLocation"))
 		{
-			LocationCache.centerOnGps(this);
+			LocationCache.updateLocation(LocationCache.getDefaultLocation(this));
 		}
 		return false;
 	}

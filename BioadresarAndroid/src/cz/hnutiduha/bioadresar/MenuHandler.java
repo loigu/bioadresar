@@ -16,7 +16,7 @@ public class MenuHandler {
 	{
 		// TODO: do this by xml
 		MenuItem item;
-        item =menu.add(0, R.id.mapLink, Menu.NONE, R.string.map_tab_title);
+        item = menu.add(0, R.id.mapLink, Menu.NONE, R.string.map_tab_title);
         item.setIcon(android.R.drawable.ic_menu_mapmode);
         
         item = menu.add(0, R.id.listLink, Menu.NONE, R.string.list_tab_title);
@@ -33,23 +33,14 @@ public class MenuHandler {
 
 		return true;
 	}
-	
-    public static void refreshLocation(Context context)
-    {
-    	LocationCache.centerOnGps(context);
-    }
     
     public static boolean idActivated(Context context, int id)
     {
-		if (id == R.id.locationLabel)
-		{
-			refreshLocation(context);
-			return true;
-		}
-		else
+		if (id != R.id.locationLabel)
 		{
 			return showActivity(context, id);
 		}
+		return false;
     }
     
     protected static boolean showActivity(Context context, int id)

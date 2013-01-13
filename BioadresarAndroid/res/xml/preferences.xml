@@ -30,4 +30,8 @@
         android:summary="@string/defaultLocationSummary"
         android:title="@string/defaultLocationLabel" />
 
+    <CheckBoxPreference
+        android:key="requireGps"
+        android:title="@string/requireGps" />
+
 </PreferenceScreen>

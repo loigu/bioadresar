@@ -105,12 +105,22 @@ public class FarmMapView extends TapControlledMapView {
 		});
 	}
 	
+	private void reinstallOurLocationMark()
+	{
+		// FIXME: implement this
+	}
+	
+	Location lastCenter = null;
+	
 	// centers on current location (from gps/cellular)
 	public void centerMap()
 	{
-		Location center = LocationCache.getCenter();
+		Location newCenter = LocationCache.getCenter();
+		if (newCenter != lastCenter)
+			reinstallOurLocationMark();
+		lastCenter = newCenter;
 		
-		centerOnGeoPoint(new GeoPoint((int)(center.getLatitude() * 1E6), (int)(center.getLongitude() * 1E6)));
+		centerOnGeoPoint(new GeoPoint((int)(newCenter.getLatitude() * 1E6), (int)(newCenter.getLongitude() * 1E6)));
 	}
 	
 	public void showFarmBalloonOnStart(long farmId)

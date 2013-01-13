@@ -46,8 +46,7 @@ public class MainTabbedActivity extends TabActivity {
 	    super.onCreate(savedInstanceState);
 	    
 	    // current location is default center of everything :)
-	    if (LocationCache.getCenter() == null)
-	    	LocationCache.centerOnGps(this);
+	    LocationCache.startListener(this);
 	    
 	    
 	    setContentView(R.layout.main_view);

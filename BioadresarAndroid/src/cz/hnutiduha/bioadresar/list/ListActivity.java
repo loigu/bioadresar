@@ -47,7 +47,12 @@ class AddAllFarms extends AsyncTask<Void, FarmInfo, Boolean> {
 	{
 		super();
 		this.activity = activity;
-		loc = LocationCache.getCenter();
+		loc = activity.getUsedLocation();
+	}
+	
+	public Location getUsedLocation()
+	{
+		return loc;
 	}
 
 	@Override
@@ -189,7 +194,6 @@ class AddFarmsInRectangle extends AddAllFarms
 }
 
 public class ListActivity extends Activity implements View.OnClickListener{
-	private static boolean farmsInitialized = false;
 	LinearLayout view;
 	Button next25Button;
 	Context context;
@@ -207,6 +211,12 @@ public class ListActivity extends Activity implements View.OnClickListener{
     @Override
 	public boolean onMenuItemSelected(final int featureId, final MenuItem item)
     {
+    	if (featureId == R.id.locationLabel)
+		{
+			refreshLocation();
+			return true;
+		}
+
     	return MenuHandler.idActivated(this, item.getItemId());
 	}
 
@@ -227,12 +237,7 @@ public class ListActivity extends Activity implements View.OnClickListener{
     public void onStart()
     {
     	super.onStart();
-    	if (farmsInitialized)
-    		return;
-    	
-    	farmsLoader = new AddFarmsInRectangle(this);
-    	farmsLoader.execute();
-    	AddNext25.reset();
+    	refreshLocation();
     }
     
     public void onStop()
@@ -240,6 +245,31 @@ public class ListActivity extends Activity implements View.OnClickListener{
     	super.onStop();
     	if (farmsLoader != null)
     		farmsLoader.cancel(true);
+    }
+    
+    Location usedLocation = null;
+    
+    public Location getUsedLocation()
+    {
+    	return usedLocation;
+    }
+    
+    private synchronized void refreshLocation()
+    {
+    	
+    	Location newLocation = LocationCache.getCenter();
+    	if (usedLocation == newLocation)
+    		return;
+    	
+    	// clean list
+    	view.removeAllViews();
+    	// set location
+    	this.usedLocation = newLocation;
+    	
+    	// fire first loader
+    	showNextButton(false);
+    	farmsLoader = new AddFarmsInRectangle(this);
+    	farmsLoader.execute();
     }
     
     protected void showNextButton(boolean show)
@@ -285,7 +315,7 @@ public class ListActivity extends Activity implements View.OnClickListener{
 		view.addView(newFarm, view.getChildCount());
     }
     
-	public void onClick(View v) {
+	public synchronized void onClick(View v) {
 		if (v.equals(next25Button))
 		{
 			if (farmsLoader == null || farmsLoader.getStatus() == AsyncTask.Status.FINISHED)

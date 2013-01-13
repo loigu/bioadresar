@@ -17,9 +17,9 @@
 
 package cz.hnutiduha.bioadresar;
 
-import cz.hnutiduha.bioadresar.data.DatabaseHelper;
 import cz.hnutiduha.bioadresar.data.LocationCache;
 import android.app.Activity;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -36,10 +36,9 @@ public class MainMenuActivity extends Activity implements OnClickListener {
         
         setContentView(R.layout.main_menu);
 	    
-	    // current location is default center of everything :)
-	    if (LocationCache.getCenter() == null)
-	    	LocationCache.centerOnGps(this);
-        
+	    // start listening for location
+	    LocationCache.startListener(this);
+	    
         View item = this.findViewById(R.id.listLink);
         item.setOnClickListener(this);
         item = this.findViewById(R.id.mapLink);
@@ -73,10 +72,8 @@ public class MainMenuActivity extends Activity implements OnClickListener {
     }
     
     public void refreshLocation()
-    {
-    	MenuHandler.refreshLocation(this);
-    	
-    	if (LocationCache.hasRealLocation())
+    {	
+    	if (LocationCache.getLocationSource() != LocationManager.PASSIVE_PROVIDER)
     		location.setText(getString(R.string.renewLocationLabel) + " (" + getString(R.string.realLocation) + ")");
     	else
     		location.setText(getString(R.string.renewLocationLabel) + " (" + getString(R.string.virtualLocation) + ")");
@@ -84,7 +81,10 @@ public class MainMenuActivity extends Activity implements OnClickListener {
         
 	@Override
 	public void onClick(View v) {
+		if (v == location)
+		{
+			refreshLocation();
+		}
 		MenuHandler.idActivated(this,v.getId());
-
 	}
 }

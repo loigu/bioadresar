@@ -43,6 +43,12 @@ public class MapActivity extends com.google.android.maps.MapActivity {
     @Override
 	public boolean onMenuItemSelected(final int featureId, final MenuItem item)
     {
+    	if (featureId == R.id.locationLabel)
+		{
+			mapView.centerMap();
+			return true;
+		}
+    	
     	return MenuHandler.idActivated(this, item.getItemId());
 	}
 	
