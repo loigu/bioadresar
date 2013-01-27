@@ -80,10 +80,12 @@ public class FarmInfo implements OnClickListener{
 	
 	public void goToMap(View parent)
 	{
-		LocationCache.centerOnLocation(getLocation());
 		Context context = parent.getContext();
-		Intent map = new Intent(context, MainTabbedActivity.class);
+		
+		/* Intent map = new Intent(context, MainTabbedActivity.class);
 		map.putExtra(MainTabbedActivity.defaultActivityPropertyName, MainTabbedActivity.mapActivityTag);
+		*/
+		Intent map = new Intent(context, MapActivity.class);
 		map.putExtra(MapActivity.mapNodePropertyName, Long.valueOf(id));
 		context.startActivity(map);
 	}

@@ -46,8 +46,8 @@
     <string name="dataLicenceLabel">Licence k datům</string>
     <string name="betaNotice">Aplikace je v ranných stádiích vývoje. Prosím omluvte případné chyby. Připomínky a návrhy na zlepšení uvítáme na adrese adresar@trilobajt.cz</string>
     <string name="defaultActivityLabel">Po spuštění přejít na</string>
-    <string name="defaultLocationLabel">Defaultní poloha</string>
-    <string name="defaultLocationSummary">V případě nedostupnosti polohy zvolí jako střed bod (lat,lon)</string>
+    <string name="defaultLocationLabel">Výchozí poloha</string>
+    <string name="defaultLocationSummary">V případě nedostupnosti polohy zvolí jako střed</string>
     <string name="renewLocationLabel">Načíst pozici</string>
     <string name="realLocation">reálná</string>
     <string name="virtualLocation">zadaná</string>

@@ -99,43 +99,4 @@ public class MainTabbedActivity extends TabActivity {
 		
 	}
 	
-	private void testDbHelper() {
-		DatabaseHelper dbHelper = DatabaseHelper.getDefaultDb(this);
-
-		try {
-			dbHelper.createDb();
-		} catch (IOException ioe) {
-			throw new Error("Unable to create database");
-		}
-
-		try {
-			dbHelper.openDb();
-			/*Hashtable<Long, FarmInfo> infos = dbHelper.getFarmsInRectangle(47, 15, 49, 17);
-			Log.d("size", infos.size() + "");
-			
-			for (FarmInfo info : infos.values()) {
-				Log.d("info detail - categories", "size: " + info.categories.size());
-				
-				dbHelper.fillDetails(info);
-				
-				Log.d("info detail", info.name + "; " + info.type + "; " + info.description);
-				Log.d("info detail - contact", info.contact.city + "; " + info.contact.street + "; " + info.contact.phoneNumbers.size());
-				Log.d("info detail - products", "size: " + info.products.size());
-			}*/
-			
-			Location testLocation = new Location("");
-			testLocation.setLatitude(49);
-			testLocation.setLongitude(16);
-			TreeSet<FarmInfo> farms = dbHelper.getAllFarmsSortedByDistance(testLocation);
-			
-			for (FarmInfo farm : farms) {
-				Log.d("distance test", farm.getDistance(testLocation) + "; " + farm.lat + " - " + farm.lon);
-			}
-			
-		} catch (SQLException sqle) {
-			throw sqle;
-		} finally {
-			dbHelper.close();
-		}
-	}
 }

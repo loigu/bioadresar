@@ -42,7 +42,10 @@ public class LocationCache implements LocationListener {
 	public static void startListener(Context context)
 	{
 		if (listener == null)
+		{
 			listener = new LocationCache(context);
+			Log.d("gps", "starting gps listener");
+		}
 	}
 	
 	public static void stopListener()
@@ -51,18 +54,23 @@ public class LocationCache implements LocationListener {
 			listener.unsubscribe();
 		listener = null;
 	}
-		
-	public static Location getDefaultLocation(Context context)
+	
+	/*
+	 * @param regionName name of region to use as default location or null (in case of null, default region will be loaded from preferences)
+	 */
+	public static Location getDefaultLocation(Context context, String regionName)
 	{
 	    Log.d("location", "using default location...");
 	    Location currentLocation = new Location(LocationManager.PASSIVE_PROVIDER);
-	    String defaultLocation = PreferenceManager.getDefaultSharedPreferences(context).getString("defaultLocation", "49.8142789,14.65985");
-	    int comma = defaultLocation.indexOf(",");
-	    double lat = Location.convert(defaultLocation.substring(0, comma));
-	    double lon = Location.convert(defaultLocation.substring(comma + 1));
+	    if (regionName == null)
+	    	regionName = PreferenceManager.getDefaultSharedPreferences(context).getString("defaultLocation", "Středočeský");
+	    Log.d("gps", "using default location " + regionName);
+	    double [] coordinates = DatabaseHelper.getDefaultDb(context).getRegionCoordinates(regionName);
+	    if (coordinates == null)
+	    	coordinates = new double[] {49.8142789, 14.65985};
 
-		currentLocation.setLatitude(lat);
-		currentLocation.setLongitude(lon);
+		currentLocation.setLatitude(coordinates[0]);
+		currentLocation.setLongitude(coordinates[1]);
 		currentLocation.setTime(System.currentTimeMillis());
 				
 		return currentLocation;
@@ -95,10 +103,23 @@ public class LocationCache implements LocationListener {
 		
 		String provider;
 		Criteria criteria = new Criteria();
-			criteria.setPowerRequirement(Criteria.POWER_HIGH);
+			criteria.setPowerRequirement(Criteria.POWER_LOW);
 			criteria.setAccuracy(Criteria.ACCURACY_COARSE);
 		provider = usedLocationManager.getBestProvider(criteria, true);
-		onLocationChanged(usedLocationManager.getLastKnownLocation(provider));
+		if (provider == null)
+		{
+			Log.w("gps", "no location provider available");
+			onLocationChanged(getDefaultLocation(context, null));
+			return;
+		}
+		
+		Location lastLocation = usedLocationManager.getLastKnownLocation(provider);
+		if (lastLocation == null)
+		{
+			Log.w("gps", "no known location");
+			lastLocation = getDefaultLocation(context, null);
+		}
+		onLocationChanged(lastLocation);
 		
 		usedLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000 * 60, 20, this);
 		usedLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000 * 60, 20, this);
@@ -113,7 +134,7 @@ public class LocationCache implements LocationListener {
 	public void requestGpsIfNeeded(final Context context, boolean gpsEnabled)
 	{
 		
-		boolean requireGps = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("requireGps", true);
+		boolean requireGps = false;
 		 
 		if (!requireGps || gpsEnabled)
 			return;

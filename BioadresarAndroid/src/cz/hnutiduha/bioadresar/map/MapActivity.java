@@ -23,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
+import cz.hnutiduha.bioadresar.data.DatabaseHelper;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
 
 public class MapActivity extends com.google.android.maps.MapActivity {
@@ -62,15 +63,24 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         mapView = (FarmMapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
         
+        Long targetFarmId = getIntent().getLongExtra(mapNodePropertyName, FarmInfo.INVALID_FARM_ID);
+        FarmInfo farm = null;
+        if (targetFarmId != FarmInfo.INVALID_FARM_ID)
+        	farm = DatabaseHelper.getDefaultDb(this).getFarm(targetFarmId);
+
+       	if (farm != null)
+       	{
+       		mapView.centerOnGeoPoint(FarmInfo.getGeoPoint(farm));
+       		mapView.showFarmBalloonOnStart(targetFarmId.longValue());
+        }
+        else
+        	mapView.centerMap();
         
-        mapView.centerMap();
         mapView.getController().setZoom(11);
         
         Activity parent = this.getParent();
         if (parent == null)
         	parent = this;
-        Long targetFarmId = parent.getIntent().getLongExtra(mapNodePropertyName, FarmInfo.INVALID_FARM_ID);
-        mapView.showFarmBalloonOnStart(targetFarmId.longValue());
     }
     
 	@Override

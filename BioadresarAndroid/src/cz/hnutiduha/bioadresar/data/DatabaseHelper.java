@@ -22,11 +22,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeSet;
+
+import cz.hnutiduha.bioadresar.R;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -36,6 +39,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -54,7 +58,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private HashMap<Long, String> products = null;
 	private HashMap<Long, String> activities = null;
 	
-	private static final int databaseVersion = 6;
+	private static final int databaseVersion = 7;
 	
 	public DatabaseHelper(Context context) {
 		super(context, DB_NAME, null, databaseVersion);
@@ -67,8 +71,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			try {
 				appContext = context;
 				defaultDb = new DatabaseHelper(context);
-				defaultDb.createDb();
-				defaultDb.openDb();
+				defaultDb.createDb(context);
+				defaultDb.openDb(SQLiteDatabase.OPEN_READONLY);
 			} catch (IOException e) {
 				Log.e("db", "error opening db " + e.toString());
 			}
@@ -83,16 +87,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		defaultDb = null;
 	}
 	
+	private void runFixtures (Context context, int fromVersion)
+	{
+		// we changed format of default location, reset the setting
+		if (fromVersion < 7)
+		{
+			PreferenceManager.getDefaultSharedPreferences(context).edit().remove("defaultLocation").commit();
+		}
+	}
+	
 	/**
 	 * Creates a empty database on the system and rewrites it with your own
 	 * database.
 	 * */
-	public void createDb() throws IOException {
-		if (!checkDb())
+	public void createDb(Context context) throws IOException {
+		int dbVersion = checkDb();
+		if (dbVersion != databaseVersion)
 		{
 			File db = new File(DB_PATH + DB_NAME);
 			if (db.exists())
+			{
 				db.delete();
+				runFixtures(context, dbVersion);
+			}
 			
 			this.getReadableDatabase();
 
@@ -104,7 +121,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			Log.d("db", "new database installed");
 		}
 		
-		openDb();
+		openDb(SQLiteDatabase.OPEN_READWRITE);
 		ContentValues values = new ContentValues();
 		values.put("variable", "databaseVersion");
 		values.put("value", String.valueOf(databaseVersion));
@@ -116,16 +133,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * Check if the database already exist to avoid re-copying the file each
 	 * time application is opened.
 	 * 
-	 * @return true if it exists, false if it doesn't
+	 * @return database version
 	 */
-	private boolean checkDb() {
+	private int checkDb() {
 		SQLiteDatabase checkDB = null;
 
 		try {
 			checkDB = SQLiteDatabase.openDatabase(DB_PATH + DB_NAME, null, SQLiteDatabase.OPEN_READONLY);
 		} catch (SQLiteException e) {
 			Log.d("db", "database doesn't exist");
-			return false;
+			return 0;
 		}
 		
 		int version = 1;
@@ -146,7 +163,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	
 		checkDB.close();
 
-		return version == databaseVersion;
+		return version;
 	}
 
 	/**
@@ -172,9 +189,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		myInput.close();
 	}
 
-	public void openDb() throws SQLException {
+	public void openDb(int flags) throws SQLException {
 		String path = DB_PATH + DB_NAME;
-		db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READONLY);
+		db = SQLiteDatabase.openDatabase(path, null, flags);
 	}
 
 	@Override
@@ -250,6 +267,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		allFarmsList = res;
 		
 		return res;
+	}
+	
+	public FarmInfo getFarm(long id) {
+		FarmInfo ret = null;
+		
+		String[] columns = new String[] { "name", "gpsLatitude", "gpsLongtitude" };
+		String[] args = { String.valueOf(id) };
+		Cursor c = db.query("locations", columns, "_id = ?", args, null, null, null);
+		c.moveToNext();
+		if (!c.isAfterLast()) {
+			ret = new FarmInfo();
+			ret.id = id;
+			ret.name = c.getString(0);
+			ret.lat = c.getDouble(1);
+			ret.lon = c.getDouble(2);
+			ret.categories = getCategoriesByFarmId(id);
+			
+		}
+		c.close();
+		
+		return ret;		
 	}
 	
 	private Location lastLocation = null;
@@ -421,6 +459,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			c.moveToNext();
 		}
 		c.close();
+	}
+	
+	public String[] getRegions() {
+		String[] columns = new String[] { "name" };
+		Cursor c = db.query("regions", columns, null, null, null, null, "_id");
+		
+		ArrayList<String> regions = new ArrayList<String>(15);
+		c.moveToNext();
+		while(!c.isAfterLast()) {
+			regions.add(c.getString(0));
+			c.moveToNext();
+		}
+		c.close();
+		
+		return regions.toArray(new String[regions.size()]);
+	}
+	
+	/// @return {latitude, longtitude} or null
+	public double[] getRegionCoordinates(String name)
+	{
+		String [] args = new String[] { name };
+		Cursor c = db.query("regions", new String[] { "gpsLatitude", "gpsLongtitude" }, "name = ?", args, null, null, null);
+		c.moveToNext();
+		
+		double [] ret = null;
+		
+		if (!c.isAfterLast()) {
+			ret = new double[2];
+			ret[0] = c.getDouble(0);
+			ret[1] = c.getDouble(1);
+		}
+		c.close();
+		
+		return ret;
 	}
 	
 	private void loadActivityNames() {

@@ -48,9 +48,6 @@ public class MainMenuActivity extends Activity implements OnClickListener {
         item = this.findViewById(R.id.aboutLink);
         item.setOnClickListener(this);
         
-    	location = (TextView)this.findViewById(R.id.locationLabel);
-    	location.setOnClickListener(this);
-        
         String defaultActivity = PreferenceManager.getDefaultSharedPreferences(this).getString("defaultActivity", "Menu");
         if (defaultActivity.equals("Mapa"))
         {
@@ -60,31 +57,14 @@ public class MainMenuActivity extends Activity implements OnClickListener {
         {
         	MenuHandler.showActivity(this, R.id.listLink);
         }
-        else 
-        	MenuHandler.showActivity(this, R.id.configLink);
     }
     
     public void onResume()
     {
     	super.onResume();
-    	
-    	refreshLocation();
-    }
-    
-    public void refreshLocation()
-    {	
-    	if (LocationCache.getLocationSource() != LocationManager.PASSIVE_PROVIDER)
-    		location.setText(getString(R.string.renewLocationLabel) + " (" + getString(R.string.realLocation) + ")");
-    	else
-    		location.setText(getString(R.string.renewLocationLabel) + " (" + getString(R.string.virtualLocation) + ")");
-    }
-        
+    }    
 	@Override
 	public void onClick(View v) {
-		if (v == location)
-		{
-			refreshLocation();
-		}
 		MenuHandler.idActivated(this,v.getId());
 	}
 }

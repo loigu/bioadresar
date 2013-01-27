@@ -23,15 +23,9 @@
         android:entryValues="@array/activityList"
         android:key="defaultActivity"
         android:title="@string/defaultActivityLabel" />
-
-    <EditTextPreference
-        android:defaultValue="49.8142789,14.65985"
+    <ListPreference
         android:key="defaultLocation"
         android:summary="@string/defaultLocationSummary"
         android:title="@string/defaultLocationLabel" />
-
-    <CheckBoxPreference
-        android:key="requireGps"
-        android:title="@string/requireGps" />
 
 </PreferenceScreen>

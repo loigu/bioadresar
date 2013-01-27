@@ -435,6 +435,16 @@ function joinFarms()
 	done
 }
 
+function addRegions()
+{
+	echo 'CREATE TABLE regions (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, zoom INTEGER NOT NULL, gpsLatitude REAL NOT NULL, gpsLongtitude REAL NOT NULL);' | callSqlite
+	echo 'SELECT zoom, souradnice, nazev FROM kraje;' | callMysql | while read zoom coordinates name; do
+		lat=$(echo ${coordinates} | cut -d ',' -f 1)
+		lon=$(echo ${coordinates} | cut -d ',' -f 2)
+		echo "INSERT INTO regions(name, zoom, gpsLatitude, gpsLongtitude) VALUES('${name}', ${zoom}, ${lat}, ${lon});"
+	done | callSqlite
+}
+
 function fixtures_v4()
 {
 	joinFarms 601 639
@@ -488,6 +498,7 @@ function call()
 	addProductsToLocations
 	addCategoriesToLocations
 	addActivitiesToLocations
+	addRegions
 
 	removeMysql
 
@@ -497,8 +508,6 @@ function call()
 
 call
 
-#kraje -> ignorovat (souradnice na stredy kraju)
-#kraje_old -> ignorovat (zkratky pro kraje)
 #devel -> ignorovat
 #divize_all, divize_viditelne -> nejake helpery pro web, ignorovat
 
