@@ -55,6 +55,11 @@ public class LocationCache implements LocationListener {
 		listener = null;
 	}
 	
+	public static boolean hasRealLocation()
+	{
+		return ! locationProvider.equals(LocationManager.PASSIVE_PROVIDER);
+	}
+	
 	/*
 	 * @param regionName name of region to use as default location or null (in case of null, default region will be loaded from preferences)
 	 */

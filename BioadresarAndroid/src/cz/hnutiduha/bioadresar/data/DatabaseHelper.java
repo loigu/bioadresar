@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -58,7 +59,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private HashMap<Long, String> products = null;
 	private HashMap<Long, String> activities = null;
 	
-	private static final int databaseVersion = 7;
+	private static final int databaseVersion = 8;
 	
 	public DatabaseHelper(Context context) {
 		super(context, DB_NAME, null, databaseVersion);
@@ -72,7 +73,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				appContext = context;
 				defaultDb = new DatabaseHelper(context);
 				defaultDb.createDb(context);
-				defaultDb.openDb(SQLiteDatabase.OPEN_READONLY);
+				defaultDb.openDb(SQLiteDatabase.OPEN_READWRITE);
 			} catch (IOException e) {
 				Log.e("db", "error opening db " + e.toString());
 			}
@@ -92,6 +93,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		// we changed format of default location, reset the setting
 		if (fromVersion < 7)
 		{
+			Log.d("db", "cleaning default location because of change of format");
 			PreferenceManager.getDefaultSharedPreferences(context).edit().remove("defaultLocation").commit();
 		}
 	}
@@ -122,11 +124,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		}
 		
 		openDb(SQLiteDatabase.OPEN_READWRITE);
-		ContentValues values = new ContentValues();
-		values.put("variable", "databaseVersion");
-		values.put("value", String.valueOf(databaseVersion));
-		db.insert("config",  null, values);
-		
+		db.execSQL("INSERT OR REPLACE INTO config(variable, value) VALUES('databaseVersion', " + String.valueOf(databaseVersion) + ");");
 	}
 
 	/**
@@ -148,7 +146,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		int version = 1;
 		try {
 			String[] columns = new String[] { "value" };
-			Cursor c = checkDB.query("config", columns, "variable='databaseVersion'", null, null, null, "_id");
+			Cursor c = checkDB.query("config", columns, "variable='databaseVersion'", null, null, null, null);
 			
 			
 			c.moveToNext();
@@ -159,7 +157,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			}
 			
 			c.close();
-		} catch (Exception e){}
+		} catch (Exception e){
+			Log.e("db", "can't get db version", e.fillInStackTrace());
+		}
 	
 		checkDB.close();
 
@@ -210,25 +210,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		//TODO: implement this
 	}
 	
+	private static final String[] farmInfoColumns = { "_id", "name", "gpsLatitude", "gpsLongtitude", "bookmark" };
+	
+	// expects cursor with valid entry created with columns farmInfoColumns
+	private FarmInfo fromCursor(Cursor c)
+	{
+		FarmInfo farmInfo = new FarmInfo();
+
+		farmInfo.id = c.getLong(0);
+		farmInfo.name = c.getString(1);
+		farmInfo.lat = c.getDouble(2);
+		farmInfo.lon = c.getDouble(3);
+		farmInfo.bookmarked = (c.getLong(4) == 1) ? true : false;
+		farmInfo.categories = getCategoriesByFarmId(farmInfo.id);
+		
+		return farmInfo;
+	}
+	
 	public Hashtable<Long, FarmInfo> getFarmsInRectangle(double lat1, double lon1, double lat2, double lon2) {
-		String[] columns = new String[] { "_id", "name", "gpsLatitude", "gpsLongtitude" };
+		
 		String selection = "gpsLatitude >= ? AND gpsLongtitude >= ? AND gpsLatitude <= ? AND gpsLongtitude <= ?";
 		String[] args = new String[] {
 				Double.toString(Math.min(lat1, lat2)), Double.toString(Math.min(lon1, lon2)),
 				Double.toString(Math.max(lat1, lat2)), Double.toString(Math.max(lon1, lon2))
 		};
-		Cursor c = db.query("locations", columns, selection, args, null, null, "gpsLatitude, gpsLongtitude");
+		Cursor c = db.query("locations", farmInfoColumns, selection, args, null, null, "gpsLatitude, gpsLongtitude");
 		Hashtable<Long, FarmInfo> result = new Hashtable<Long, FarmInfo>();
 		
 		c.moveToNext();
+		FarmInfo farmInfo;
 		while (!c.isAfterLast()) {
-			FarmInfo farmInfo = new FarmInfo();
-
-			farmInfo.id = c.getLong(0);
-			farmInfo.name = c.getString(1);
-			farmInfo.lat = c.getDouble(2);
-			farmInfo.lon = c.getDouble(3);
-			farmInfo.categories = getCategoriesByFarmId(farmInfo.id);
+			farmInfo = fromCursor(c);
 			
 			result.put(farmInfo.id, farmInfo);
 			c.moveToNext();
@@ -247,17 +259,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		
 		LinkedList<FarmInfo> res = new LinkedList<FarmInfo>();
 		
-		String[] columns = new String[] { "_id", "name", "gpsLatitude", "gpsLongtitude" };
-		Cursor c = db.query("locations", columns, null, null, null, null, "gpsLatitude, gpsLongtitude");
+		Cursor c = db.query("locations", farmInfoColumns, null, null, null, null, "gpsLatitude, gpsLongtitude");
 		c.moveToNext();
+		FarmInfo farmInfo;
 		while (!c.isAfterLast()) {
-			FarmInfo farmInfo = new FarmInfo();
-
-			farmInfo.id = c.getLong(0);
-			farmInfo.name = c.getString(1);
-			farmInfo.lat = c.getDouble(2);
-			farmInfo.lon = c.getDouble(3);
-			farmInfo.categories = getCategoriesByFarmId(farmInfo.id);
+			farmInfo = fromCursor(c);
 			
 			res.add(farmInfo);
 			c.moveToNext();
@@ -269,10 +275,67 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return res;
 	}
 	
+	private List<FarmInfo> bookmarkedFarmsCache = null;
+	
+	private void loadBookmarkedFarms()
+	{
+		String selection = "bookmark = 1";
+		Cursor c = db.query("locations", farmInfoColumns, selection, null, null, null, null);
+		bookmarkedFarmsCache = new LinkedList<FarmInfo>();
+		
+		c.moveToNext();
+		FarmInfo farmInfo;
+		while (!c.isAfterLast()) {
+			farmInfo = fromCursor(c);
+			
+			bookmarkedFarmsCache.add(farmInfo);
+			c.moveToNext();
+		}
+		c.close();
+	}
+	
+	public List<FarmInfo> getBookmarkedFarmsSortedByDistance(Location location)
+	{
+		if (bookmarkedFarmsCache == null)
+			loadBookmarkedFarms();
+		
+		FarmInfoDistanceComparator comparator = new FarmInfoDistanceComparator(location);
+		Collections.sort(bookmarkedFarmsCache, comparator);
+		
+		return bookmarkedFarmsCache;
+	}
+	
+	// return state of the farm
+	public void setBookmark(FarmInfo farm, boolean bookmarked)
+	{
+		ContentValues args = new ContentValues();
+		args.put("bookmark", String.valueOf(bookmarked ? 1 : 0));
+		int updated = db.update("locations", args, "_id=?", new String[] {String.valueOf(farm.id)});
+		
+		if (updated == 0)
+		{
+			Log.e("db", "can't store bookmark");
+			return;
+		}
+		
+		farm.bookmarked = bookmarked;
+		
+		if (bookmarkedFarmsCache == null)
+			return;
+		
+		boolean inList = bookmarkedFarmsCache.contains(farm);
+			
+		if (!inList && bookmarked)
+			bookmarkedFarmsCache.add(farm);
+		
+		if (inList && !bookmarked)
+			bookmarkedFarmsCache.remove(farm);
+	}
+	
 	public FarmInfo getFarm(long id) {
 		FarmInfo ret = null;
 		
-		String[] columns = new String[] { "name", "gpsLatitude", "gpsLongtitude" };
+		String[] columns = new String[] { "name", "gpsLatitude", "gpsLongtitude", "bookmark" };
 		String[] args = { String.valueOf(id) };
 		Cursor c = db.query("locations", columns, "_id = ?", args, null, null, null);
 		c.moveToNext();
@@ -282,6 +345,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			ret.name = c.getString(0);
 			ret.lat = c.getDouble(1);
 			ret.lon = c.getDouble(2);
+			ret.bookmarked = (c.getLong(3) == 1) ? true : false;
 			ret.categories = getCategoriesByFarmId(id);
 			
 		}

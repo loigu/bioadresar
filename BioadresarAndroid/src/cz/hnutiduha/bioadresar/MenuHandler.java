@@ -8,6 +8,7 @@ import cz.hnutiduha.bioadresar.about.AboutActivity;
 import cz.hnutiduha.bioadresar.config.ConfigActivity;
 import cz.hnutiduha.bioadresar.data.LocationCache;
 import cz.hnutiduha.bioadresar.list.ListActivity;
+import cz.hnutiduha.bioadresar.list.BookmarksListActivity;
 import cz.hnutiduha.bioadresar.map.MapActivity;
 
 public class MenuHandler {
@@ -59,6 +60,9 @@ public class MenuHandler {
 			break;
 		case R.id.aboutLink:
 			target = new Intent(context, AboutActivity.class);
+			break;
+		case R.id.bookmarkListLink:
+			target = new Intent(context, BookmarksListActivity.class);
 			break;
 		}
 		

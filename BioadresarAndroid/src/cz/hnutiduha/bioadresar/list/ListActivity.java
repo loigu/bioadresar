@@ -254,7 +254,7 @@ public class ListActivity extends Activity implements View.OnClickListener{
     	return usedLocation;
     }
     
-    private synchronized void refreshLocation()
+    protected synchronized void refreshLocation()
     {
     	
     	Location newLocation = LocationCache.getCenter();

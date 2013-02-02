@@ -48,11 +48,19 @@
 
                 <ImageView
                     android:id="@+id/mapIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_weight="1"
                     android:gravity="right"
                     android:src="@android:drawable/ic_menu_mapmode" />
+
+                <ImageView
+                    android:id="@+id/bookmarkIcon"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:src="@android:drawable/btn_star_big_off" />
             </LinearLayout>
 
             <TextView

@@ -56,5 +56,6 @@
     <string name="activities">Aktivity</string>
     <string name="requireGps">Vyžadovat gps</string>
     <string name="enableGps">Zapnout gps?</string>
+    <string name="bookmarkListLabel">Záložky</string>
 
 </resources>

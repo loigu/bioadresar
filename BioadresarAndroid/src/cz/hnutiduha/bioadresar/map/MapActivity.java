@@ -25,6 +25,7 @@ import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.DatabaseHelper;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
+import cz.hnutiduha.bioadresar.data.LocationCache;
 
 public class MapActivity extends com.google.android.maps.MapActivity {
 	
@@ -68,15 +69,20 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         if (targetFarmId != FarmInfo.INVALID_FARM_ID)
         	farm = DatabaseHelper.getDefaultDb(this).getFarm(targetFarmId);
 
+        int zoomLevel = 11;
        	if (farm != null)
        	{
        		mapView.centerOnGeoPoint(FarmInfo.getGeoPoint(farm));
        		mapView.showFarmBalloonOnStart(targetFarmId.longValue());
         }
         else
+        {
         	mapView.centerMap();
-        
-        mapView.getController().setZoom(11);
+        	if (!LocationCache.hasRealLocation())
+        		zoomLevel = 9;
+        }
+       	
+        mapView.getController().setZoom(zoomLevel);
         
         Activity parent = this.getParent();
         if (parent == null)

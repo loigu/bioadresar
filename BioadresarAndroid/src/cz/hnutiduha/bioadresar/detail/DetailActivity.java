@@ -20,30 +20,44 @@ package cz.hnutiduha.bioadresar.detail;
 import java.util.Iterator;
 
 import android.app.Activity;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.util.Linkify;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import cz.hnutiduha.bioadresar.R;
-import cz.hnutiduha.bioadresar.data.ActivityWithComment;
 import cz.hnutiduha.bioadresar.data.DatabaseHelper;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
-import cz.hnutiduha.bioadresar.data.ProductWithComment;
 import cz.hnutiduha.bioadresar.data.StringifiedFromDb;
 
-public class DetailActivity extends Activity{
+public class DetailActivity extends Activity implements OnClickListener{
 	
 	// we expect only one detail activity to be shown at a time
 	private static FarmInfo currentFarm = null;
 	View view = null;
+	ImageView bookmarkView = null;
+	static Bitmap bookmarkedBitmap = null;
+    static Bitmap notBookmarkedBitmap = null;
 	
 	
 	public static void setFarm(FarmInfo farm)
 	{
 		currentFarm = farm;
+	}
+	
+	static void loadBitmaps(Context context)
+	{
+		int drawableId  = context.getResources().getIdentifier("btn_star_big_off", "drawable", "android");
+	    notBookmarkedBitmap = BitmapFactory.decodeResource(context.getResources(), drawableId);
+	    
+	    drawableId  = context.getResources().getIdentifier("btn_star_big_on", "drawable", "android");
+	    bookmarkedBitmap = BitmapFactory.decodeResource(context.getResources(), drawableId);
 	}
 	
     /** Called when the activity is first created. */
@@ -53,6 +67,10 @@ public class DetailActivity extends Activity{
         
         this.setContentView(R.layout.detail_view);
         view = (View)findViewById(R.id.detailView);
+        bookmarkView = (ImageView)view.findViewById(R.id.bookmarkIcon);
+        
+        if (bookmarkedBitmap == null)
+        	loadBitmaps(this);
     }
     
     public void onResume()
@@ -98,11 +116,26 @@ public class DetailActivity extends Activity{
     	}
     }
     
+    
+    private void updateBookmarked()
+    {	
+    	if (currentFarm.bookmarked)
+    		bookmarkView.setImageBitmap(bookmarkedBitmap);
+    	else
+    		bookmarkView.setImageBitmap(notBookmarkedBitmap);
+    		
+    }
+    
     private void fillFarmInfo()
     {
 
     	ImageView map = (ImageView)view.findViewById(R.id.mapIcon);
     	currentFarm.setToMapListener(map);
+    	
+    	
+    	updateBookmarked();
+    	bookmarkView.setOnClickListener(this);
+    	
     	
     	TextView field = (TextView) view.findViewById(R.id.farmName);
     	field.setText(currentFarm.name);
@@ -165,4 +198,14 @@ public class DetailActivity extends Activity{
         }
     	setFieldTextOrHideEmpty(address, Linkify.MAP_ADDRESSES, R.id.addressLabel, R.id.addressText);
     }
+
+	@Override
+	public void onClick(View v) {
+		if (v.getId() == R.id.bookmarkIcon)
+		{
+	    	DatabaseHelper.getDefaultDb(this).setBookmark(currentFarm, !currentFarm.bookmarked);
+	    	this.updateBookmarked();
+		}
+		
+	}
 }

@@ -17,6 +17,7 @@
 
 package cz.hnutiduha.bioadresar;
 
+import cz.hnutiduha.bioadresar.data.DatabaseHelper;
 import cz.hnutiduha.bioadresar.data.LocationCache;
 import android.app.Activity;
 import android.location.LocationManager;
@@ -40,6 +41,8 @@ public class MainMenuActivity extends Activity implements OnClickListener {
 	    LocationCache.startListener(this);
 	    
         View item = this.findViewById(R.id.listLink);
+        item.setOnClickListener(this);
+        item = this.findViewById(R.id.bookmarkListLink);
         item.setOnClickListener(this);
         item = this.findViewById(R.id.mapLink);
         item.setOnClickListener(this);
@@ -66,5 +69,11 @@ public class MainMenuActivity extends Activity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		MenuHandler.idActivated(this,v.getId());
+	}
+	
+	public void onDestroy()
+	{
+		super.onDestroy();
+		DatabaseHelper.closeDefaultDb();
 	}
 }

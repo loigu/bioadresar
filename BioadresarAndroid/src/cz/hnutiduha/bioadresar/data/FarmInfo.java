@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.location.Location;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -40,12 +41,14 @@ import cz.hnutiduha.bioadresar.map.MapActivity;
 
 public class FarmInfo implements OnClickListener{
 	
+	// NOTE: we ignore location type 
 	public static long INVALID_FARM_ID = -1;
 	// these are always present
 	public long id;
 	public String name;
 	public double lat, lon;
 	public List<Long> categories;
+	public boolean bookmarked;
 	
 	// call DatabaseHelper.fillDetails to obtain these
 	public String description;
@@ -99,6 +102,42 @@ public class FarmInfo implements OnClickListener{
 		Intent detail = new Intent(context, DetailActivity.class);
 		context.startActivity(detail);
 	}
+	
+	/*
+	public void addToContacts(View parent)
+	{
+		// Creates a new intent for sending to the device's contacts application
+        Intent insertIntent = new Intent(ContactsContract.Intents.Insert.ACTION);
+
+        // Sets the MIME type to the one expected by the insertion activity
+        insertIntent.setType(ContactsContract.RawContacts.CONTENT_TYPE);
+        insertIntent.putExtra(ContactsContract.Intents.Insert.NAME, this.name);
+        
+        if (contact.email != null)
+        	insertIntent.putExtra(ContactsContract.Intents.Insert.EMAIL, contact.email);
+        if (contact.phoneNumbers != null && !contact.phoneNumbers.isEmpty())
+        	
+        for (String phone: contact.phoneNumbers)
+        	insertIntent.putExtra(ContactsContract.Intents.Insert.PHONE, phone);
+        
+        // TODO: eshop, web
+        if (contact.eshop != null)
+        	insertIntent.putExtra(, contact.eshop);
+        if (contact.web)
+        	
+        
+        lat/lon
+        contact.city
+        contact.street
+        contact.
+        
+        insertIntent.putExtra(ContactsContract.Intents.Insert.COMPANY, company);
+        insertIntent.putExtra(ContactsContract.Intents.Insert.POSTAL, postal);
+
+        // Send out the intent to start the device's contacts app in its add contact activity.
+        startActivity(insertIntent);
+	}
+	*/
 
 	// this is little hack, it doesn't belong to data class, but it serve us nicely :)
 	@Override

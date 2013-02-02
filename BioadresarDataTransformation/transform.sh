@@ -486,6 +486,11 @@ function fixtures_v5()
 	# ^ neduplikuji mirne kategorii maso?
 }
 
+function addBookmarkColumn()
+{
+	echo 'ALTER TABLE locations ADD COLUMN bookmark INTEGER NOT NULL DEFAULT 0;' | callSqlite
+}
+
 function call()
 {
 	importMysql
@@ -498,12 +503,14 @@ function call()
 	addProductsToLocations
 	addCategoriesToLocations
 	addActivitiesToLocations
-	addRegions
 
 	removeMysql
 
 	fixtures_v4
 	fixtures_v5
+	
+	addRegions # version 7
+	addBookmarkColumn # version 8
 }
 
 call
