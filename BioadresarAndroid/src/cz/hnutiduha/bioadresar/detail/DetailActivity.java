@@ -26,11 +26,14 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.util.Linkify;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.DatabaseHelper;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
@@ -85,6 +88,22 @@ public class DetailActivity extends Activity implements OnClickListener{
     	}
     	
     }
+    
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu)
+    {
+    	MenuHandler.fillMenu(menu);
+    	menu.removeItem(R.id.mapLink);
+    	menu.removeItem(R.id.locationLabel);
+    	
+    	return true;
+    }
+    
+    @Override
+	public boolean onMenuItemSelected(final int featureId, final MenuItem item)
+    {	
+    	return MenuHandler.idActivated(this, item.getItemId());
+	}
     
     static final int NO_LINKIFY = -1;
     
