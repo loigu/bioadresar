@@ -203,7 +203,7 @@ public class ListActivity extends SherlockActivity implements View.OnClickListen
     @Override
     public boolean onCreateOptionsMenu(final Menu menu)
     {
-    	MenuHandler.fillMenu(menu);
+    	MenuHandler.fillMenu(menu, this);
     	menu.removeItem(R.id.listLink);
     	
     	return true;

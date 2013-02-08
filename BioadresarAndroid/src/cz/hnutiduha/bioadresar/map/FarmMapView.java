@@ -38,9 +38,9 @@ import cz.hnutiduha.bioadresar.data.LocationCache;
 
 public class FarmMapView extends TapControlledMapView {
 	FarmsOverlay farmOverlay;
-	GeoPoint currentVisibleRectangle[];
+	static GeoPoint currentVisibleRectangle[] = null;
 	boolean currentDrawn = false;
-	int currentZoomLevel = -1;
+	static int currentZoomLevel = -1;
 	
 
 	public FarmMapView(Context context, AttributeSet attrs) {
@@ -74,7 +74,7 @@ public class FarmMapView extends TapControlledMapView {
 		{
 			if (currentDrawn == false)
 			{
-				refreshPoints();
+				refreshPoints();	
 				currentDrawn = true;
 			}
 		}
@@ -108,6 +108,20 @@ public class FarmMapView extends TapControlledMapView {
 	private void reinstallOurLocationMark()
 	{
 		// FIXME: implement this
+	}
+	
+	public void gotoLastLocation()
+	{
+		if (currentZoomLevel == -1 || currentVisibleRectangle == null)
+		{
+			centerMap();
+			return;
+		}
+		
+		int lat = (currentVisibleRectangle[0].getLatitudeE6() + currentVisibleRectangle[1].getLatitudeE6()) / 2;
+		int lon = (currentVisibleRectangle[0].getLongitudeE6() + currentVisibleRectangle[1].getLongitudeE6()) / 2;
+		centerOnGeoPoint(new GeoPoint(lat, lon));
+		getController().setZoom(currentZoomLevel);
 	}
 	
 	Location lastCenter = null;

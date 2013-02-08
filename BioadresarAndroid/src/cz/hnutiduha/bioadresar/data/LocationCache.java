@@ -64,6 +64,7 @@ public class LocationCache implements LocationListener {
 	{
 	    Log.d("location", "using default location...");
 	    Location currentLocation = new Location(LocationManager.PASSIVE_PROVIDER);
+	    // TODO: don't hardcode default
 	    if (regionName == null)
 	    	regionName = PreferenceManager.getDefaultSharedPreferences(context).getString("defaultLocation", "Středočeský");
 	    Log.d("gps", "using default location " + regionName);

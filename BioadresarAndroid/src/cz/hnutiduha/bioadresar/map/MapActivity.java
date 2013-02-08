@@ -38,7 +38,7 @@ public class MapActivity extends SherlockMapActivity {
     @Override
     public boolean onCreateOptionsMenu(final Menu menu)
     {
-    	MenuHandler.fillMenu(menu);
+    	MenuHandler.fillMenu(menu, this);
     	menu.removeItem(R.id.mapLink);
     	
     	return true;
@@ -56,6 +56,7 @@ public class MapActivity extends SherlockMapActivity {
     	return MenuHandler.idActivated(this, item.getItemId());
 	}
 	
+    static boolean centerMap = true;
 	
     /** Called when the activity is first created. */
     @Override
@@ -71,20 +72,29 @@ public class MapActivity extends SherlockMapActivity {
         if (targetFarmId != FarmInfo.INVALID_FARM_ID)
         	farm = DatabaseHelper.getDefaultDb(this).getFarm(targetFarmId);
 
-        int zoomLevel = 11;
-       	if (farm != null)
-       	{
-       		mapView.centerOnGeoPoint(FarmInfo.getGeoPoint(farm));
-       		mapView.showFarmBalloonOnStart(targetFarmId.longValue());
+        if (centerMap || farm != null)
+        {
+	        int zoomLevel = 11;
+	       	if (farm != null)
+	       	{
+	       		mapView.centerOnGeoPoint(FarmInfo.getGeoPoint(farm));
+	       		mapView.showFarmBalloonOnStart(targetFarmId.longValue());
+	        }
+	        else
+	        {
+	        	mapView.centerMap();
+	        	if (!LocationCache.hasRealLocation())
+	        		zoomLevel = 9;
+	        }
+	       	
+	        mapView.getController().setZoom(zoomLevel);
         }
         else
         {
-        	mapView.centerMap();
-        	if (!LocationCache.hasRealLocation())
-        		zoomLevel = 9;
+        	mapView.gotoLastLocation();
         }
-       	
-        mapView.getController().setZoom(zoomLevel);
+        // center only first time
+        centerMap = false;
         
         Activity parent = this.getParent();
         if (parent == null)

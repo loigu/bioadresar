@@ -2,12 +2,15 @@ package cz.hnutiduha.bioadresar.list;
 
 import java.util.List;
 
+import com.actionbarsherlock.view.Menu;
+
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.DatabaseHelper;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
@@ -57,6 +60,15 @@ public class BookmarksListActivity extends ListActivity {
         
         next25Button = (Button)findViewById(R.id.next_25_button);
         next25Button.setVisibility(View.GONE);
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu)
+    {
+    	MenuHandler.fillMenu(menu, this);
+    	menu.removeItem(R.id.bookmarkListLink);
+    	
+    	return true;
     }
 
     protected synchronized void refreshLocation()

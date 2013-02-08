@@ -17,28 +17,29 @@
 
 package cz.hnutiduha.bioadresar;
 
-import com.actionbarsherlock.app.SherlockActivity;
-
 import cz.hnutiduha.bioadresar.data.DatabaseHelper;
 import cz.hnutiduha.bioadresar.data.LocationCache;
+
+import android.app.Activity;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
-public class MainMenuActivity extends SherlockActivity implements OnClickListener {
+public class MainMenuActivity extends Activity implements OnClickListener {
 
 	TextView location;
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        setContentView(R.layout.main_menu);
 	    
 	    // start listening for location
 	    LocationCache.startListener(this);
+	    
+	    /*
+	    setContentView(R.layout.main_menu);
 	    
         View item = this.findViewById(R.id.listLink);
         item.setOnClickListener(this);
@@ -50,13 +51,14 @@ public class MainMenuActivity extends SherlockActivity implements OnClickListene
         item.setOnClickListener(this);
         item = this.findViewById(R.id.aboutLink);
         item.setOnClickListener(this);
+        */
         
-        String defaultActivity = PreferenceManager.getDefaultSharedPreferences(this).getString("defaultActivity", "Menu");
+        String defaultActivity = PreferenceManager.getDefaultSharedPreferences(this).getString("defaultActivity", "Mapa");
         if (defaultActivity.equals("Mapa"))
         {
         	MenuHandler.showActivity(this, R.id.mapLink);
         }
-        else if (defaultActivity.equals("Seznam"))
+        else
         {
         	MenuHandler.showActivity(this, R.id.listLink);
         }
@@ -65,6 +67,7 @@ public class MainMenuActivity extends SherlockActivity implements OnClickListene
     public void onResume()
     {
     	super.onResume();
+    	this.finish();
     }    
 	@Override
 	public void onClick(View v) {
