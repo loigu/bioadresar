@@ -21,7 +21,6 @@ import cz.hnutiduha.bioadresar.R;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnKeyListener;
 import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
@@ -31,8 +30,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.View;
 
 public class LocationCache implements LocationListener {
 	private static Location location = null;

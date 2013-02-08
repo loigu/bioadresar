@@ -24,7 +24,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.location.Location;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -35,7 +34,6 @@ import android.widget.TextView;
 
 import com.google.android.maps.GeoPoint;
 
-import cz.hnutiduha.bioadresar.MainTabbedActivity;
 import cz.hnutiduha.bioadresar.detail.DetailActivity;
 import cz.hnutiduha.bioadresar.map.MapActivity;
 

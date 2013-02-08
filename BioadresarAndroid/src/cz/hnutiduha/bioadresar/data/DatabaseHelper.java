@@ -30,8 +30,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeSet;
 
-import cz.hnutiduha.bioadresar.R;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;

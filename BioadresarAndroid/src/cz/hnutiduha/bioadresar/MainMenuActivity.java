@@ -17,17 +17,17 @@
 
 package cz.hnutiduha.bioadresar;
 
+import com.actionbarsherlock.app.SherlockActivity;
+
 import cz.hnutiduha.bioadresar.data.DatabaseHelper;
 import cz.hnutiduha.bioadresar.data.LocationCache;
-import android.app.Activity;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
-public class MainMenuActivity extends Activity implements OnClickListener {
+public class MainMenuActivity extends SherlockActivity implements OnClickListener {
 
 	TextView location;
     /** Called when the activity is first created. */

@@ -22,19 +22,20 @@ import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import com.actionbarsherlock.app.SherlockActivity;
+
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.DatabaseHelper;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.LocationCache;
-import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -193,7 +194,7 @@ class AddFarmsInRectangle extends AddAllFarms
 	}
 }
 
-public class ListActivity extends Activity implements View.OnClickListener{
+public class ListActivity extends SherlockActivity implements View.OnClickListener{
 	LinearLayout view;
 	Button next25Button;
 	Context context;

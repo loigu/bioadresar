@@ -17,17 +17,19 @@
 
 package cz.hnutiduha.bioadresar.map;
 
+import com.actionbarsherlock.app.SherlockMapActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.DatabaseHelper;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.LocationCache;
 
-public class MapActivity extends com.google.android.maps.MapActivity {
+public class MapActivity extends SherlockMapActivity {
 	
 	public static final String mapNodePropertyName = "farmIdToShow";
 	

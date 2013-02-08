@@ -19,15 +19,16 @@ package cz.hnutiduha.bioadresar.detail;
 
 import java.util.Iterator;
 
-import android.app.Activity;
+import com.actionbarsherlock.app.SherlockActivity;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.util.Linkify;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -39,7 +40,7 @@ import cz.hnutiduha.bioadresar.data.DatabaseHelper;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.StringifiedFromDb;
 
-public class DetailActivity extends Activity implements OnClickListener{
+public class DetailActivity extends SherlockActivity implements OnClickListener{
 	
 	// we expect only one detail activity to be shown at a time
 	private static FarmInfo currentFarm = null;
