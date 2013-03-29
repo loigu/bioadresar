@@ -17,7 +17,6 @@
 
 package cz.hnutiduha.bioadresar;
 
-import cz.hnutiduha.bioadresar.data.DatabaseHelper;
 import cz.hnutiduha.bioadresar.data.LocationCache;
 
 import android.app.Activity;
@@ -77,6 +76,5 @@ public class MainMenuActivity extends Activity implements OnClickListener {
 	public void onDestroy()
 	{
 		super.onDestroy();
-		DatabaseHelper.closeDefaultDb();
 	}
 }

@@ -51,7 +51,7 @@
     <string name="renewLocationLabel">Načíst pozici</string>
     <string name="realLocation">reálná</string>
     <string name="virtualLocation">zadaná</string>
-    <string name="versionName">Beta 2</string>
+    <string name="versionName">RC1</string>
     <string name="next25">Dalších 25</string>
     <string name="activities">Aktivity</string>
     <string name="requireGps">Vyžadovat gps</string>

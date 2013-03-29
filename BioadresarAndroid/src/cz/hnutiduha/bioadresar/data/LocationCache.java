@@ -99,22 +99,27 @@ public class LocationCache implements LocationListener {
 	
 	LocationManager usedLocationManager = null;
 	
+	private static String getBestProvider(LocationManager manager)
+	{
+		Criteria criteria = new Criteria();
+		criteria.setPowerRequirement(Criteria.POWER_LOW);
+		criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+		return manager.getBestProvider(criteria, true);
+	}
+	
 	public LocationCache(Context context)
 	{
 		usedLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 		requestGpsIfNeeded(context, usedLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER));
 		
-		String provider;
-		Criteria criteria = new Criteria();
-			criteria.setPowerRequirement(Criteria.POWER_LOW);
-			criteria.setAccuracy(Criteria.ACCURACY_COARSE);
-		provider = usedLocationManager.getBestProvider(criteria, true);
+		String provider = getBestProvider(usedLocationManager);
 		if (provider == null)
 		{
 			Log.w("gps", "no location provider available");
 			onLocationChanged(getDefaultLocation(context, null));
 			return;
 		}
+		locationProvider = provider;
 		
 		Location lastLocation = usedLocationManager.getLastKnownLocation(provider);
 		if (lastLocation == null)
@@ -182,14 +187,29 @@ public class LocationCache implements LocationListener {
 
 	@Override
 	public void onProviderDisabled(String provider) {
-		// TODO Auto-generated method stub
+		if (provider.equals(locationProvider))
+			locationProvider = getBestProvider(usedLocationManager);
 		
+		if (provider == null)
+			locationProvider = LocationManager.PASSIVE_PROVIDER;
+		
+		Log.d("gps", "provider disabled " + provider + " using provider " + locationProvider);
 	}
 
 	@Override
 	public void onProviderEnabled(String provider) {
-		// TODO Auto-generated method stub
-		
+		if (provider.equals(LocationManager.GPS_PROVIDER))
+		{
+			usedLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000 * 60, 20, this);
+			locationProvider = provider;
+		}
+		if (provider.equals(LocationManager.NETWORK_PROVIDER))
+		{
+			usedLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000 * 60, 20, this);
+			if (locationProvider == null)
+				locationProvider = provider;
+		}
+		Log.d("gps", "provider enabled " + provider + " using provider " + locationProvider);
 	}
 
 	@Override
