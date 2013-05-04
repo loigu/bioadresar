@@ -57,7 +57,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private HashMap<Long, String> products = null;
 	private HashMap<Long, String> activities = null;
 	
-	private static final int databaseVersion = 8;
+	private static final int databaseVersion = 9;
 	
 	public DatabaseHelper(Context context) {
 		super(context, DB_NAME, null, databaseVersion);

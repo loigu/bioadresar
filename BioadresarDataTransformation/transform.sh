@@ -34,7 +34,8 @@ function log()
 
 function importMysql()
 {
-	cat "${MYSQL_SCRIPT}" | sudo mysql
+	echo "CREATE DATABASE ${MYDB_NAME};" | sudo mysql
+	cat "${MYSQL_SCRIPT}" | sudo mysql "${MYDB_NAME}"
 	echo "GRANT SELECT, DELETE, DROP ON ${MYDB_NAME}.* TO ${MYDB_USER}@localhost IDENTIFIED BY '${MYDB_PASS}'; 
 	FLUSH PRIVILEGES;" | sudo mysql
 }
@@ -420,11 +421,26 @@ function deleteProduct()
 	echo "delete from location_product where productId=$1;" | callSqlite
 }
 
+function deleteActivity()
+{
+	log "deleting activity $1"
+	echo "delete from activities where _id=$1;" | callSqlite
+	echo "delete from location_activity where activityId=$1;" | callSqlite
+}
+
+
 function joinProducts()
 {
 	log "changing product $2 to $1"
 	echo "update location_product set productId=$1 where productId=$2;" | callSqlite
 	deleteProduct $2
+}
+
+function joinActivities()
+{
+	log "changing activity $2 to $1"
+	echo "update location_activity set activityId=$1 where activityId=$2;" | callSqlite
+	deleteActivity $2
 }
 
 function joinFarms()
@@ -447,10 +463,10 @@ function addRegions()
 
 function fixtures_v4()
 {
-	joinFarms 601 639
+	joinFarms 601 639 # not needed in new versions 
 	joinFarms 494 631
 
-	for location in 543 542 601 494; do
+	for location in 543 542 494 601; do # 601: not needed in new versions
 		deleteLocation ${location}
 	done
 }
@@ -486,6 +502,13 @@ function fixtures_v5()
 	# ^ neduplikuji mirne kategorii maso?
 }
 
+function fixtures_v9
+{
+	# (43, 'chov pštrosů', 1, '2013-01-23 21:11:30');
+	# (37, 'chov pštrosů', 1, '0000-00-00 00:00:00'),
+	joinActivities 37 43
+}
+
 function addBookmarkColumn()
 {
 	echo 'ALTER TABLE locations ADD COLUMN bookmark INTEGER NOT NULL DEFAULT 0;' | callSqlite
@@ -511,6 +534,8 @@ function call()
 	
 	addRegions # version 7
 	addBookmarkColumn # version 8
+	
+	fixtures_v9
 }
 
 call
