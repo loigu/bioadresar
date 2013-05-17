@@ -30,6 +30,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeSet;
 
+import cz.hnutiduha.bioadresar.R.id;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -41,13 +43,13 @@ import android.location.Location;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-public class DatabaseHelper extends SQLiteOpenHelper {
+public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 
 	private static String DB_PATH = "/data/data/cz.hnutiduha.bioadresar/databases/";
 
 	private static String DB_NAME = "bioadr";
 	
-	private static DatabaseHelper defaultDb = null;
+	private static HnutiduhaFarmDb defaultDb = null;
 
 	private static Context appContext = null;
 	
@@ -59,17 +61,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	
 	private static final int databaseVersion = 9;
 	
-	public DatabaseHelper(Context context) {
+	private HnutiduhaFarmDb(Context context) {
 		super(context, DB_NAME, null, databaseVersion);
 	}
 	
-	public static DatabaseHelper getDefaultDb(Context context)
+	public static HnutiduhaFarmDb getDefaultDb(Context context)
 	{
 		if (defaultDb == null)
 		{
 			try {
 				appContext = context;
-				defaultDb = new DatabaseHelper(context);
+				defaultDb = new HnutiduhaFarmDb(context);
 				defaultDb.createDb(context);
 				defaultDb.openDb(SQLiteDatabase.OPEN_READWRITE);
 			} catch (IOException e) {
@@ -213,16 +215,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	// expects cursor with valid entry created with columns farmInfoColumns
 	private FarmInfo fromCursor(Cursor c)
 	{
-		FarmInfo farmInfo = new FarmInfo();
-
-		farmInfo.id = c.getLong(0);
-		farmInfo.name = c.getString(1);
-		farmInfo.lat = c.getDouble(2);
-		farmInfo.lon = c.getDouble(3);
-		farmInfo.bookmarked = (c.getLong(4) == 1) ? true : false;
-		farmInfo.categories = getCategoriesByFarmId(farmInfo.id);
-		
-		return farmInfo;
+		return new FarmInfo(this, c.getLong(0), c.getString(1), c.getDouble(2), c.getDouble(3),
+				(c.getLong(4) == 1) ? true : false);
 	}
 	
 	public Hashtable<Long, FarmInfo> getFarmsInRectangle(double lat1, double lon1, double lat2, double lon2) {
@@ -338,14 +332,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		Cursor c = db.query("locations", columns, "_id = ?", args, null, null, null);
 		c.moveToNext();
 		if (!c.isAfterLast()) {
-			ret = new FarmInfo();
-			ret.id = id;
-			ret.name = c.getString(0);
-			ret.lat = c.getDouble(1);
-			ret.lon = c.getDouble(2);
-			ret.bookmarked = (c.getLong(3) == 1) ? true : false;
-			ret.categories = getCategoriesByFarmId(id);
-			
+			ret = new FarmInfo(this, id, c.getString(0), c.getDouble(1), c.getDouble(2),
+					(c.getLong(3) == 1) ? true : false);
 		}
 		c.close();
 		
@@ -373,12 +361,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return result;
 	}
 	
-	private List<Long> getCategoriesByFarmId(long id) {
+	protected void fillCategories(FarmInfo info) {
 		String[] columns = new String[] { "categoryId" };
 		List<Long> categories = new LinkedList<Long>();
 		// TODO add category "Others" (164) and join with products (and find by products too - because product has category assigned too)
 		Cursor c = db.query("location_category", columns,
-				"locationId = ?", new String[] { (id + "") },
+				"locationId = ?", new String[] { (info.id + "") },
 				null, null, "categoryId"
 		);
 		
@@ -389,13 +377,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		}
 		c.close();
 		
-		return categories;
+		info.categories = categories;
 	}
 	
-	private void fillProducts(FarmInfo info, String[] locationIdInArray) {
+	protected void fillProducts(FarmInfo info) {
 		List<ProductWithComment> products = new LinkedList<ProductWithComment>();
 		String[] columns = new String[] { "productId", "comment" };
-		Cursor c = db.query("location_product", columns, "locationId = ?", locationIdInArray, null, null, null);
+		Cursor c = db.query("location_product", columns, "locationId = " + info.id, null, null, null, null);
 		c.moveToNext();
 		while (!c.isAfterLast()) {
 			String comment = null;
@@ -408,10 +396,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		info.products = products;
 	}
 	
-	private void fillActivities(FarmInfo info, String[] locationIdInArray) {
+	protected void fillActivities(FarmInfo info) {
 		List<ActivityWithComment> activities = new LinkedList<ActivityWithComment>();
 		String[] columns = new String[] { "activityId", "comment" };
-		Cursor c = db.query("location_activity", columns, "locationId = ?", locationIdInArray, null, null, null);
+		Cursor c = db.query("location_activity", columns, "locationId = " + info.id, null, null, null, null);
 		c.moveToNext();
 		while (!c.isAfterLast()) {
 			String comment = null;
@@ -432,11 +420,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private static final int LOC_WEB = 4;
 	private static final int LOC_ESHOP = 5;
 	
-	private void fillContact(FarmInfo info, String[] locationIdInArray) {
+	protected void fillContact(FarmInfo info) {
 		FarmContact farmContact = new FarmContact();
 		farmContact.phoneNumbers = new LinkedList<String>();
 		String[] columns = new String[] { "type", "contact" };
-		Cursor c = db.query("contacts", columns, "locationId = ?", locationIdInArray, null, null, null);
+		Cursor c = db.query("contacts", columns, "locationId = " + info.id, null, null, null, null);
 		c.moveToNext();
 		while (!c.isAfterLast()) {
 			int type = c.getInt(0);
@@ -472,26 +460,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		info.contact = farmContact;
 	}
 	
-	private void fillDescription(FarmInfo info, String[] locationIdInArray) {
-		Cursor c = db.query("locations", new String[] { "description"}, "_id = ?", locationIdInArray, null, null, null);
+	protected void fillDescription(FarmInfo info)
+	{
+		
+		Cursor c = db.query("locations", new String[] { "description"}, "_id = " + info.id, null, null, null, null);
 		c.moveToNext();
 		
 		if (!c.isAfterLast()) {
 			info.description = c.getString(0);
 		}
 		c.close();
-	}
-
-	public void fillDetails(FarmInfo info) {
-		if (info.contact != null)
-			return;
-		
-		String[] args = new String[] { Long.toString(info.id) };
-		
-		fillDescription(info, args);
-		fillProducts(info, args);
-		fillActivities(info, args);
-		fillContact(info, args);
 	}
 	
 	public String getProductName(Long id) {
@@ -595,5 +573,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
 	@Override
 	public void onCreate(SQLiteDatabase db){}
+	
+	@Override
+	public Hashtable<Long, FarmInfo> getFilteredFarmsInRectangle(double lat1,
+			double lon1, double lat2, double lon2, DataFilter filter) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public SearchDictionary getDict() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+	@Override
+	public void detach() {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

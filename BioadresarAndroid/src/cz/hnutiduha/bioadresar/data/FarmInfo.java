@@ -45,20 +45,31 @@ public class FarmInfo implements OnClickListener{
 	public long id;
 	public String name;
 	public double lat, lon;
-	public List<Long> categories;
 	public boolean bookmarked;
 	
-	// call DatabaseHelper.fillDetails to obtain these
-	public String description;
-	public FarmContact contact;
-	public List<ProductWithComment> products;
-	public List<ActivityWithComment> activities;
+	HnutiduhaFarmDb source;
+	
+	protected String description = null;
+	protected FarmContact contact = null;
+	protected List<ProductWithComment> products = null;
+	protected List<ActivityWithComment> activities = null;
+	protected List<Long> categories = null;
 	
 	private static final int viewTagTarget = 0xdeadbeef;
 	private static final String viewTargetMap = "map";
 	private static final String viewTargetDetail = "detail";
 	
 	private Location location = null;
+	
+	public FarmInfo(HnutiduhaFarmDb source, long id, String name, double lat, double lon, boolean bookmarked)
+	{
+		this.source = source;
+		this.id = id;
+		this.name = name;
+		this.lat = lat;
+		this.lon = lon;
+		this.bookmarked = bookmarked;
+	}
 	
 	public static GeoPoint getGeoPoint(FarmInfo farm) {
 		return new GeoPoint((int)(farm.lat * 1E6), (int)(farm.lon * 1E6));
@@ -67,6 +78,46 @@ public class FarmInfo implements OnClickListener{
 	public float getDistance(Location targetLocation) {
 		Location destLocation = getLocation();
 		return targetLocation.distanceTo(destLocation);
+	}
+	
+	public String getDescription()
+	{
+		if (description == null)
+			source.fillDescription(this);
+		
+		return description;
+	}
+	
+	public FarmContact getFarmContact()
+	{
+		if (contact == null)
+			source.fillContact(this);
+		
+		return contact;
+	}
+	
+	public List<ProductWithComment> getProducts()
+	{
+		if (products == null)
+			source.fillProducts(this);
+		
+		return products;
+	}
+	
+	public List<ActivityWithComment> getActivities()
+	{
+		if (activities == null)
+			source.fillActivities(this);
+		
+		return activities;
+	}
+	
+	public List<Long> getCategories()
+	{
+		if (categories == null)
+			source.fillCategories(this);
+		
+		return categories;
 	}
 	
 	public Location getLocation() {
@@ -93,8 +144,6 @@ public class FarmInfo implements OnClickListener{
 	
 	public void goToDetail(View parent)
 	{
-		DatabaseHelper helpMeeeFillMeee = DatabaseHelper.getDefaultDb(parent.getContext());
-		helpMeeeFillMeee.fillDetails(this);
 		Context context = parent.getContext();
 		DetailActivity.setFarm(this);
 		Intent detail = new Intent(context, DetailActivity.class);

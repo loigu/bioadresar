@@ -18,6 +18,8 @@
 package cz.hnutiduha.bioadresar.data;
 
 public interface DataFilter {
-
+	public boolean match(FarmInfo info);
 	
+	public void store();
+	public DataFilter loadLast();
 }

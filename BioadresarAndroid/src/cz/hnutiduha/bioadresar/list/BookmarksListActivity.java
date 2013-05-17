@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
-import cz.hnutiduha.bioadresar.data.DatabaseHelper;
+import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.LocationCache;
 
@@ -25,7 +25,7 @@ class AddBookmarkedFarms extends AddAllFarms
 	@Override
 	protected Boolean doInBackground(Void... params) {
 		Log.d("list", "starting background task");
-        DatabaseHelper defaultDb = DatabaseHelper.getDefaultDb(activity);
+        HnutiduhaFarmDb defaultDb = HnutiduhaFarmDb.getDefaultDb(activity);
 		
         // TODO: get location from map
         loc = LocationCache.getCenter();

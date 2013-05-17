@@ -32,7 +32,7 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.Overlay;
 import com.readystatesoftware.maps.TapControlledMapView;
 
-import cz.hnutiduha.bioadresar.data.DatabaseHelper;
+import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.LocationCache;
 
@@ -144,7 +144,7 @@ public class FarmMapView extends TapControlledMapView {
 	
 	private void refreshPoints()
 	{
-		DatabaseHelper db = DatabaseHelper.getDefaultDb(this.getContext());
+		HnutiduhaFarmDb db = HnutiduhaFarmDb.getDefaultDb(this.getContext());
 		if (db == null)
 		{
 			Log.e("db", "Fatal, can't get default db");

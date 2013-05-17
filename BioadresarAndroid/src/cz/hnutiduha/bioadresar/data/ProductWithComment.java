@@ -7,7 +7,7 @@ public class ProductWithComment extends StringifiedFromDb{
 		this.id = id;
 		this.comment = comment;
 	}
-	protected String getName(DatabaseHelper db) {
+	protected String getName(HnutiduhaFarmDb db) {
 		return db.getProductName(id);
 	}
 	

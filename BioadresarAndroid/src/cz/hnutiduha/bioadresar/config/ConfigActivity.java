@@ -4,7 +4,7 @@ import com.actionbarsherlock.app.SherlockPreferenceActivity;
 
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
-import cz.hnutiduha.bioadresar.data.DatabaseHelper;
+import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
 import cz.hnutiduha.bioadresar.data.LocationCache;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -25,7 +25,7 @@ public class ConfigActivity extends SherlockPreferenceActivity implements OnPref
 	
 	private void loadRegionList()
 	{
-		String[] regions = DatabaseHelper.getDefaultDb(this).getRegions();
+		String[] regions = HnutiduhaFarmDb.getDefaultDb(this).getRegions();
 		if (regions == null)
 		{
 			Log.e("db", "wtf, no regions");

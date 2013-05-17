@@ -26,7 +26,7 @@ import com.actionbarsherlock.app.SherlockActivity;
 
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
-import cz.hnutiduha.bioadresar.data.DatabaseHelper;
+import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.LocationCache;
 import android.content.Context;
@@ -65,7 +65,7 @@ class AddAllFarms extends AsyncTask<Void, FarmInfo, Boolean> {
         	return Boolean.FALSE;
         }
 
-        DatabaseHelper defaultDb = DatabaseHelper.getDefaultDb(activity);
+        HnutiduhaFarmDb defaultDb = HnutiduhaFarmDb.getDefaultDb(activity);
     	TreeSet<FarmInfo> allFarms =  defaultDb.getAllFarmsSortedByDistance(loc);
         for (FarmInfo farm : allFarms)
         {
@@ -119,7 +119,7 @@ class AddNext25 extends AddAllFarms
         	return Boolean.FALSE;
         }
         
-        DatabaseHelper defaultDb = DatabaseHelper.getDefaultDb(activity);
+        HnutiduhaFarmDb defaultDb = HnutiduhaFarmDb.getDefaultDb(activity);
         
         TreeSet<FarmInfo> currentFarms = defaultDb.getAllFarmsSortedByDistance(loc);
           
@@ -160,7 +160,7 @@ class AddFarmsInRectangle extends AddAllFarms
 	@Override
 	protected Boolean doInBackground(Void... params) {
 		Log.d("list", "starting background task");
-        DatabaseHelper defaultDb = DatabaseHelper.getDefaultDb(activity);
+        HnutiduhaFarmDb defaultDb = HnutiduhaFarmDb.getDefaultDb(activity);
 		
         // TODO: get location from map
         loc = LocationCache.getCenter();
@@ -337,7 +337,7 @@ public class ListActivity extends SherlockActivity implements View.OnClickListen
 
 			@Override
 			protected Void doInBackground(Void... params) {
-				DatabaseHelper.getDefaultDb(context).getAllFarmsSortedByDistance(LocationCache.getCenter());
+				HnutiduhaFarmDb.getDefaultDb(context).getAllFarmsSortedByDistance(LocationCache.getCenter());
 				return null;
 			}
     	}.execute();

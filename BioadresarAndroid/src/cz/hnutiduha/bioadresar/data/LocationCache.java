@@ -68,7 +68,7 @@ public class LocationCache implements LocationListener {
 	    if (regionName == null)
 	    	regionName = PreferenceManager.getDefaultSharedPreferences(context).getString("defaultLocation", "Středočeský");
 	    Log.d("gps", "using default location " + regionName);
-	    double [] coordinates = DatabaseHelper.getDefaultDb(context).getRegionCoordinates(regionName);
+	    double [] coordinates = HnutiduhaFarmDb.getDefaultDb(context).getRegionCoordinates(regionName);
 	    if (coordinates == null)
 	    	coordinates = new double[] {49.8142789, 14.65985};
 

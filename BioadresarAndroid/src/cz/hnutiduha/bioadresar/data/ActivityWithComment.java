@@ -8,7 +8,7 @@ public class ActivityWithComment extends StringifiedFromDb{
 		this.comment = comment;
 	}
 	
-	protected String getName(DatabaseHelper db) {
+	protected String getName(HnutiduhaFarmDb db) {
 		return db.getActivityName(id);
 	}
 }

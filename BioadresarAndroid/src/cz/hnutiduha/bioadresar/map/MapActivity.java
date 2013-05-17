@@ -25,7 +25,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
-import cz.hnutiduha.bioadresar.data.DatabaseHelper;
+import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.LocationCache;
 
@@ -70,7 +70,7 @@ public class MapActivity extends SherlockMapActivity {
         Long targetFarmId = getIntent().getLongExtra(mapNodePropertyName, FarmInfo.INVALID_FARM_ID);
         FarmInfo farm = null;
         if (targetFarmId != FarmInfo.INVALID_FARM_ID)
-        	farm = DatabaseHelper.getDefaultDb(this).getFarm(targetFarmId);
+        	farm = HnutiduhaFarmDb.getDefaultDb(this).getFarm(targetFarmId);
 
         if (centerMap || farm != null)
         {

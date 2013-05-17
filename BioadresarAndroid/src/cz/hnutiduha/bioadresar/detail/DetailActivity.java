@@ -36,7 +36,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
-import cz.hnutiduha.bioadresar.data.DatabaseHelper;
+import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
+import cz.hnutiduha.bioadresar.data.FarmContact;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.StringifiedFromDb;
 
@@ -126,7 +127,7 @@ public class DetailActivity extends SherlockActivity implements OnClickListener{
     	}
     }
     
-    private void fillListFromIterator(StringBuilder out, DatabaseHelper db, Iterator it)
+    private void fillListFromIterator(StringBuilder out, HnutiduhaFarmDb db, Iterator it)
     {
     	while(it.hasNext())
     	{
@@ -160,16 +161,16 @@ public class DetailActivity extends SherlockActivity implements OnClickListener{
     	TextView field = (TextView) view.findViewById(R.id.farmName);
     	field.setText(currentFarm.name);
     	
-    	setFieldTextOrHideEmpty(currentFarm.description, NO_LINKIFY, R.id.descriptionLabel, R.id.descriptionText);
+    	setFieldTextOrHideEmpty(currentFarm.getDescription(), NO_LINKIFY, R.id.descriptionLabel, R.id.descriptionText);
         
-		DatabaseHelper db = DatabaseHelper.getDefaultDb(this);
+		HnutiduhaFarmDb db = HnutiduhaFarmDb.getDefaultDb(this);
 		
         StringBuilder products = new StringBuilder();
-		fillListFromIterator(products, db, currentFarm.products.iterator());
+		fillListFromIterator(products, db, currentFarm.getProducts().iterator());
 		
 		
 		// if there is no products, try to use categories
-		Iterator<Long> it = currentFarm.categories.iterator();
+		Iterator<Long> it = currentFarm.getCategories().iterator();
 		if (products.length() == 0)	{
 			while (it.hasNext()) {
 				products.append(db.getCategoryName(it.next()));
@@ -179,19 +180,20 @@ public class DetailActivity extends SherlockActivity implements OnClickListener{
 		}
 
         StringBuilder activities = new StringBuilder();
-		fillListFromIterator(activities, db, currentFarm.activities.iterator());
+		fillListFromIterator(activities, db, currentFarm.getActivities().iterator());
 		
     	setFieldTextOrHideEmpty(products.toString(), NO_LINKIFY, R.id.productionLabel, R.id.productionText);
     	setFieldTextOrHideEmpty(activities.toString(), NO_LINKIFY, R.id.activitiesLabel, R.id.activitiesText);
     	
-    	setFieldTextOrHideEmpty(currentFarm.contact.email, Linkify.EMAIL_ADDRESSES, R.id.emailLabel, R.id.emailText);
-    	setFieldTextOrHideEmpty(currentFarm.contact.web, Linkify.WEB_URLS, R.id.webLabel, R.id.webText);
-    	setFieldTextOrHideEmpty(currentFarm.contact.eshop, Linkify.WEB_URLS, R.id.eshopLabel, R.id.eshopText);
+    	FarmContact contact = currentFarm.getFarmContact();
+    	setFieldTextOrHideEmpty(contact.email, Linkify.EMAIL_ADDRESSES, R.id.emailLabel, R.id.emailText);
+    	setFieldTextOrHideEmpty(contact.web, Linkify.WEB_URLS, R.id.webLabel, R.id.webText);
+    	setFieldTextOrHideEmpty(contact.eshop, Linkify.WEB_URLS, R.id.eshopLabel, R.id.eshopText);
         
         LinearLayout phones = (LinearLayout) view.findViewById(R.id.phonesLayout);
-        if (currentFarm.contact.phoneNumbers != null && currentFarm.contact.phoneNumbers.size() > 0)
+        if (contact.phoneNumbers != null && contact.phoneNumbers.size() > 0)
         {
-	        Iterator<String> phoneIterator = currentFarm.contact.phoneNumbers.iterator();
+	        Iterator<String> phoneIterator = contact.phoneNumbers.iterator();
 	        while(phoneIterator.hasNext())
 	        {
 	        	TextView phone = new TextView(phones.getContext());
@@ -208,13 +210,13 @@ public class DetailActivity extends SherlockActivity implements OnClickListener{
         }
         
         String address = "";
-        if (currentFarm.contact.street !=null && currentFarm.contact.street.length() != 0)
-        	address += currentFarm.contact.street;
-        if (currentFarm.contact.city != null && currentFarm.contact.city.length() != 0)
+        if (contact.street != null && contact.street.length() != 0)
+        	address += contact.street;
+        if (contact.city != null && contact.city.length() != 0)
         {
         	if (!address.equals(""))
         		address += ", ";
-        	address += currentFarm.contact.city;
+        	address += contact.city;
         }
     	setFieldTextOrHideEmpty(address, Linkify.MAP_ADDRESSES, R.id.addressLabel, R.id.addressText);
     }
@@ -223,7 +225,7 @@ public class DetailActivity extends SherlockActivity implements OnClickListener{
 	public void onClick(View v) {
 		if (v.getId() == R.id.bookmarkIcon)
 		{
-	    	DatabaseHelper.getDefaultDb(this).setBookmark(currentFarm, !currentFarm.bookmarked);
+	    	HnutiduhaFarmDb.getDefaultDb(this).setBookmark(currentFarm, !currentFarm.bookmarked);
 	    	this.updateBookmarked();
 		}
 		
