@@ -1,0 +1,81 @@
+[22-Feb-2013 09:58:22 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 09:58:22 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 09:58:22 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 09:58:22 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 09:58:22 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 09:58:22 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 09:58:22 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 09:58:22 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 09:58:22 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 09:58:22 UTC] PHP Warning:  copy(): SAFE MODE Restriction in effect.  The script whose uid is 142970 is not allowed to access /DISK2/WWW/trilobajt.cz/www/adresar/backups/pages owned by uid 99 in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 55
+[22-Feb-2013 09:58:22 UTC] PHP Warning:  copy(/DISK2/WWW/trilobajt.cz/www/adresar/backups/pages/tmp.tmp): failed to open stream: No such file or directory in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 55
+[22-Feb-2013 09:58:22 UTC] PHP Warning:  copy(): SAFE MODE Restriction in effect.  The script whose uid is 142970 is not allowed to access /DISK2/WWW/trilobajt.cz/www/adresar/backups/pages owned by uid 99 in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 58
+[22-Feb-2013 09:58:22 UTC] PHP Warning:  copy(/DISK2/WWW/trilobajt.cz/www/adresar/backups/pages/tmp.tmp): failed to open stream: No such file or directory in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 58
+[22-Feb-2013 09:58:22 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 09:58:22 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 09:58:22 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 09:58:22 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 09:59:16 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 09:59:16 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 09:59:16 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 09:59:16 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 09:59:16 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 09:59:16 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 09:59:16 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 09:59:16 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 09:59:16 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 09:59:16 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 09:59:16 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 09:59:16 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 09:59:16 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 09:59:16 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 10:01:57 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 10:01:57 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 10:01:57 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 10:01:57 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 10:01:57 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 10:01:57 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 10:01:57 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 10:01:57 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 10:01:57 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 10:01:57 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 10:01:57 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 10:01:57 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 10:01:57 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 10:01:57 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 10:02:00 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 10:02:00 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 10:02:00 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 10:02:00 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 10:02:00 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 10:02:00 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 10:02:00 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 10:02:00 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 10:02:00 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 10:02:00 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 10:02:00 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 10:02:00 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 10:02:00 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 10:02:00 UTC] PHP Warning:  chmod(): Operation not permitted in /DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php on line 42
+[22-Feb-2013 10:02:59 UTC] PHP Warning:  fopen(/DISK2/WWW/trilobajt.cz/www/adresar/.htaccess): failed to open stream: Permission denied in /DISK2/WWW/trilobajt.cz/www/adresar/admin/setup.php on line 118
+[22-Feb-2013 10:02:59 UTC] PHP Warning:  fwrite() expects parameter 1 to be resource, boolean given in /DISK2/WWW/trilobajt.cz/www/adresar/admin/setup.php on line 119
+[22-Feb-2013 10:02:59 UTC] PHP Warning:  fclose() expects parameter 1 to be resource, boolean given in /DISK2/WWW/trilobajt.cz/www/adresar/admin/setup.php on line 120
+[22-Feb-2013 10:02:59 UTC] PHP Warning:  rename(/DISK2/WWW/trilobajt.cz/www/adresar/temp.gsconfig.php,/DISK2/WWW/trilobajt.cz/www/adresar/gsconfig.php): Permission denied in /DISK2/WWW/trilobajt.cz/www/adresar/admin/setup.php on line 137
+[22-Feb-2013 10:19:31 UTC] PHP Warning:  unlink(/DISK2/WWW/trilobajt.cz/www/adresar/admin/install.php): Permission denied in /DISK2/WWW/trilobajt.cz/www/adresar/admin/inc/common.php on line 202
+[22-Feb-2013 10:19:31 UTC] PHP Warning:  unlink(/DISK2/WWW/trilobajt.cz/www/adresar/admin/setup.php): Permission denied in /DISK2/WWW/trilobajt.cz/www/adresar/admin/inc/common.php on line 205
+[22-Feb-2013 10:19:31 UTC] PHP Warning:  unlink(/DISK2/WWW/trilobajt.cz/www/adresar/admin/update.php): Permission denied in /DISK2/WWW/trilobajt.cz/www/adresar/admin/inc/common.php on line 208
+[22-Feb-2013 10:36:41 UTC] PHP Warning:  fopen(/DISK2/WWW/trilobajt.cz/www/adresar/theme/Innovation/style.css): failed to open stream: Permission denied in /DISK2/WWW/trilobajt.cz/www/adresar/admin/theme-edit.php on line 58
+[22-Feb-2013 10:57:29 UTC] PHP Warning:  move_uploaded_file(): SAFE MODE Restriction in effect.  The script whose uid is 142970 is not allowed to access /DISK2/WWW/trilobajt.cz/www/adresar/data/uploads/app owned by uid 99 in /DISK2/WWW/trilobajt.cz/www/adresar/admin/upload-uploadify.php on line 34
+[22-Feb-2013 10:57:29 UTC] PHP Warning:  chmod(): Unable to access /DISK2/WWW/trilobajt.cz/www/adresar/data/uploads/app/adresarfarmaru-rc1.apk in /DISK2/WWW/trilobajt.cz/www/adresar/admin/upload-uploadify.php on line 38
+[22-Feb-2013 10:57:29 UTC] PHP Warning:  chmod(): SAFE MODE Restriction in effect.  The script whose uid is 142970 is not allowed to access /DISK2/WWW/trilobajt.cz/www/adresar/data/uploads/app owned by uid 99 in /DISK2/WWW/trilobajt.cz/www/adresar/admin/upload-uploadify.php on line 38
+[22-Feb-2013 10:57:29 UTC] PHP Warning:  chmod(): stat failed for /DISK2/WWW/trilobajt.cz/www/adresar/data/uploads/app/adresarfarmaru-rc1.apk in /DISK2/WWW/trilobajt.cz/www/adresar/admin/upload-uploadify.php on line 38
+[22-Feb-2013 11:00:24 UTC] PHP Warning:  imagepng(): SAFE MODE Restriction in effect.  The script whose uid is 142970 is not allowed to access /DISK2/WWW/trilobajt.cz/www/adresar/data/thumbs/screenshots owned by uid 99 in /DISK2/WWW/trilobajt.cz/www/adresar/admin/inc/image.class.php on line 62
+[22-Feb-2013 11:00:24 UTC] PHP Warning:  imagepng(): Invalid filename in /DISK2/WWW/trilobajt.cz/www/adresar/admin/inc/image.class.php on line 62
+[22-Feb-2013 11:00:24 UTC] PHP Warning:  imagepng(): SAFE MODE Restriction in effect.  The script whose uid is 142970 is not allowed to access /DISK2/WWW/trilobajt.cz/www/adresar/data/thumbs/screenshots owned by uid 99 in /DISK2/WWW/trilobajt.cz/www/adresar/admin/inc/image.class.php on line 62
+[22-Feb-2013 11:00:24 UTC] PHP Warning:  imagepng(): Invalid filename in /DISK2/WWW/trilobajt.cz/www/adresar/admin/inc/image.class.php on line 62
+[22-Feb-2013 11:00:24 UTC] PHP Warning:  imagepng(): SAFE MODE Restriction in effect.  The script whose uid is 142970 is not allowed to access /DISK2/WWW/trilobajt.cz/www/adresar/data/thumbs/screenshots owned by uid 99 in /DISK2/WWW/trilobajt.cz/www/adresar/admin/inc/image.class.php on line 62
+[22-Feb-2013 11:00:24 UTC] PHP Warning:  imagepng(): Invalid filename in /DISK2/WWW/trilobajt.cz/www/adresar/admin/inc/image.class.php on line 62
+[22-Feb-2013 11:00:24 UTC] PHP Warning:  imagepng(): SAFE MODE Restriction in effect.  The script whose uid is 142970 is not allowed to access /DISK2/WWW/trilobajt.cz/www/adresar/data/thumbs/screenshots owned by uid 99 in /DISK2/WWW/trilobajt.cz/www/adresar/admin/inc/image.class.php on line 62
+[22-Feb-2013 11:00:24 UTC] PHP Warning:  imagepng(): Invalid filename in /DISK2/WWW/trilobajt.cz/www/adresar/admin/inc/image.class.php on line 62
+[22-Feb-2013 11:00:24 UTC] PHP Warning:  imagepng(): SAFE MODE Restriction in effect.  The script whose uid is 142970 is not allowed to access /DISK2/WWW/trilobajt.cz/www/adresar/data/thumbs/screenshots owned by uid 99 in /DISK2/WWW/trilobajt.cz/www/adresar/admin/inc/image.class.php on line 62
+[22-Feb-2013 11:00:24 UTC] PHP Warning:  imagepng(): Invalid filename in /DISK2/WWW/trilobajt.cz/www/adresar/admin/inc/image.class.php on line 62
