@@ -50,7 +50,7 @@ public class ConfigActivity extends SherlockPreferenceActivity implements OnPref
     public boolean onCreateOptionsMenu(final Menu menu)
     {
     	MenuHandler.fillMenu(menu, this);
-    	menu.removeItem(R.id.configLink);
+    	//menu.removeItem(R.id.configLink);
     	menu.removeItem(R.id.locationLabel);
     	
     	return true;

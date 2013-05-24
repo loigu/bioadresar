@@ -21,14 +21,12 @@ import cz.hnutiduha.bioadresar.data.LocationCache;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.TextView;
 
 public class MainMenuActivity extends Activity implements OnClickListener {
 
-	TextView location;
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,8 +35,8 @@ public class MainMenuActivity extends Activity implements OnClickListener {
 	    // start listening for location
 	    LocationCache.startListener(this);
 	    
-	    /*
 	    setContentView(R.layout.main_menu);
+	    Log.w("gui", "main ui started");
 	    
         View item = this.findViewById(R.id.listLink);
         item.setOnClickListener(this);
@@ -46,35 +44,16 @@ public class MainMenuActivity extends Activity implements OnClickListener {
         item.setOnClickListener(this);
         item = this.findViewById(R.id.mapLink);
         item.setOnClickListener(this);
-        item = this.findViewById(R.id.configLink);
-        item.setOnClickListener(this);
-        item = this.findViewById(R.id.aboutLink);
-        item.setOnClickListener(this);
-        */
-        
-        String defaultActivity = PreferenceManager.getDefaultSharedPreferences(this).getString("defaultActivity", "Mapa");
-        if (defaultActivity.equals("Mapa"))
-        {
-        	MenuHandler.showActivity(this, R.id.mapLink);
-        }
-        else
-        {
-        	MenuHandler.showActivity(this, R.id.listLink);
-        }
     }
     
-    public void onResume()
+    public void onStart()
     {
-    	super.onResume();
-    	this.finish();
-    }    
+    	super.onStart();
+    }
+    
 	@Override
 	public void onClick(View v) {
 		MenuHandler.idActivated(this,v.getId());
 	}
 	
-	public void onDestroy()
-	{
-		super.onDestroy();
-	}
 }

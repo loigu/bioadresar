@@ -109,7 +109,7 @@ public class DetailActivity extends SherlockActivity implements OnClickListener{
     
     static final int NO_LINKIFY = -1;
     
-    private void setFieldTextOrHideEmpty(String text, int linkifyMask, int labelId, int fieldId)
+    private void setFieldTextOrHideEmpty(String text, int linkifyMask, int containerId, int fieldId)
     {
     	TextView field = (TextView)view.findViewById(fieldId);
     	if (text != null && !text.equals(""))
@@ -121,9 +121,8 @@ public class DetailActivity extends SherlockActivity implements OnClickListener{
     	}
     	else
     	{
-    		TextView label = (TextView)view.findViewById(labelId);
-    		label.setVisibility(TextView.GONE);
-    		field.setVisibility(TextView.GONE);
+    		View container = view.findViewById(containerId);
+    		container.setVisibility(TextView.GONE);
     	}
     }
     
@@ -161,7 +160,7 @@ public class DetailActivity extends SherlockActivity implements OnClickListener{
     	TextView field = (TextView) view.findViewById(R.id.farmName);
     	field.setText(currentFarm.name);
     	
-    	setFieldTextOrHideEmpty(currentFarm.getDescription(), NO_LINKIFY, R.id.descriptionLabel, R.id.descriptionText);
+    	setFieldTextOrHideEmpty(currentFarm.getDescription(), NO_LINKIFY, R.id.descriptionLayout, R.id.descriptionText);
         
 		HnutiduhaFarmDb db = HnutiduhaFarmDb.getDefaultDb(this);
 		
@@ -182,15 +181,15 @@ public class DetailActivity extends SherlockActivity implements OnClickListener{
         StringBuilder activities = new StringBuilder();
 		fillListFromIterator(activities, db, currentFarm.getActivities().iterator());
 		
-    	setFieldTextOrHideEmpty(products.toString(), NO_LINKIFY, R.id.productionLabel, R.id.productionText);
-    	setFieldTextOrHideEmpty(activities.toString(), NO_LINKIFY, R.id.activitiesLabel, R.id.activitiesText);
+    	setFieldTextOrHideEmpty(products.toString(), NO_LINKIFY, R.id.productionLayout, R.id.productionText);
+    	setFieldTextOrHideEmpty(activities.toString(), NO_LINKIFY, R.id.activitiesLayout, R.id.activitiesText);
     	
     	FarmContact contact = currentFarm.getFarmContact();
-    	setFieldTextOrHideEmpty(contact.email, Linkify.EMAIL_ADDRESSES, R.id.emailLabel, R.id.emailText);
-    	setFieldTextOrHideEmpty(contact.web, Linkify.WEB_URLS, R.id.webLabel, R.id.webText);
-    	setFieldTextOrHideEmpty(contact.eshop, Linkify.WEB_URLS, R.id.eshopLabel, R.id.eshopText);
+    	setFieldTextOrHideEmpty(contact.email, Linkify.EMAIL_ADDRESSES, R.id.emailLayout, R.id.emailText);
+    	setFieldTextOrHideEmpty(contact.web, Linkify.WEB_URLS, R.id.webLayout, R.id.webText);
+    	setFieldTextOrHideEmpty(contact.eshop, Linkify.WEB_URLS, R.id.eshopLayout, R.id.eshopText);
         
-        LinearLayout phones = (LinearLayout) view.findViewById(R.id.phonesLayout);
+        LinearLayout phones = (LinearLayout) view.findViewById(R.id.phoneListLayout);
         if (contact.phoneNumbers != null && contact.phoneNumbers.size() > 0)
         {
 	        Iterator<String> phoneIterator = contact.phoneNumbers.iterator();
@@ -198,15 +197,15 @@ public class DetailActivity extends SherlockActivity implements OnClickListener{
 	        {
 	        	TextView phone = new TextView(phones.getContext());
 	        	phone.setText(phoneIterator.next());
+	        	phone.setTextColor(getResources().getColor(R.color.DuhaTextGray));
 	            Linkify.addLinks(phone, Linkify.PHONE_NUMBERS);
 	            phones.addView(phone);
 	        }
         }
         else
         {
-            TextView phonesLabel = (TextView) view.findViewById(R.id.phoneLabel);
-            phonesLabel.setVisibility(TextView.GONE);
-            phones.setVisibility(LinearLayout.GONE);
+            View phonesLayout = view.findViewById(R.id.phonesLayout);
+            phonesLayout.setVisibility(TextView.GONE);
         }
         
         String address = "";

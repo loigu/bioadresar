@@ -212,7 +212,7 @@ public class FarmInfo implements OnClickListener{
 		
 		// icons
 		LinearLayout categoryIcons = (LinearLayout) parent.findViewById(categoriesLayoutId);
-		Iterator<Long> it = this.categories.iterator();
+		Iterator<Long> it = getCategories().iterator();
 		ImageView icon;
 	    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(20, 20, 1);
 	    params.gravity = Gravity.LEFT;

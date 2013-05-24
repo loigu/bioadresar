@@ -29,6 +29,13 @@
         android:layout_height="fill_parent"
         android:orientation="vertical" >
 
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="fill_parent"
+            android:layout_height="5dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/duha_border_green" />
+
         <LinearLayout
             android:id="@+id/list_main_layout"
             android:layout_width="fill_parent"

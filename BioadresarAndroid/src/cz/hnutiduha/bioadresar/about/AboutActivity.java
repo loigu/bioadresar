@@ -53,7 +53,7 @@ public class AboutActivity extends SherlockActivity {
     public boolean onCreateOptionsMenu(final Menu menu)
     {
     	MenuHandler.fillMenu(menu, this);
-    	menu.removeItem(R.id.aboutLink);
+    	//menu.removeItem(R.id.aboutLink);
     	menu.removeItem(R.id.locationLabel);
     	
     	return true;

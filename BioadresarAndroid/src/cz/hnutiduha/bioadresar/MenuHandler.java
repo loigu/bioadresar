@@ -6,8 +6,7 @@ import android.preference.PreferenceManager;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import cz.hnutiduha.bioadresar.about.AboutActivity;
-import cz.hnutiduha.bioadresar.config.ConfigActivity;
+
 import cz.hnutiduha.bioadresar.list.ListActivity;
 import cz.hnutiduha.bioadresar.list.BookmarksListActivity;
 import cz.hnutiduha.bioadresar.map.MapActivity;
@@ -40,6 +39,7 @@ public class MenuHandler {
 		item.setIcon(android.R.drawable.btn_star_big_on);
 		item.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 		
+		/*
 		item = menu.add(0, R.id.configLink, Menu.NONE, R.string.config_label);
 		item.setIcon(android.R.drawable.ic_menu_manage);
 		item.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM);
@@ -49,7 +49,7 @@ public class MenuHandler {
 		
 		item = menu.add(0, R.id.aboutLink, Menu.NONE, R.string.about_label);
 		item.setIcon(android.R.drawable.ic_menu_info_details);
-		
+		*/
 
 		return true;
 	}
@@ -74,12 +74,14 @@ public class MenuHandler {
 		case R.id.mapLink:
 			target = new Intent(context, MapActivity.class);
 			break;
+			/*
 		case R.id.configLink:
 			target = new Intent(context, ConfigActivity.class);
 			break;
 		case R.id.aboutLink:
 			target = new Intent(context, AboutActivity.class);
 			break;
+			*/
 		case R.id.bookmarkListLink:
 			target = new Intent(context, BookmarksListActivity.class);
 			break;

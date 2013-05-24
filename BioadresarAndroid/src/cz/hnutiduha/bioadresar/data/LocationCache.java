@@ -190,7 +190,7 @@ public class LocationCache implements LocationListener {
 		if (provider.equals(locationProvider))
 			locationProvider = getBestProvider(usedLocationManager);
 		
-		if (provider == null)
+		if (locationProvider == null)
 			locationProvider = LocationManager.PASSIVE_PROVIDER;
 		
 		Log.d("gps", "provider disabled " + provider + " using provider " + locationProvider);

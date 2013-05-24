@@ -1,0 +1,37 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.4'
+    }
+}
+apply plugin: 'android'
+
+dependencies {
+    compile project(':android-mapviewballoons:android-mapviewballoons')
+    compile files('../../../../../BioAdresar/libs/actionbarsherlock-plugin-maps-4.2.0.jar')
+}
+
+android {
+    compileSdkVersion 14
+    buildToolsVersion "14"
+
+    defaultConfig {
+        minSdkVersion 7
+        targetSdkVersion 14
+    }
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            resources.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            renderscript.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+        }
+
+        instrumentTest.setRoot('tests')
+    }
+}
