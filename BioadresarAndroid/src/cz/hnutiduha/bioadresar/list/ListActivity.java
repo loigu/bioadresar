@@ -202,7 +202,7 @@ public class ListActivity extends SherlockActivity implements View.OnClickListen
 	
     @Override
     public boolean onCreateOptionsMenu(final Menu menu)
-    {
+    {	
     	MenuHandler.fillMenu(menu, this);
     	menu.removeItem(R.id.listLink);
     	
@@ -233,6 +233,8 @@ public class ListActivity extends SherlockActivity implements View.OnClickListen
         
         next25Button = (Button)findViewById(R.id.next_25_button);
         next25Button.setOnClickListener(this);
+        
+    	MenuHandler.installDropDown(getSupportActionBar(), this);
     }
     
     public void onStart()

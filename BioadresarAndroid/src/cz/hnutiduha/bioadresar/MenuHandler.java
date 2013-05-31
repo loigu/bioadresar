@@ -3,7 +3,11 @@ package cz.hnutiduha.bioadresar;
 import android.content.Context;
 import android.content.Intent;
 import android.preference.PreferenceManager;
+import android.widget.ArrayAdapter;
+import android.widget.SpinnerAdapter;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SubMenu;
@@ -12,10 +16,37 @@ import cz.hnutiduha.bioadresar.list.ListActivity;
 import cz.hnutiduha.bioadresar.list.BookmarksListActivity;
 import cz.hnutiduha.bioadresar.map.MapActivity;
 
-public class MenuHandler {
+public class MenuHandler implements OnNavigationListener{
+	private static MenuHandler hnd = null;
+	
+	private Context context = null;
+	
+	private MenuHandler(Context context) {
+		this.context = context;
+	}
+	
+	public static void installDropDown(ActionBar bar, Context context)
+	{
+		/* NOTE: this is basic dropdown menu example. needs layouts and reactions...
+		if (hnd == null)
+			hnd = new MenuHandler(context);
+		
+    	bar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+    	
+		SpinnerAdapter mSpinnerAdapter = ArrayAdapter.createFromResource(context, R.array.activityList,
+		          android.R.layout.simple_spinner_dropdown_item);
+		
+		bar.setListNavigationCallbacks(mSpinnerAdapter, hnd);
+		*/
+	}
 	
 	public static boolean fillMenu(final Menu menu, Context context)
 	{
+		MenuItem foo = menu.add(0, R.id.homeLink, Menu.NONE, "");
+		foo.setIcon(R.drawable.menu_icon);
+		foo.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
+		
+		/* NOTE: dropDown is used now
 		SubMenu subMenu = menu.addSubMenu("");
 		subMenu.setIcon(R.drawable.menu_icon);
 		
@@ -63,25 +94,28 @@ public class MenuHandler {
 		Intent target = null;
 		switch (id)
 		{
-		case R.id.listLink:
-			target = new Intent(context, ListActivity.class);
-			break;
-		case R.id.mapLink:
-			target = new Intent(context, MapActivity.class);
-			break;
-			/*
-		case R.id.configLink:
-			target = new Intent(context, ConfigActivity.class);
-			break;
-		case R.id.aboutLink:
-			target = new Intent(context, AboutActivity.class);
-			break;
-			*/
-		case R.id.bookmarkListLink:
-			target = new Intent(context, BookmarksListActivity.class);
-			break;
-		}
+			case R.id.listLink:
+				target = new Intent(context, ListActivity.class);
+				break;
+			case R.id.mapLink:
+				target = new Intent(context, MapActivity.class);
+				break;
+				/*
+			case R.id.configLink:
+				target = new Intent(context, ConfigActivity.class);
+				break;
+			case R.id.aboutLink:
+				target = new Intent(context, AboutActivity.class);
+				break;
+				*/
+			case R.id.bookmarkListLink:
+				target = new Intent(context, BookmarksListActivity.class);
+				break;
+			case R.id.homeLink:
+				target = new Intent(context, MainMenuActivity.class);
+				break;
 		
+		}
 		if (target != null)
 		{
 			context.startActivity(target);
@@ -89,5 +123,10 @@ public class MenuHandler {
 		}
 		return false;
     }
+
+	@Override
+	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+		return MenuHandler.showActivity(context, (int)itemId);
+	}
 
 }

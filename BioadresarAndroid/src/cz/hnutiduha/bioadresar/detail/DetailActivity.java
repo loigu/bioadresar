@@ -76,6 +76,8 @@ public class DetailActivity extends SherlockActivity implements OnClickListener{
         
         if (bookmarkedBitmap == null)
         	loadBitmaps(this);
+        
+    	MenuHandler.installDropDown(getSupportActionBar(), this);
     }
     
     public void onResume()

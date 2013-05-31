@@ -98,6 +98,8 @@ public class MapActivity extends com.actionbarsherlock.app.SherlockMapActivity {
         Activity parent = this.getParent();
         if (parent == null)
         	parent = this;
+        
+    	MenuHandler.installDropDown(getSupportActionBar(), this);
     }
     
 	@Override
