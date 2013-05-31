@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.SubMenu;
 
 import cz.hnutiduha.bioadresar.list.ListActivity;
 import cz.hnutiduha.bioadresar.list.BookmarksListActivity;
@@ -15,29 +16,23 @@ public class MenuHandler {
 	
 	public static boolean fillMenu(final Menu menu, Context context)
 	{
-		// TODO: do this by xml
-		String [] activities = context.getResources().getStringArray(R.array.activityList);
-		String defaultScreen = PreferenceManager.getDefaultSharedPreferences(context).getString("defaultActivity", activities[0]);
-
-		MenuItem map = menu.add(0, R.id.mapLink, Menu.NONE, R.string.map_tab_title);
+		SubMenu subMenu = menu.addSubMenu("");
+		subMenu.setIcon(R.drawable.menu_icon);
+		
+		MenuItem map = subMenu.add(0, R.id.mapLink, Menu.NONE, R.string.map_tab_title);
         map.setIcon(android.R.drawable.ic_menu_mapmode);
         
-        MenuItem list = menu.add(0, R.id.listLink, Menu.NONE, R.string.list_tab_title);
+        MenuItem list = subMenu.add(0, R.id.listLink, Menu.NONE, R.string.list_tab_title);
         list.setIcon(android.R.drawable.ic_menu_agenda);
-        
-        if (defaultScreen.equals(activities[0]))
-        {
-        	map.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-        }else
-        {
-        	list.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-        }
+
+        map.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+       	list.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 
 		MenuItem item;
 		
-		item = menu.add(0, R.id.bookmarkListLink, Menu.NONE, R.string.bookmarkListLabel);
+		item = subMenu.add(0, R.id.bookmarkListLink, Menu.NONE, R.string.bookmarkListLabel);
 		item.setIcon(android.R.drawable.btn_star_big_on);
-		item.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+		item.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 		
 		/*
 		item = menu.add(0, R.id.configLink, Menu.NONE, R.string.config_label);

@@ -41,7 +41,8 @@ public class FarmOverlayView extends FrameLayout {
 		super(context);
 		this.data = data;
 
-		setPadding(10, 0, 10, 0);
+		setPadding(0, 0, 0, 0);
+		
 		
 		layout = new LimitLinearLayout(context);
 		layout.setVisibility(VISIBLE);

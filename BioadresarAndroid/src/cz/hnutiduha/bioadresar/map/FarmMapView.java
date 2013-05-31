@@ -29,6 +29,7 @@ import android.util.Log;
 import cz.hnutiduha.bioadresar.R;
 
 import com.google.android.maps.GeoPoint;
+import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.Overlay;
 import com.readystatesoftware.maps.TapControlledMapView;
 
@@ -46,8 +47,9 @@ public class FarmMapView extends TapControlledMapView {
 	public FarmMapView(Context context, AttributeSet attrs) {
 		super(context, attrs);
         List<Overlay> mapOverlays = this.getOverlays();
-        Drawable drawable = this.getResources().getDrawable(R.drawable.marker2);
-        farmOverlay = new FarmsOverlay(drawable, this);
+        Drawable farmMarker = this.getResources().getDrawable(R.drawable.map_marker);
+        farmMarker = FarmsOverlay.boundCenterBottom(farmMarker);
+        farmOverlay = new FarmsOverlay(farmMarker, this);
         mapOverlays.add(farmOverlay);
         
 		setOnSingleTapListener(farmOverlay);
@@ -92,6 +94,16 @@ public class FarmMapView extends TapControlledMapView {
     	
     	return res;
     }
+	
+	public GeoPoint offsetBy(GeoPoint original, int offX, int offY) {	
+	    GeoPoint tl = getProjection().fromPixels(0, 0);
+	    GeoPoint br = getProjection().fromPixels(getWidth(), getHeight());
+
+	    int newLon = offX * (br.getLongitudeE6() - tl.getLongitudeE6()) /getWidth() + original.getLongitudeE6(); 
+	    int newLat = offY * (br.getLatitudeE6() - tl.getLatitudeE6()) / getHeight() + original.getLatitudeE6();
+
+	    return new GeoPoint(newLat, newLon);
+	}
 	
 	public void centerOnGeoPoint(GeoPoint center)
 	{

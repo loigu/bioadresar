@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
 
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -41,9 +42,13 @@ public class FarmsOverlay extends ItemizedOverlay<OverlayItem> implements OnSing
 	private long firstBalloon = FarmInfo.INVALID_FARM_ID;
 	
 	public FarmsOverlay(Drawable defaultMarker, FarmMapView map) {
-		super(boundCenter(defaultMarker));
+		super(defaultMarker);
 		this.map = map;
 		populate();
+	}
+	
+	public static Drawable boundCenterBottom(Drawable drawable) {
+		return ItemizedOverlay.boundCenterBottom(drawable);
 	}
 
 	public void addOverlay(OverlayItem overlay) {
@@ -91,7 +96,6 @@ public class FarmsOverlay extends ItemizedOverlay<OverlayItem> implements OnSing
 		
 		// wtf. the map sends one aux click through the movement
 		disableHiding();
-		map.centerOnGeoPoint(item.getPoint());
 		lastSelected = (FarmOverlayItem)item;
 		return lastSelected.showBalloon();
 		
@@ -168,6 +172,12 @@ public class FarmsOverlay extends ItemizedOverlay<OverlayItem> implements OnSing
 	public void disableHiding()
 	{
 		hidingEnabled = false;
+	}
+	
+	@Override
+	public void draw(Canvas canvas, MapView mapView, boolean shadow) {
+		// we don't want shadow
+		super.draw(canvas, mapView, false);
 	}
 
 	@Override

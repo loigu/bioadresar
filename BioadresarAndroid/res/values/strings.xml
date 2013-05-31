@@ -57,5 +57,8 @@
     <string name="requireGps">Vyžadovat gps</string>
     <string name="enableGps">Zapnout gps?</string>
     <string name="bookmarkListLabel">Záložky</string>
+    <string name="map_activity_name">MAPA</string>
+    <string name="list_activity_name">SEZNAM</string>
+    <string name="bookmarks_activity_name">OBLÍBENÉ</string>
 
 </resources>

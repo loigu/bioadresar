@@ -17,7 +17,6 @@
 
 package cz.hnutiduha.bioadresar.map;
 
-import com.actionbarsherlock.app.SherlockMapActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
@@ -29,7 +28,7 @@ import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.LocationCache;
 
-public class MapActivity extends SherlockMapActivity {
+public class MapActivity extends com.actionbarsherlock.app.SherlockMapActivity {
 	
 	public static final String mapNodePropertyName = "farmIdToShow";
 	

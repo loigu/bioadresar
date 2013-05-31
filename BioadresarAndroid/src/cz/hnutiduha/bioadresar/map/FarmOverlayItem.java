@@ -31,10 +31,10 @@ import cz.hnutiduha.bioadresar.data.FarmInfo;
 
 public class FarmOverlayItem extends OverlayItem implements OnClickListener{
 	protected FarmInfo data;
-	MapView map;
+	FarmMapView map;
 	FarmOverlayView balloon = null;
 	
-	public FarmOverlayItem(GeoPoint point, FarmInfo farm, MapView map)
+	public FarmOverlayItem(GeoPoint point, FarmInfo farm, FarmMapView map)
 	{
 		super(point, farm.name, farm.name);
 		this.data = farm;
@@ -77,10 +77,12 @@ public class FarmOverlayItem extends OverlayItem implements OnClickListener{
 		
 		MapView.LayoutParams params = new MapView.LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, getPoint(),
-				MapView.LayoutParams.BOTTOM_CENTER);
+				5, -48, MapView.LayoutParams.RIGHT);
 		params.mode = MapView.LayoutParams.MODE_MAP;
 		
 		balloon.setVisibility(View.VISIBLE);
+		
+		map.centerOnGeoPoint(map.offsetBy(getPoint(), -100, 0));
 		
 		if (isRecycled) {
 			balloon.setLayoutParams(params);
