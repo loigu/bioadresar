@@ -509,6 +509,16 @@ function fixtures_v9
 	joinActivities 37 43
 }
 
+function fixtures_v10
+{
+	# biovavrinec
+	echo "update locations set name='BioVavřinec s.r.o.' where _id = 338;" | callSqlite
+	echo "update contacts set contact='777 571 777' where _id=1049;" | callSqlite
+	echo "insert into contacts(locationId,type,contact) values(338,3,'obchod@biovavrinec.cz');" | callSqlite
+	echo "update contacts set contact='http://www.biovavrinec.cz/biofarma' where _id=1050;" | callSqlite
+	echo "insert into contacts(locationId,type,contact) values(338,5,'http://www.biovavrinec.cz/eshop');" | callSqlite
+}
+
 function addBookmarkColumn()
 {
 	echo 'ALTER TABLE locations ADD COLUMN bookmark INTEGER NOT NULL DEFAULT 0;' | callSqlite
