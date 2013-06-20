@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.HnutiDuha" parent="Theme.Sherlock">
+        <item name="actionBarStyle">@style/Widget.HnutiDuha.ActionBar</item>
+    </style>
+
+    <style name="Widget.HnutiDuha.ActionBar" parent="Widget.Sherlock.ActionBar">
+        <item name="titleTextStyle">@style/HnutiDuha.ActionBar.TitleTextStyle</item>
+        <item name="android:background">@drawable/bar_background</item>
+        <item name="background">@drawable/bar_background</item>
+    </style>
+
+    <style name="HnutiDuha.ActionBar.TitleTextStyle" parent="@style/TextAppearance.Sherlock.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/DuhaTextGreen</item>
+    </style>
+
+</resources>

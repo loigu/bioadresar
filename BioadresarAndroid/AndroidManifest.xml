@@ -31,15 +31,14 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/logo_hnuti_duha"
         android:label="@string/app_name"
-        android:theme="@style/Theme.Sherlock" >
-        >
+        android:theme="@style/Theme.HnutiDuha" >
         <uses-library android:name="com.google.android.maps" />
 
         <activity
             android:name=".MainMenuActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name_uppercase" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

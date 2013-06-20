@@ -60,5 +60,6 @@
     <string name="map_activity_name">MAPA</string>
     <string name="list_activity_name">SEZNAM</string>
     <string name="bookmarks_activity_name">OBLÍBENÉ</string>
+    <string name="app_name_uppercase">ADRESÁŘ FARMÁŘŮ</string>
 
 </resources>

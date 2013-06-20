@@ -129,8 +129,20 @@ public class LocationCache implements LocationListener {
 		}
 		onLocationChanged(lastLocation);
 		
-		usedLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000 * 60, 20, this);
-		usedLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000 * 60, 20, this);
+		try {
+			usedLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000 * 60, 20, this);
+		} 
+		catch (IllegalArgumentException e) 
+		{
+			Log.w("gps", "can't request location updates from gps provider");
+		}
+		try {
+			usedLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000 * 60, 20, this);
+		} 
+		catch (IllegalArgumentException e) 
+		{
+			Log.w("gps", "can't request location updates from gps provider");
+		}
 		
 	}
 	

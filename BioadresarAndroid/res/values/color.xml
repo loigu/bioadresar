@@ -145,5 +145,6 @@
     <color name="DuhaBorderGray">#777777</color>
     <color name="DuhaBackgroundGray">#4c4c4c</color>
     <color name="DuhaTextGray">#909090</color>
+    <color name="DuhaTextGreen">#669900</color>
 
 </resources>
