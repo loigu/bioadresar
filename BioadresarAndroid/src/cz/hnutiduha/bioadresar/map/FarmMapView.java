@@ -48,6 +48,7 @@ public class FarmMapView extends TapControlledMapView {
 		super(context, attrs);
         List<Overlay> mapOverlays = this.getOverlays();
         Drawable farmMarker = this.getResources().getDrawable(R.drawable.map_marker);
+        // NOTE: it should be bound 1/34 higher (center of the shadow)
         farmMarker = FarmsOverlay.boundCenterBottom(farmMarker);
         farmOverlay = new FarmsOverlay(farmMarker, this);
         mapOverlays.add(farmOverlay);

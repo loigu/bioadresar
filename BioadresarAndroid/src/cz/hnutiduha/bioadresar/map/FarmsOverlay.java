@@ -40,9 +40,13 @@ public class FarmsOverlay extends ItemizedOverlay<OverlayItem> implements OnSing
 	private FarmMapView map;
 	private boolean isPinch = false;
 	private long firstBalloon = FarmInfo.INVALID_FARM_ID;
+	public static int markerWidth = 21;
+	public static int balloonYOffset = - 25;
 	
 	public FarmsOverlay(Drawable defaultMarker, FarmMapView map) {
 		super(defaultMarker);
+		markerWidth = defaultMarker.getIntrinsicWidth();
+		balloonYOffset = - defaultMarker.getIntrinsicHeight() * 25 / 34;
 		this.map = map;
 		populate();
 	}

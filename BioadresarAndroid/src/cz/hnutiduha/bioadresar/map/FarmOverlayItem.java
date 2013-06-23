@@ -21,6 +21,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.TextView;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
@@ -55,14 +56,11 @@ public class FarmOverlayItem extends OverlayItem implements OnClickListener{
 	private void createBalloon(Context context)
 	{
 		balloon = new FarmOverlayView(context, data);
+		
 		balloon.setOnClickListener(this);
 		View closeRegion = (View) balloon.findViewById(R.id.balloon_close);
 		if (closeRegion != null)
 			closeRegion.setVisibility(View.GONE);
-			
-		View disclosureRegion = balloon.findViewById(R.id.balloon_disclosure);
-		if (disclosureRegion != null)
-			disclosureRegion.setVisibility(View.VISIBLE);
 		
 	}
 	
@@ -75,20 +73,25 @@ public class FarmOverlayItem extends OverlayItem implements OnClickListener{
 			isRecycled = false;
 		}
 		
+		// make sure the balloon won't be too big
+		TextView header = (TextView)balloon.findViewById(R.id.balloon_item_title);
+		header.setMaxWidth(map.getWidth() / 2);
+		
 		MapView.LayoutParams params = new MapView.LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, getPoint(),
-				5, -48, MapView.LayoutParams.RIGHT);
+				0, FarmsOverlay.balloonYOffset, MapView.LayoutParams.RIGHT);
 		params.mode = MapView.LayoutParams.MODE_MAP;
 		
-		balloon.setVisibility(View.VISIBLE);
 		
-		map.centerOnGeoPoint(map.offsetBy(getPoint(), -100, 0));
+		balloon.setVisibility(View.VISIBLE);
 		
 		if (isRecycled) {
 			balloon.setLayoutParams(params);
 		} else {
 			map.addView(balloon, params);
 		}
+		
+		map.centerOnGeoPoint(map.offsetBy(getPoint(), - map.getWidth() / 4 - FarmsOverlay.markerWidth , 0));
 		
 		return true;
 	}

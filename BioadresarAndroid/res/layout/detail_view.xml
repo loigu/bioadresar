@@ -21,32 +21,25 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_gravity="center_vertical|center_horizontal"
-    android:layout_margin="10dp"
+    android:background="@drawable/background"
     android:orientation="vertical" >
 
     <ScrollView
         android:id="@+id/scrollView1"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp" >
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:orientation="vertical" >
 
-            <ImageView
-                android:id="@+id/imageView2"
-                android:layout_width="fill_parent"
-                android:layout_height="5dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/duha_border_green" />
-
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/DuhaBackgroundGray"
-                android:gravity="center_vertical"
-                android:minHeight="60dp" >
+                android:background="@drawable/header_background"
+                android:gravity="center_vertical" >
 
                 <TextView
                     android:id="@+id/farmName"
@@ -61,8 +54,8 @@
 
                 <ImageView
                     android:id="@+id/mapIcon"
-                    android:layout_width="60dp"
-                    android:layout_height="fill_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:adjustViewBounds="true"
                     android:gravity="right"
                     android:scaleType="fitStart"
@@ -70,12 +63,12 @@
 
                 <ImageView
                     android:id="@+id/bookmarkIcon"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="0.1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
                     android:gravity="right"
-                    android:src="@android:drawable/btn_star_big_off"
-                    android:visibility="gone" />
+                    android:scaleType="fitStart"
+                    android:src="@drawable/bookmark_icon" />
             </LinearLayout>
 
             <LinearLayout
@@ -96,6 +89,8 @@
                         android:id="@+id/productionLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
                         android:orientation="vertical" >
 
                         <TextView
@@ -112,21 +107,23 @@
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:textColor="@color/DuhaTextGray" />
-
-                        <ImageView
-                            android:id="@+id/imageView1"
-                            android:layout_width="fill_parent"
-                            android:layout_height="2dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/duha_border_gray" />
                     </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/imageView1"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/duha_border_gray" />
 
                     <LinearLayout
                         android:id="@+id/activitiesLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
                         android:orientation="vertical" >
 
                         <TextView
@@ -143,21 +140,23 @@
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:textColor="@color/DuhaTextGray" />
-
-                        <ImageView
-                            android:id="@+id/ImageView01"
-                            android:layout_width="fill_parent"
-                            android:layout_height="2dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/duha_border_gray" />
                     </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/ImageView01"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/duha_border_gray" />
 
                     <LinearLayout
                         android:id="@+id/descriptionLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
                         android:orientation="vertical" >
 
                         <TextView
@@ -174,131 +173,140 @@
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:textColor="@color/DuhaTextGray" />
-
-                        <ImageView
-                            android:id="@+id/ImageView02"
-                            android:layout_width="fill_parent"
-                            android:layout_height="2dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/duha_border_gray" />
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/textView1"
-                        android:layout_width="wrap_content"
+                    <ImageView
+                        android:id="@+id/ImageView02"
+                        android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/contact"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textColor="@color/Black" />
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/duha_border_gray" />
 
                     <LinearLayout
-                        android:id="@+id/phonesLayout"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content" >
+                        android:id="@+id/contactLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:orientation="vertical" >
 
                         <TextView
-                            android:id="@+id/phoneLabel"
+                            android:id="@+id/textView1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:minWidth="50dip"
-                            android:text="@string/phone"
+                            android:text="@string/contact"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
                             android:textColor="@color/Black" />
 
                         <LinearLayout
-                            android:id="@+id/phoneListLayout"
+                            android:id="@+id/phonesLayout"
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:gravity="center_vertical"
-                            android:orientation="vertical" >
+                            android:layout_height="wrap_content" >
+
+                            <TextView
+                                android:id="@+id/phoneLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:minWidth="50dip"
+                                android:text="@string/phone"
+                                android:textColor="@color/Black" />
+
+                            <LinearLayout
+                                android:id="@+id/phoneListLayout"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:gravity="center_vertical"
+                                android:orientation="vertical" >
+                            </LinearLayout>
                         </LinearLayout>
-                    </LinearLayout>
 
-                    <LinearLayout
-                        android:id="@+id/addressLayout"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content" >
-
-                        <TextView
-                            android:id="@+id/addressLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:minWidth="50dip"
-                            android:text="@string/address"
-                            android:textColor="@color/Black" />
-
-                        <TextView
-                            android:id="@+id/addressText"
+                        <LinearLayout
+                            android:id="@+id/addressLayout"
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:textColor="@color/DuhaTextGray" />
-                    </LinearLayout>
+                            android:layout_height="wrap_content" >
 
-                    <LinearLayout
-                        android:id="@+id/webLayout"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content" >
+                            <TextView
+                                android:id="@+id/addressLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:minWidth="50dip"
+                                android:text="@string/address"
+                                android:textColor="@color/Black" />
 
-                        <TextView
-                            android:id="@+id/webLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:minWidth="50dip"
-                            android:text="@string/web"
-                            android:textColor="@color/Black" />
+                            <TextView
+                                android:id="@+id/addressText"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:textColor="@color/DuhaTextGray" />
+                        </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/webText"
+                        <LinearLayout
+                            android:id="@+id/webLayout"
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:textColor="@color/DuhaTextGray" />
-                    </LinearLayout>
+                            android:layout_height="wrap_content" >
 
-                    <LinearLayout
-                        android:id="@+id/eshopLayout"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content" >
+                            <TextView
+                                android:id="@+id/webLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:minWidth="50dip"
+                                android:text="@string/web"
+                                android:textColor="@color/Black" />
 
-                        <TextView
-                            android:id="@+id/eshopLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:minWidth="50dip"
-                            android:text="@string/eshop"
-                            android:textColor="@color/Black" />
+                            <TextView
+                                android:id="@+id/webText"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:textColor="@color/DuhaTextGray" />
+                        </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/eshopText"
+                        <LinearLayout
+                            android:id="@+id/eshopLayout"
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:textColor="@color/DuhaTextGray" />
-                    </LinearLayout>
+                            android:layout_height="wrap_content" >
 
-                    <LinearLayout
-                        android:id="@+id/emailLayout"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content" >
+                            <TextView
+                                android:id="@+id/eshopLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:minWidth="50dip"
+                                android:text="@string/eshop"
+                                android:textColor="@color/Black" />
 
-                        <TextView
-                            android:id="@+id/emailLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:minWidth="50dip"
-                            android:text="@string/email"
-                            android:textColor="@color/Black" />
+                            <TextView
+                                android:id="@+id/eshopText"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:textColor="@color/DuhaTextGray" />
+                        </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/emailText"
+                        <LinearLayout
+                            android:id="@+id/emailLayout"
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:textColor="@color/DuhaTextGray" />
+                            android:layout_height="wrap_content" >
+
+                            <TextView
+                                android:id="@+id/emailLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:minWidth="50dip"
+                                android:text="@string/email"
+                                android:textColor="@color/Black" />
+
+                            <TextView
+                                android:id="@+id/emailText"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:textColor="@color/DuhaTextGray" />
+                        </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -306,7 +314,7 @@
             <ImageView
                 android:id="@+id/imageView42"
                 android:layout_width="fill_parent"
-                android:layout_height="5dp"
+                android:layout_height="wrap_content"
                 android:scaleType="fitXY"
                 android:src="@drawable/duha_border_green" />
         </LinearLayout>

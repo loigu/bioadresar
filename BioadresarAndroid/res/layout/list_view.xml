@@ -16,39 +16,40 @@
     You should have received a copy of the GNU General Public License
     along with BioAdresar.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/listview"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent"
+    android:background="@drawable/background"
+    android:orientation="vertical" >
 
-    <!-- maybe this should be table -->
-
-    <LinearLayout
-        android:id="@+id/list_uber_layout"
+    <ScrollView
+        android:id="@+id/listview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:orientation="vertical" >
+        android:layout_margin="10dp" >
 
-        <ImageView
-            android:id="@+id/imageView1"
-            android:layout_width="fill_parent"
-            android:layout_height="5dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/duha_border_green" />
+        <!-- maybe this should be table -->
 
         <LinearLayout
-            android:id="@+id/list_main_layout"
+            android:id="@+id/list_uber_layout"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/list_main_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical" >
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/next_25_button"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:text="@string/next25" />
         </LinearLayout>
+    </ScrollView>
 
-        <Button
-            android:id="@+id/next_25_button"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:enabled="false"
-            android:text="@string/next25" />
-    </LinearLayout>
-
-</ScrollView>
+</LinearLayout>

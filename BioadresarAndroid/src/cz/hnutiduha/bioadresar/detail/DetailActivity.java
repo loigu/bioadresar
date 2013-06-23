@@ -58,11 +58,8 @@ public class DetailActivity extends SherlockActivity implements OnClickListener{
 	
 	static void loadBitmaps(Context context)
 	{
-		int drawableId  = context.getResources().getIdentifier("btn_star_big_off", "drawable", "android");
-	    notBookmarkedBitmap = BitmapFactory.decodeResource(context.getResources(), drawableId);
-	    
-	    drawableId  = context.getResources().getIdentifier("btn_star_big_on", "drawable", "android");
-	    bookmarkedBitmap = BitmapFactory.decodeResource(context.getResources(), drawableId);
+	    notBookmarkedBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.bookmark_icon);
+	    bookmarkedBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.bookmarked_icon);
 	}
 	
     /** Called when the activity is first created. */

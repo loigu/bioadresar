@@ -13,6 +13,7 @@
 
     <style name="HnutiDuha.ActionBar.TitleTextStyle" parent="@style/TextAppearance.Sherlock.Widget.ActionBar.Title">
         <item name="android:textColor">@color/DuhaTextGreen</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
 </resources>
