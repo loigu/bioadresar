@@ -50,7 +50,9 @@
                     android:gravity="left"
                     android:text="Farm name"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:textColor="@color/White" />
+                    android:textColor="@color/White"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:id="@+id/mapIcon"
@@ -89,7 +91,6 @@
                         android:id="@+id/productionLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
                         android:layout_marginTop="10dp"
                         android:orientation="vertical" >
 
@@ -98,31 +99,30 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/production"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:textColor="@color/Black" />
+                            android:textColor="@color/Black"
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/productionText"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
-                            android:textColor="@color/DuhaTextGray" />
-                    </LinearLayout>
+                            android:textColor="@color/DuhaTextGray"
+                            android:textSize="14sp" />
 
-                    <ImageView
-                        android:id="@+id/imageView1"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/duha_border_gray" />
+                        <ImageView
+                            android:id="@+id/imageView1"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/duha_border_gray" />
+                    </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/activitiesLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
                         android:layout_marginTop="10dp"
                         android:orientation="vertical" >
 
@@ -131,31 +131,30 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/activities"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:textColor="@color/Black" />
+                            android:textColor="@color/Black"
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/activitiesText"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
-                            android:textColor="@color/DuhaTextGray" />
-                    </LinearLayout>
+                            android:textColor="@color/DuhaTextGray"
+                            android:textSize="14sp" />
 
-                    <ImageView
-                        android:id="@+id/ImageView01"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/duha_border_gray" />
+                        <ImageView
+                            android:id="@+id/ImageView01"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/duha_border_gray" />
+                    </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/descriptionLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
                         android:layout_marginTop="10dp"
                         android:orientation="vertical" >
 
@@ -164,31 +163,30 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/description"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:textColor="@color/Black" />
+                            android:textColor="@color/Black"
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/descriptionText"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
-                            android:textColor="@color/DuhaTextGray" />
-                    </LinearLayout>
+                            android:textColor="@color/DuhaTextGray"
+                            android:textSize="14sp" />
 
-                    <ImageView
-                        android:id="@+id/ImageView02"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/duha_border_gray" />
+                        <ImageView
+                            android:id="@+id/ImageView02"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/duha_border_gray" />
+                    </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/contactLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
                         android:layout_marginTop="10dp"
                         android:orientation="vertical" >
 
@@ -197,8 +195,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/contact"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:textColor="@color/Black" />
+                            android:textColor="@color/Black"
+                            android:textSize="16sp" />
 
                         <LinearLayout
                             android:id="@+id/phonesLayout"
@@ -212,7 +210,8 @@
                                 android:layout_gravity="center_vertical"
                                 android:minWidth="50dip"
                                 android:text="@string/phone"
-                                android:textColor="@color/Black" />
+                                android:textColor="@color/Black"
+                                android:textSize="14sp" />
 
                             <LinearLayout
                                 android:id="@+id/phoneListLayout"
@@ -220,7 +219,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:gravity="center_vertical"
-                                android:orientation="vertical" >
+                                android:orientation="vertical"
+                                android:textSize="14sp" >
                             </LinearLayout>
                         </LinearLayout>
 
@@ -235,14 +235,16 @@
                                 android:layout_height="wrap_content"
                                 android:minWidth="50dip"
                                 android:text="@string/address"
-                                android:textColor="@color/Black" />
+                                android:textColor="@color/Black"
+                                android:textSize="14sp" />
 
                             <TextView
                                 android:id="@+id/addressText"
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center_vertical"
-                                android:textColor="@color/DuhaTextGray" />
+                                android:textColor="@color/DuhaTextGray"
+                                android:textSize="14sp" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -256,14 +258,16 @@
                                 android:layout_height="wrap_content"
                                 android:minWidth="50dip"
                                 android:text="@string/web"
-                                android:textColor="@color/Black" />
+                                android:textColor="@color/Black"
+                                android:textSize="14sp" />
 
                             <TextView
                                 android:id="@+id/webText"
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center_vertical"
-                                android:textColor="@color/DuhaTextGray" />
+                                android:textColor="@color/DuhaTextGray"
+                                android:textSize="14sp" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -277,14 +281,16 @@
                                 android:layout_height="wrap_content"
                                 android:minWidth="50dip"
                                 android:text="@string/eshop"
-                                android:textColor="@color/Black" />
+                                android:textColor="@color/Black"
+                                android:textSize="14sp" />
 
                             <TextView
                                 android:id="@+id/eshopText"
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center_vertical"
-                                android:textColor="@color/DuhaTextGray" />
+                                android:textColor="@color/DuhaTextGray"
+                                android:textSize="14sp" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -298,14 +304,16 @@
                                 android:layout_height="wrap_content"
                                 android:minWidth="50dip"
                                 android:text="@string/email"
-                                android:textColor="@color/Black" />
+                                android:textColor="@color/Black"
+                                android:textSize="14sp" />
 
                             <TextView
                                 android:id="@+id/emailText"
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center_vertical"
-                                android:textColor="@color/DuhaTextGray" />
+                                android:textColor="@color/DuhaTextGray"
+                                android:textSize="14sp" />
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
