@@ -312,7 +312,8 @@ function addLocations()
 		| callMysql \
 		| sed -e 's/\t/\;/g' \
 		| while IFS=';' read locationId typ lat lon name divizionName comment; do 
-			notNULL "${divizionName}" && name="${name} (${divizionName})"
+# division name is mostly duplicit
+#			notNULL "${divizionName}" && name="${name} (${divizionName})"
 			typeId=$(eval echo \$\{typ_${typ}\})
 			echo "INSERT INTO locations(_id, name, gpsLatitude, gpsLongtitude, description, typeId) VALUES(${locationId}, '${name}', ${lat}, ${lon}, $(emptyToNull ${comment}), ${typeId});"
 			# | callSqlite
@@ -537,8 +538,6 @@ function call()
 	addCategoriesToLocations
 	addActivitiesToLocations
 
-	removeMysql
-
 	fixtures_v4
 	fixtures_v5
 	
@@ -546,6 +545,9 @@ function call()
 	addBookmarkColumn # version 8
 	
 	fixtures_v9
+	fixtures_v10
+	
+	removeMysql
 }
 
 call
