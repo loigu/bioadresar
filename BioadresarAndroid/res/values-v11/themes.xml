@@ -3,10 +3,12 @@
 
     <style name="Theme.HnutiDuhaTheme" parent="Theme.Sherlock">
         <item name="actionBarStyle">@style/Widget.Styled.ActionBar</item>
+        <item name="android:actionBarStyle">@style/Widget.Styled.ActionBar</item>
     </style>
 
     <style name="Widget.Styled.ActionBar" parent="Widget.Sherlock.ActionBar">
         <item name="android:titleTextStyle">@style/HnutiDuha.ActionBar.TitleTextStyle</item>
+        <item name="titleTextStyle">@style/HnutiDuha.ActionBar.TitleTextStyle</item>
         <item name="android:background">@drawable/bar_background</item>
         <item name="background">@drawable/bar_background</item>
     </style>

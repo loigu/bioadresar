@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.HnutiDuha" parent="Theme.Sherlock">
+    <style name="Theme.HnutiDuhaTheme" parent="Theme.Sherlock">
         <item name="actionBarStyle">@style/Widget.HnutiDuha.ActionBar</item>
     </style>
 
