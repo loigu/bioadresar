@@ -18,19 +18,19 @@
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="60dp"
     android:orientation="vertical" >
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:layout_margin="0dp"
         android:layout_weight="1" >
 
         <LinearLayout
             android:id="@+id/toDetailArea"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:layout_weight="1"
             android:gravity="left"
             android:orientation="vertical" >
@@ -46,13 +46,6 @@
                 android:textSize="16sp" />
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="fill_parent"
-                android:layout_weight="0.1"
-                android:orientation="vertical" >
-            </LinearLayout>
-
-            <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
@@ -63,14 +56,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
-                    android:layout_weight="0"
                     android:minHeight="20dip"
                     android:orientation="horizontal" >
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="fill_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1" >
                 </LinearLayout>
 
@@ -79,7 +71,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
-                    android:layout_weight="0"
                     android:gravity="right"
                     android:text="Medium Text"
                     android:textColor="@color/DimGray"
@@ -90,15 +81,15 @@
         <LinearLayout
             android:id="@+id/toMapArea"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:layout_gravity="left"
             android:layout_marginLeft="5dip"
             android:gravity="right" >
 
             <ImageView
                 android:id="@+id/imageView1"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
                 android:layout_gravity="right"
                 android:src="@drawable/to_map_icon" />
         </LinearLayout>
