@@ -23,10 +23,10 @@
     android:layout_height="wrap_content"
     android:background="@drawable/map_objectname_background"
     android:orientation="horizontal"
-    android:paddingBottom="0dp"
+    android:paddingBottom="5dp"
     android:paddingLeft="10dip"
     android:paddingRight="40dp"
-    android:paddingTop="0dip" >
+    android:paddingTop="2dp" >
 
     <LinearLayout
         android:id="@id/balloon_inner_layout"
