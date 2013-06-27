@@ -28,9 +28,9 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 
-import cz.hnutiduha.bioadresar.R.id;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -46,6 +46,8 @@ import android.util.Log;
 public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 
 	private static String DB_PATH = "/data/data/cz.hnutiduha.bioadresar/databases/";
+	
+	private static int SOURCE_ID = 1; 
 
 	private static String DB_NAME = "bioadr";
 	
@@ -54,12 +56,13 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 	private static Context appContext = null;
 	
 	protected SQLiteDatabase db;
+	private ConfigDb configDb = null;
 	
 	private HashMap<Long, String> categories = null;
 	private HashMap<Long, String> products = null;
 	private HashMap<Long, String> activities = null;
 	
-	private static final int databaseVersion = 11;
+	private static final int databaseVersion = 12;
 	
 	private HnutiduhaFarmDb(Context context) {
 		super(context, DB_NAME, null, databaseVersion);
@@ -192,12 +195,15 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 	public void openDb(int flags) throws SQLException {
 		String path = DB_PATH + DB_NAME;
 		db = SQLiteDatabase.openDatabase(path, null, flags);
+		configDb = new ConfigDb(DB_PATH);
 	}
 
 	@Override
 	public synchronized void close() {
 		if (db != null)
 			db.close();
+		if (configDb != null)
+			configDb.close();
 
 		super.close();
 	}
@@ -210,13 +216,12 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 		//TODO: implement this
 	}
 	
-	private static final String[] farmInfoColumns = { "_id", "name", "gpsLatitude", "gpsLongtitude", "bookmark" };
+	private static final String[] farmInfoColumns = { "_id", "name", "gpsLatitude", "gpsLongtitude" };
 	
 	// expects cursor with valid entry created with columns farmInfoColumns
 	private FarmInfo fromCursor(Cursor c)
 	{
-		return new FarmInfo(this, c.getLong(0), c.getString(1), c.getDouble(2), c.getDouble(3),
-				(c.getLong(4) == 1) ? true : false);
+		return new FarmInfo(this, c.getLong(0), c.getString(1), c.getDouble(2), c.getDouble(3));
 	}
 	
 	public Hashtable<Long, FarmInfo> getFarmsInRectangle(double lat1, double lon1, double lat2, double lon2) {
@@ -271,9 +276,23 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 	
 	private void loadBookmarkedFarms()
 	{
-		String selection = "bookmark = 1";
-		Cursor c = db.query("locations", farmInfoColumns, selection, null, null, null, null);
 		bookmarkedFarmsCache = new LinkedList<FarmInfo>();
+		Set<Long> bookmarks = configDb.getBookmarks(SOURCE_ID);
+		
+		if (bookmarks.isEmpty())
+			return;
+		
+		StringBuilder bldr = new StringBuilder("_id IN (");
+		boolean first = true;
+		for (Long id : bookmarks) {
+			if (!first)
+				bldr.append(',');
+			bldr.append(id);
+			first = false;
+		}
+		bldr.append(')');
+		
+		Cursor c = db.query("locations", farmInfoColumns, bldr.toString() , null, null, null, null);
 		
 		c.moveToNext();
 		FarmInfo farmInfo;
@@ -298,19 +317,9 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 	}
 	
 	// return state of the farm
-	public void setBookmark(FarmInfo farm, boolean bookmarked)
+	protected void setBookmark(FarmInfo farm, boolean bookmarked)
 	{
-		ContentValues args = new ContentValues();
-		args.put("bookmark", String.valueOf(bookmarked ? 1 : 0));
-		int updated = db.update("locations", args, "_id=?", new String[] {String.valueOf(farm.id)});
-		
-		if (updated == 0)
-		{
-			Log.e("db", "can't store bookmark");
-			return;
-		}
-		
-		farm.bookmarked = bookmarked;
+		configDb.setBookmarked(SOURCE_ID, farm.id, bookmarked);
 		
 		if (bookmarkedFarmsCache == null)
 			return;
@@ -324,16 +333,23 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 			bookmarkedFarmsCache.remove(farm);
 	}
 	
+	protected boolean isBookmarked(FarmInfo farm)
+	{
+		if (bookmarkedFarmsCache != null)
+			return bookmarkedFarmsCache.contains(farm);
+		
+		return configDb.isBookmarked(SOURCE_ID, farm.id);
+	}
+	
 	public FarmInfo getFarm(long id) {
 		FarmInfo ret = null;
 		
-		String[] columns = new String[] { "name", "gpsLatitude", "gpsLongtitude", "bookmark" };
+		String[] columns = new String[] { "name", "gpsLatitude", "gpsLongtitude",};
 		String[] args = { String.valueOf(id) };
 		Cursor c = db.query("locations", columns, "_id = ?", args, null, null, null);
 		c.moveToNext();
 		if (!c.isAfterLast()) {
-			ret = new FarmInfo(this, id, c.getString(0), c.getDouble(1), c.getDouble(2),
-					(c.getLong(3) == 1) ? true : false);
+			ret = new FarmInfo(this, id, c.getString(0), c.getDouble(1), c.getDouble(2));
 		}
 		c.close();
 		

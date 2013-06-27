@@ -520,11 +520,6 @@ function fixtures_v10
 	echo "insert into contacts(locationId,type,contact) values(338,5,'http://www.biovavrinec.cz/eshop');" | callSqlite
 }
 
-function addBookmarkColumn()
-{
-	echo 'ALTER TABLE locations ADD COLUMN bookmark INTEGER NOT NULL DEFAULT 0;' | callSqlite
-}
-
 function call()
 {
 	importMysql
@@ -542,10 +537,11 @@ function call()
 	fixtures_v5
 	
 	addRegions # version 7
-	addBookmarkColumn # version 8
 	
 	fixtures_v9
 	fixtures_v10
+	
+	# version 12
 	
 	removeMysql
 }

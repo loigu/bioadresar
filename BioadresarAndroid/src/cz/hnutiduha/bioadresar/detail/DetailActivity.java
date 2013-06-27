@@ -138,7 +138,7 @@ public class DetailActivity extends SherlockActivity implements OnClickListener{
     
     private void updateBookmarked()
     {	
-    	if (currentFarm.bookmarked)
+    	if (currentFarm.isBookmarked())
     		bookmarkView.setImageBitmap(bookmarkedBitmap);
     	else
     		bookmarkView.setImageBitmap(notBookmarkedBitmap);
@@ -223,7 +223,7 @@ public class DetailActivity extends SherlockActivity implements OnClickListener{
 	public void onClick(View v) {
 		if (v.getId() == R.id.bookmarkIcon)
 		{
-	    	HnutiduhaFarmDb.getDefaultDb(this).setBookmark(currentFarm, !currentFarm.bookmarked);
+			currentFarm.setBookmarked(!currentFarm.isBookmarked());
 	    	this.updateBookmarked();
 		}
 		

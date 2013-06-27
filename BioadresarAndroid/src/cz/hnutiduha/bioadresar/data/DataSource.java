@@ -7,8 +7,6 @@ public interface DataSource {
 	
 	public FarmInfo getFarm(long id);
 	
-	public void setBookmark(FarmInfo farm, boolean bookmarked);
-	
 	public Hashtable<Long, FarmInfo> getFarmsInRectangle(double lat1, double lon1, double lat2, double lon2);
 	
 	public Hashtable<Long, FarmInfo> getFilteredFarmsInRectangle(double lat1, double lon1, double lat2, double lon2, DataFilter filter);

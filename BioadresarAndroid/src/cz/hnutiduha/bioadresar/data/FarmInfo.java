@@ -45,7 +45,6 @@ public class FarmInfo implements OnClickListener{
 	public long id;
 	public String name;
 	public double lat, lon;
-	public boolean bookmarked;
 	
 	HnutiduhaFarmDb source;
 	
@@ -54,6 +53,7 @@ public class FarmInfo implements OnClickListener{
 	protected List<ProductWithComment> products = null;
 	protected List<ActivityWithComment> activities = null;
 	protected List<Long> categories = null;
+	protected Boolean bookmarked = null;
 	
 	private static final int viewTagTarget = 0xdeadbeef;
 	private static final String viewTargetMap = "map";
@@ -61,14 +61,13 @@ public class FarmInfo implements OnClickListener{
 	
 	private Location location = null;
 	
-	public FarmInfo(HnutiduhaFarmDb source, long id, String name, double lat, double lon, boolean bookmarked)
+	public FarmInfo(HnutiduhaFarmDb source, long id, String name, double lat, double lon)
 	{
 		this.source = source;
 		this.id = id;
 		this.name = name;
 		this.lat = lat;
 		this.lon = lon;
-		this.bookmarked = bookmarked;
 	}
 	
 	public static GeoPoint getGeoPoint(FarmInfo farm) {
@@ -255,6 +254,23 @@ public class FarmInfo implements OnClickListener{
 	{
 		view.setTag(viewTagTarget, viewTargetDetail);
     	view.setOnClickListener(this);
+	}
+	
+	public void setBookmarked(boolean shouldBeBookmarked)
+	{
+		source.setBookmark(this, shouldBeBookmarked);
+		Log.d("db", "setting bookmarked of " + this.id + " to " + shouldBeBookmarked);
+		this.bookmarked = Boolean.valueOf(shouldBeBookmarked);
+	}
+	
+	public boolean isBookmarked() {
+		if (bookmarked == null)
+		{
+			Log.d("db", "loading bookmark for " + this.id);
+			bookmarked = Boolean.valueOf(source.isBookmarked(this));
+		}
+		
+		return bookmarked.booleanValue();
 	}
 
 }
