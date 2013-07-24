@@ -496,6 +496,32 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 		return products.get(id);
 	}
 	
+	public ContainerDistribution fillContainerDistributionInfo(FarmInfo farm)
+	{
+		if (!farm.hasContainerDistribution)
+		{
+			return null;
+		}
+		
+		String[] columns = new String[] { "distributionPlace", "distributionTime", "customDistributionProvided" };
+		Cursor c = db.query("containerDistribution", columns, "locationId = " + farm.id, null, null, null, null);
+		
+		c.moveToNext();
+		if (c.isAfterLast())
+		{
+			return null;
+		}
+		
+		farm.containers = new ContainerDistribution();
+		farm.containers.places = c.getString(0).split(":");
+		farm.containers.time = c.getString(1);
+		farm.containers.customDistribution = c.getInt(2) == 1;
+	
+		c.close();
+		
+		return farm.containers;
+	}
+	
 	public String getActivityName(Long id) {
 		if (this.activities == null) {
 			this.loadActivityNames();

@@ -54,6 +54,7 @@ public class FarmInfo implements OnClickListener{
 	protected List<ActivityWithComment> activities = null;
 	protected List<Long> categories = null;
 	protected Boolean bookmarked = null;
+	protected ContainerDistribution containers = null;
 	
 	private static final int viewTagTarget = 0xdeadbeef;
 	private static final String viewTargetMap = "map";
@@ -103,10 +104,34 @@ public class FarmInfo implements OnClickListener{
 		return products;
 	}
 	
+	boolean hasContainerDistribution = false;
+	
+	public ContainerDistribution getContainerDistributionInfo()
+	{
+		if (containers != null)
+			return containers;
+		
+		getActivities();
+		if (hasContainerDistribution == false)
+			return null;
+		
+		return source.fillContainerDistributionInfo(this);
+	}
+	
 	public List<ActivityWithComment> getActivities()
 	{
 		if (activities == null)
+		{
 			source.fillActivities(this);
+			getActivities();
+			for (ActivityWithComment activity : activities)
+			{
+				if (activity.getName(source).equals("bedýnkový prodej"))
+				{
+					hasContainerDistribution = true;
+				}
+			}
+		}
 		
 		return activities;
 	}
@@ -203,6 +228,52 @@ public class FarmInfo implements OnClickListener{
 			Log.e("gui", "farm set as on click listener with unknown target tag " + targetTag.toString());
 	}
 	
+	public void fillContainerDistribution(View parent, int layoutId, int placesTextId, int timeLayoutId, int timeTextId, int customTextId)
+	{
+		// supports?
+		ContainerDistribution distr = getContainerDistributionInfo();
+		if (distr == null || distr.places == null)
+		{
+			((LinearLayout)parent.findViewById(layoutId)).setVisibility(LinearLayout.GONE);
+			return;
+		}
+		
+		TextView places = (TextView)parent.findViewById(placesTextId);
+		boolean first = true;
+		// places
+		for (String place : distr.places)
+		{
+			/*
+			if (!first)
+			{
+				places.append("<br/>");
+				first = false;
+			}
+			*/
+			places.append(place);
+		}
+		
+		// time
+		if (distr.time == null)
+		{
+			((LinearLayout)parent.findViewById(timeLayoutId)).setVisibility(LinearLayout.GONE);
+		}
+		else
+		{
+			((TextView)parent.findViewById(timeTextId)).setText(distr.time);
+		}
+		
+		// custom
+		if (distr.customDistribution)
+		{
+			((TextView)parent.findViewById(customTextId)).setText("ano");
+		}
+		else
+		{
+			((TextView)parent.findViewById(customTextId)).setText("ne");
+		}
+	}
+	
 	public void fillInfoToView(View parent, int nameTextId, int categoriesLayoutId, Location distanceFrom, int distanceTextId)
 	{	
 		// name
@@ -243,6 +314,8 @@ public class FarmInfo implements OnClickListener{
 			else
 				distanceText.setText(String.valueOf(m) + " m");
 		}
+		
+		//FIXME: container distribution
 	}
 	
 	public void setToMapListener(View view)

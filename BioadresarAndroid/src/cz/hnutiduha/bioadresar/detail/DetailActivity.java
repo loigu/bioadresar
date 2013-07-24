@@ -217,6 +217,8 @@ public class DetailActivity extends SherlockActivity implements OnClickListener{
         	address += contact.city;
         }
     	setFieldTextOrHideEmpty(address, Linkify.MAP_ADDRESSES, R.id.addressLabel, R.id.addressText);
+    	
+    	currentFarm.fillContainerDistribution(this.view, R.id.containerLayout, R.id.containerDistributionPlacesText, R.id.containerDistributionTimeLayout, R.id.conteinerDistributionTimeText, R.id.customConteinerDistributionText);
     }
 
 	@Override

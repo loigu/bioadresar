@@ -152,6 +152,99 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/containerLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="vertical" >
+
+                        <TextView
+                            android:id="@+id/containerLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/containers"
+                            android:textColor="@color/Black"
+                            android:textSize="16sp" />
+
+                        <LinearLayout
+                            android:id="@+id/containerDistributionPlacesLayout"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content" >
+
+                            <TextView
+                                android:id="@+id/containerDistributionPlacesLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:minWidth="100dip"
+                                android:text="@string/containerDistributionPlaces"
+                                android:textColor="@color/Black"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/containerDistributionPlacesText"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:textColor="@color/DuhaTextGray"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/containerDistributionTimeLayout"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content" >
+
+                            <TextView
+                                android:id="@+id/containerDistributionTimeLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:minWidth="100dip"
+                                android:text="@string/containerDistributionTime"
+                                android:textColor="@color/Black"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/conteinerDistributionTimeText"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:textColor="@color/DuhaTextGray"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/customContainerDistributionLayout"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content" >
+
+                            <TextView
+                                android:id="@+id/customContainerDistributionLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:minWidth="100dip"
+                                android:text="@string/customContainerDistribution"
+                                android:textColor="@color/Black"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/customConteinerDistributionText"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:textColor="@color/DuhaTextGray"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:id="@+id/imageView42"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/duha_border_gray" />
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:id="@+id/descriptionLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
