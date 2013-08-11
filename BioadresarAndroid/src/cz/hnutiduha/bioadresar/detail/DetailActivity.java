@@ -93,7 +93,7 @@ public class DetailActivity extends SherlockActivity implements OnClickListener{
     @Override
     public boolean onCreateOptionsMenu(final Menu menu)
     {
-    	MenuHandler.fillMenu(menu, this);
+    	MenuHandler.fillMenu(menu, this, false);
     	menu.removeItem(R.id.mapLink);
     	menu.removeItem(R.id.locationLabel);
     	

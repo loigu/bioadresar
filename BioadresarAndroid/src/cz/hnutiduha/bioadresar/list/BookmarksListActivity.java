@@ -65,7 +65,7 @@ public class BookmarksListActivity extends ListActivity {
     @Override
     public boolean onCreateOptionsMenu(final Menu menu)
     {
-    	MenuHandler.fillMenu(menu, this);
+    	MenuHandler.fillMenu(menu, this, false);
     	menu.removeItem(R.id.bookmarkListLink);
     	
     	return true;

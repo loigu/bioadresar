@@ -29,13 +29,17 @@ import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.LocationCache;
+import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.widget.SearchView;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -203,7 +207,7 @@ public class ListActivity extends SherlockActivity implements View.OnClickListen
     @Override
     public boolean onCreateOptionsMenu(final Menu menu)
     {	
-    	MenuHandler.fillMenu(menu, this);
+    	MenuHandler.fillMenu(menu, this, true);
     	menu.removeItem(R.id.listLink);
     	
     	return true;
@@ -226,7 +230,21 @@ public class ListActivity extends SherlockActivity implements View.OnClickListen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.list_view);
+        setContentView(R.layout.list_view);        
+        
+        // Get the intent, verify the action and get the query
+        Intent intent = getIntent();
+        HnutiduhaFarmDb db = HnutiduhaFarmDb.getDefaultDb(this);
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+          String query = intent.getStringExtra(SearchManager.QUERY);
+          db.setFilter(query);
+        }
+        else
+        {
+        	db.setFilter(null);
+        }
+        // typing on keyboard will fire up search
+        setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
         
         view = (LinearLayout) findViewById(R.id.list_main_layout);
         context = view.getContext();

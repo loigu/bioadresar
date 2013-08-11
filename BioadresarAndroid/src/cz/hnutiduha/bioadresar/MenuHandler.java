@@ -11,6 +11,7 @@ import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SubMenu;
+import com.actionbarsherlock.widget.SearchView;
 
 import cz.hnutiduha.bioadresar.list.ListActivity;
 import cz.hnutiduha.bioadresar.list.BookmarksListActivity;
@@ -40,11 +41,23 @@ public class MenuHandler implements OnNavigationListener{
 		*/
 	}
 	
-	public static boolean fillMenu(final Menu menu, Context context)
+	public static boolean fillMenu(final Menu menu, Context context, boolean searchable)
 	{
-		MenuItem foo = menu.add(0, R.id.homeLink, Menu.NONE, "");
+		MenuItem foo = menu.add(0, R.id.homeLink, 1, "");
 		foo.setIcon(R.drawable.menu_icon);
 		foo.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
+		
+		if (searchable)
+		{
+	        //Create the search view
+	        SearchView searchView = new SearchView(context);
+	        searchView.setQueryHint(context.getText(R.string.search_hint));
+
+	        menu.add(0, Menu.NONE, 0, "")
+	            .setIcon(R.drawable.search_icon)
+	            .setActionView(searchView)
+	            .setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItem.SHOW_AS_ACTION_ALWAYS);
+		}
 		
 		/* NOTE: dropDown is used now
 		SubMenu subMenu = menu.addSubMenu("");

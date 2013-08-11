@@ -58,11 +58,13 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 	protected SQLiteDatabase db;
 	private ConfigDb configDb = null;
 	
+	private String searchString = null;
+	
 	private HashMap<Long, String> categories = null;
 	private HashMap<Long, String> products = null;
 	private HashMap<Long, String> activities = null;
 	
-	private static final int databaseVersion = 13;
+	private static final int databaseVersion = 14;
 	
 	private HnutiduhaFarmDb(Context context) {
 		super(context, DB_NAME, null, databaseVersion);
@@ -208,8 +210,13 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 		super.close();
 	}
 
-	public void setFilter(DataFilter filter) {
-		//TODO: implement this
+	public void setFilter(String searchString) {
+		if (this.searchString != searchString)
+		{
+			allFarmsList = null;
+			farmsSortedFromLastLocation = null;
+		}
+		this.searchString = searchString;
 	}
 	
 	public void clearFilter() {
@@ -226,12 +233,21 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 	
 	public Hashtable<Long, FarmInfo> getFarmsInRectangle(double lat1, double lon1, double lat2, double lon2) {
 		
-		String selection = "gpsLatitude >= ? AND gpsLongtitude >= ? AND gpsLatitude <= ? AND gpsLongtitude <= ?";
+		String selection = "gpsLatitude >= " + Math.min(lat1, lat2) +
+				" AND gpsLongtitude >= " + Math.min(lon1, lon2) +
+				" AND gpsLatitude <= " + Math.max(lat1, lat2) +
+				" AND gpsLongtitude <= " + Math.max(lon1, lon2);
+		if (searchString != null)
+		{
+			selection += " AND locations MATCH '" + searchString + "'";
+		}
+		/*
 		String[] args = new String[] {
 				Double.toString(Math.min(lat1, lat2)), Double.toString(Math.min(lon1, lon2)),
 				Double.toString(Math.max(lat1, lat2)), Double.toString(Math.max(lon1, lon2))
 		};
-		Cursor c = db.query("locations", farmInfoColumns, selection, args, null, null, "gpsLatitude, gpsLongtitude");
+		*/
+		Cursor c = db.query("locations", farmInfoColumns, selection, null, null, null, "gpsLatitude, gpsLongtitude");
 		Hashtable<Long, FarmInfo> result = new Hashtable<Long, FarmInfo>();
 		
 		c.moveToNext();
@@ -256,7 +272,12 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 		
 		LinkedList<FarmInfo> res = new LinkedList<FarmInfo>();
 		
-		Cursor c = db.query("locations", farmInfoColumns, null, null, null, null, "gpsLatitude, gpsLongtitude");
+		String constraint = null;
+		if (searchString != null)
+		{
+			constraint = "locations MATCH '" + searchString + "'";
+		}
+		Cursor c = db.query("locations", farmInfoColumns, constraint, null, null, null, "gpsLatitude, gpsLongtitude");
 		c.moveToNext();
 		FarmInfo farmInfo;
 		while (!c.isAfterLast()) {
@@ -345,8 +366,7 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 		FarmInfo ret = null;
 		
 		String[] columns = new String[] { "name", "gpsLatitude", "gpsLongtitude",};
-		String[] args = { String.valueOf(id) };
-		Cursor c = db.query("locations", columns, "_id = ?", args, null, null, null);
+		Cursor c = db.query("locations", columns, "_id = " + id, null, null, null, null);
 		c.moveToNext();
 		if (!c.isAfterLast()) {
 			ret = new FarmInfo(this, id, c.getString(0), c.getDouble(1), c.getDouble(2));
@@ -381,10 +401,7 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 		String[] columns = new String[] { "categoryId" };
 		List<Long> categories = new LinkedList<Long>();
 		// TODO add category "Others" (164) and join with products (and find by products too - because product has category assigned too)
-		Cursor c = db.query("location_category", columns,
-				"locationId = ?", new String[] { (info.id + "") },
-				null, null, "categoryId"
-		);
+		Cursor c = db.query("location_category", columns, "locationId = " + info.id, null, null, null, "categoryId");
 		
 		c.moveToNext();
 		while (!c.isAfterLast()) {
@@ -561,8 +578,7 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 	/// @return {latitude, longtitude} or null
 	public double[] getRegionCoordinates(String name)
 	{
-		String [] args = new String[] { name };
-		Cursor c = db.query("regions", new String[] { "gpsLatitude", "gpsLongtitude" }, "name = ?", args, null, null, null);
+		Cursor c = db.query("regions", new String[] { "gpsLatitude", "gpsLongtitude" }, "name = ?", new String[] { name }, null, null, null);
 		c.moveToNext();
 		
 		double [] ret = null;

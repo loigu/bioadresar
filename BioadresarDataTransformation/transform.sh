@@ -7,6 +7,8 @@ export MYSQL_SCRIPT="$1"
 export TARGET_DB="$2"
 export EXPORT_DATE=$(date --date $(echo ${MYSQL_SCRIPT} | sed -e 's/.*-\([^.]*\).*/\1/') +%s)
 
+USE_FTS="$3"
+
 
 # dump to mysql
 export MYDB_NAME="hnutiduha9650"
@@ -316,7 +318,11 @@ function addLocations()
 	rm ${tt}
 	
 	# create locations
-	echo 'CREATE TABLE locations (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, gpsLatitude REAL NOT NULL, gpsLongtitude REAL NOT NULL, description TEXT, typeId INTEGER);' | callSqlite
+	if [ -n "${USE_FTS}" ]; then
+		echo 'CREATE VIRTUAL TABLE locations USING fts3(_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, gpsLatitude REAL NOT NULL, gpsLongtitude REAL NOT NULL, description TEXT, typeId INTEGER, searchKeywords TEXT);' | callSqlite
+	else
+		echo 'CREATE TABLE locations (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, gpsLatitude REAL NOT NULL, gpsLongtitude REAL NOT NULL, description TEXT, typeId INTEGER);' | callSqlite
+	fi
 	[ "$?" != 0 ] && reportError "failed to create table locations"
 	
 	# fill locations

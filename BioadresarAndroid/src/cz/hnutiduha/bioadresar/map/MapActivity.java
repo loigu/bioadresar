@@ -21,6 +21,8 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
 import android.app.Activity;
+import android.app.SearchManager;
+import android.content.Intent;
 import android.os.Bundle;
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
@@ -37,7 +39,7 @@ public class MapActivity extends com.actionbarsherlock.app.SherlockMapActivity {
     @Override
     public boolean onCreateOptionsMenu(final Menu menu)
     {
-    	MenuHandler.fillMenu(menu, this);
+    	MenuHandler.fillMenu(menu, this, true);
     	menu.removeItem(R.id.mapLink);
     	
     	return true;
@@ -65,6 +67,21 @@ public class MapActivity extends com.actionbarsherlock.app.SherlockMapActivity {
         
         mapView = (FarmMapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
+        
+        // Get the intent, verify the action and get the query
+        Intent intent = getIntent();
+        HnutiduhaFarmDb db = HnutiduhaFarmDb.getDefaultDb(this);
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+          String query = intent.getStringExtra(SearchManager.QUERY);
+          db.setFilter(query);
+        }
+        else
+        {
+        	db.setFilter(null);
+        }
+        // typing on keyboard will fire up search
+        setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
+
         
         Long targetFarmId = getIntent().getLongExtra(mapNodePropertyName, FarmInfo.INVALID_FARM_ID);
         FarmInfo farm = null;

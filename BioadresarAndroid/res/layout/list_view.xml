@@ -22,6 +22,13 @@
     android:background="@drawable/background"
     android:orientation="vertical" >
 
+    <!--
+    <cz.hnutiduha.bioadresar.SearchView
+        android:id="@+id/searchView"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp" />
+    -->
+
     <ScrollView
         android:id="@+id/listview"
         android:layout_width="fill_parent"
