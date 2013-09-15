@@ -1,8 +1,6 @@
 #!/bin/bash
 # FIXME: this is really slooooow
 
-[ -z "$1" -o -z "$2" ] && echo "usage: $0 <mysql_script> <target_file>" && exit 1
-
 export MYSQL_SCRIPT="$1"
 export TARGET_DB="$2"
 export EXPORT_DATE=$(date --date $(echo ${MYSQL_SCRIPT} | sed -e 's/.*-\([^.]*\).*/\1/') +%s)
@@ -62,6 +60,11 @@ function removeMysql()
 function callSqlite()
 {
 	tee -a log | sqlite3 "${TARGET_DB}"
+}
+
+function removeCzechChars()
+{
+	iconv -f utf8 -t ascii//TRANSLIT
 }
 
 function reportError()
@@ -318,11 +321,7 @@ function addLocations()
 	rm ${tt}
 	
 	# create locations
-	if [ -n "${USE_FTS}" ]; then
-		echo 'CREATE VIRTUAL TABLE locations USING fts3(_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, gpsLatitude REAL NOT NULL, gpsLongtitude REAL NOT NULL, description TEXT, typeId INTEGER, searchKeywords TEXT);' | callSqlite
-	else
-		echo 'CREATE TABLE locations (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, gpsLatitude REAL NOT NULL, gpsLongtitude REAL NOT NULL, description TEXT, typeId INTEGER);' | callSqlite
-	fi
+	echo 'CREATE TABLE locations (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, gpsLatitude REAL NOT NULL, gpsLongtitude REAL NOT NULL, description TEXT, typeId INTEGER);' | callSqlite
 	[ "$?" != 0 ] && reportError "failed to create table locations"
 	
 	# fill locations
@@ -438,6 +437,53 @@ function addActivitiesToLocations()
 		| while read locationId activityId note; do
 			echo "INSERT INTO location_activity(locationId, activityId, comment) VALUES(${locationId}, ${activityId}, $(emptyToNull ${note}));"
 		done | callSqlite
+}
+
+function buildFtsTable()
+{
+	echo 'CREATE VIRTUAL TABLE locations_fts USING fts3(
+		_id INTEGER, 
+		name STRING, 
+		description STRING, 
+		typeName STRING, 
+		activities STRING, 
+		products STRING, 
+		categories STRING, 
+		contacts STRING
+	);' | callSqlite
+	
+	DUMP_TMP=$(mktemp '/tmp/fts-export.XXXXXX')
+	INSERT_TMP=$(mktemp '/tmp/fts-import.XXXXXX')
+	echo 'SELECT locations._id, locations.name, locationTypes.name, locations.description FROM locations, locationTypes 
+		WHERE locations.typeId = locationTypes._id;' | callSqlite > "${DUMP_TMP}"
+		
+	cat "${DUMP_TMP}" | while read line; do
+			locationId=$(  echo ${line} | cut -d '|' -f 1)
+			name=$(        echo ${line} | cut -d '|' -f 2 | removeCzechChars)
+			locationType=$(echo ${line} | cut -d '|' -f 3 | removeCzechChars)
+			description=$( echo ${line} | cut -d '|' -f 4 | removeCzechChars)
+			
+			activities=$(echo "SELECT activities.name
+				FROM location_activity, activities
+				WHERE location_activity.locationId = ${locationId}
+				AND location_activity.activityId = activities._id;" | callSqlite | removeCzechChars | tr '\n' '.')
+			products=$(echo "SELECT products.name
+				FROM location_product, products
+				WHERE location_product.locationId = ${locationId}
+				AND location_product.productId = products._id;" | callSqlite | removeCzechChars | tr '\n' '.')
+			categories=$(echo "SELECT categories.name
+				FROM location_category, categories
+				WHERE location_category.locationId = ${locationId}
+				AND location_category.categoryId = categories._id;" | callSqlite | removeCzechChars | tr '\n' '.')
+			contacts=$(echo "SELECT contact FROM contacts WHERE contacts.locationId = ${locationId};" | callSqlite | removeCzechChars | tr '\n' '.')
+			
+			echo "INSERT INTO locations_fts(_id, name, description, typeName, activities, products, categories, contacts)
+				VALUES(${locationId}, '${name}', '${description}', '${locationType}', '${activities}', '${products}', '${categories}', '${contacts}');"
+	done > "${INSERT_TMP}"
+	
+	callSqlite < "${INSERT_TMP}"
+	
+	rm "${DUMP_TMP}" "${INSERT_TMP}"
 }
 
 function deleteLocation()
@@ -561,6 +607,8 @@ function fixtures_v13()
 
 function call()
 {
+	[ -z "${MYSQL_SCRIPT}" -o -z "${TARGET_DB}" ] && echo "usage: $0 <mysql_script> <target_file>" && exit 1
+	
 	removeMysql &> /dev/null
 	importMysql
 	fixtures_v13
@@ -586,11 +634,14 @@ function call()
 	fixtures_v10
 	
 	# version 12
+	# version 13
+	# version 14
+	buildFtsTable # version 15
 	
 	removeMysql
 }
 
-call
+[ "$(basename $0)" = "transform.sh" ] && call
 
 #devel -> ignorovat
 #divize_all, divize_viditelne -> nejake helpery pro web, ignorovat

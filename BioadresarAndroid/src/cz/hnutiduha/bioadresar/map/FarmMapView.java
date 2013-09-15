@@ -33,6 +33,7 @@ import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.Overlay;
 import com.readystatesoftware.maps.TapControlledMapView;
 
+import cz.hnutiduha.bioadresar.data.DataFilter;
 import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.LocationCache;
@@ -42,6 +43,7 @@ public class FarmMapView extends TapControlledMapView {
 	static GeoPoint currentVisibleRectangle[] = null;
 	boolean currentDrawn = false;
 	static int currentZoomLevel = -1;
+	DataFilter filter = null;
 	
 
 	public FarmMapView(Context context, AttributeSet attrs) {
@@ -54,6 +56,11 @@ public class FarmMapView extends TapControlledMapView {
         mapOverlays.add(farmOverlay);
         
 		setOnSingleTapListener(farmOverlay);
+	}
+	
+	protected void setFilter(DataFilter filter)
+	{
+		this.filter = filter;
 	}
 	
 	public void dispatchDraw(Canvas canvas)
@@ -169,6 +176,12 @@ public class FarmMapView extends TapControlledMapView {
 		Hashtable <Long, FarmInfo> farms = db.getFarmsInRectangle(
 				currentVisibleRectangle[0].getLatitudeE6() / 1E6, currentVisibleRectangle[0].getLongitudeE6() / 1E6,
 				currentVisibleRectangle[1].getLatitudeE6() / 1E6, currentVisibleRectangle[1].getLongitudeE6() / 1E6);
+		
+		if (filter != null)
+		{
+			filter.prune(farms);
+		}
+		
 		farmOverlay.setVisiblePoints(farms);
 	}
 

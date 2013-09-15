@@ -26,6 +26,7 @@ import com.actionbarsherlock.app.SherlockActivity;
 
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
+import cz.hnutiduha.bioadresar.data.DataFilter;
 import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.LocationCache;
@@ -43,15 +44,19 @@ import com.actionbarsherlock.widget.SearchView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 class AddAllFarms extends AsyncTask<Void, FarmInfo, Boolean> {
 	ListActivity activity;
 	Location loc;
+	DataFilter filter;
+	int farmsLoaded = 0;
 	
-	public AddAllFarms(ListActivity activity)
+	public AddAllFarms(ListActivity activity, DataFilter filter)
 	{
 		super();
 		this.activity = activity;
+		this.filter = filter;
 		loc = activity.getUsedLocation();
 	}
 	
@@ -59,9 +64,17 @@ class AddAllFarms extends AsyncTask<Void, FarmInfo, Boolean> {
 	{
 		return loc;
 	}
+	
+	@Override
+	protected void onPreExecute()
+	{
+		farmsLoaded = 0;
+		activity.progress.bringToFront();
+		activity.progress.setVisibility(View.VISIBLE);
+	}
 
 	@Override
-	protected Boolean doInBackground(Void... params) {
+	protected Boolean doInBackground(Void... params) {		
 		Log.d("list", "loading all farms");
         if (loc == null)
         {
@@ -75,11 +88,17 @@ class AddAllFarms extends AsyncTask<Void, FarmInfo, Boolean> {
         {
         	if (isCancelled())
         		return Boolean.FALSE;
-        	publishProgress(farm);
+        	pushFarm(farm);
 	    }
 		return Boolean.TRUE;
 	}
 	
+	protected void pushFarm(FarmInfo farm)
+	{
+		if (filter != null && !filter.match(farm)) { return; }
+		farmsLoaded++;
+		publishProgress(farm);
+	}
 	protected void onProgressUpdate(FarmInfo... farms)
 	{
 		activity.insertFarm(farms[0], loc);
@@ -89,19 +108,20 @@ class AddAllFarms extends AsyncTask<Void, FarmInfo, Boolean> {
 	{
 		Log.d("list", "loading of farms cancelled");
 		activity.showNextButton(true);
+		activity.progress.setVisibility(View.GONE);
 	}
 	
 	protected void onPostExecute(Boolean isDone) {
 		activity.showNextButton(!isDone.booleanValue());
-	}
+		activity.progress.setVisibility(View.GONE); }
 }
 
 class AddNext25 extends AddAllFarms
 {
 	
-	public AddNext25(ListActivity activity)
+	public AddNext25(ListActivity activity, DataFilter filter)
 	{
-		super(activity);
+		super(activity, filter);
 	}
 	
 	private static TreeSet<FarmInfo> allFarms = null;
@@ -138,13 +158,15 @@ class AddNext25 extends AddAllFarms
     		tail = allFarms.tailSet(next);
     	
     	Iterator<FarmInfo> iter = tail.iterator();
-    	for (int i = 0; i < 25; i++)
+    	
+    	while(farmsLoaded < 25)
     	{
     		if (iter.hasNext())
-    			publishProgress(iter.next());
+    			pushFarm(iter.next());
     		else
     			return Boolean.TRUE;
     	}
+    	
     	if (iter.hasNext())
     	{
     		next = iter.next();
@@ -157,9 +179,9 @@ class AddNext25 extends AddAllFarms
 
 class AddFarmsInRectangle extends AddAllFarms
 {
-	public AddFarmsInRectangle(ListActivity activity)
+	public AddFarmsInRectangle(ListActivity activity, DataFilter filter)
 	{
-		super(activity);
+		super(activity, filter);
 	}
 	@Override
 	protected Boolean doInBackground(Void... params) {
@@ -185,7 +207,7 @@ class AddFarmsInRectangle extends AddAllFarms
         {
         	if (isCancelled())
         		return Boolean.FALSE;
-        	publishProgress(farm);
+        	pushFarm(farm);
 	    }
         // we just don't know...
 		return Boolean.FALSE;
@@ -201,16 +223,16 @@ class AddFarmsInRectangle extends AddAllFarms
 public class ListActivity extends SherlockActivity implements View.OnClickListener{
 	LinearLayout view;
 	Button next25Button;
-	Context context;
 	AsyncTask<Void, FarmInfo, Boolean> farmsLoader = null;
+	DataFilter filter = null;
+	ProgressBar progress = null;
 	
     @Override
     public boolean onCreateOptionsMenu(final Menu menu)
     {	
     	MenuHandler.fillMenu(menu, this, true);
     	menu.removeItem(R.id.listLink);
-    	
-    	return true;
+    	return super.onCreateOptionsMenu(menu);
     }
     
     @Override
@@ -230,24 +252,24 @@ public class ListActivity extends SherlockActivity implements View.OnClickListen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.list_view);        
+        setContentView(R.layout.list_view);
+        
+        view = (LinearLayout) findViewById(R.id.list_main_layout);
+		progress = (ProgressBar) findViewById(R.id.marker_progress);
+		
+		progress.bringToFront();
+		progress.setVisibility(View.VISIBLE);
         
         // Get the intent, verify the action and get the query
         Intent intent = getIntent();
         HnutiduhaFarmDb db = HnutiduhaFarmDb.getDefaultDb(this);
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
           String query = intent.getStringExtra(SearchManager.QUERY);
-          db.setFilter(query);
+          filter = db.getFilter(query);
         }
-        else
-        {
-        	db.setFilter(null);
-        }
+
         // typing on keyboard will fire up search
         setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
-        
-        view = (LinearLayout) findViewById(R.id.list_main_layout);
-        context = view.getContext();
         
         next25Button = (Button)findViewById(R.id.next_25_button);
         next25Button.setOnClickListener(this);
@@ -281,7 +303,8 @@ public class ListActivity extends SherlockActivity implements View.OnClickListen
     	Location newLocation = LocationCache.getCenter();
     	if (usedLocation == newLocation)
     		return;
-    	
+    
+    	AddNext25.reset();
     	// clean list
     	view.removeAllViews();
     	// set location
@@ -289,13 +312,21 @@ public class ListActivity extends SherlockActivity implements View.OnClickListen
     	
     	// fire first loader
     	showNextButton(false);
-    	farmsLoader = new AddFarmsInRectangle(this);
+    	farmsLoader = new AddFarmsInRectangle(this, filter);
     	farmsLoader.execute();
     }
     
     protected void showNextButton(boolean show)
     {
-    	next25Button.setEnabled(show);
+    	if (show)
+    	{
+    		next25Button.setVisibility(Button.VISIBLE);
+    		next25Button.setEnabled(true);
+    	}
+    	else
+    	{
+    		next25Button.setVisibility(Button.GONE);
+    	}
     }
     
     // backward search - hope new items will go with greater distance
@@ -324,7 +355,7 @@ public class ListActivity extends SherlockActivity implements View.OnClickListen
     	if (desiredPos == -1)
     		return;
     	
-    	LinearLayout newFarm = new FarmLinearLayout(context, farm, centerOfOurUniverse);
+    	LinearLayout newFarm = new FarmLinearLayout(this, farm, centerOfOurUniverse);
     	
     	view.addView(newFarm, desiredPos);
     	
@@ -332,7 +363,7 @@ public class ListActivity extends SherlockActivity implements View.OnClickListen
     
     protected void appendFarm(FarmInfo farm, Location centerOfOurUniverse)
     {
-		FarmLinearLayout newFarm = new FarmLinearLayout(context, farm, centerOfOurUniverse);
+		FarmLinearLayout newFarm = new FarmLinearLayout(this, farm, centerOfOurUniverse);
 		view.addView(newFarm, view.getChildCount());
     }
     
@@ -343,7 +374,7 @@ public class ListActivity extends SherlockActivity implements View.OnClickListen
 			{
 				showNextButton(false);
 				// TODO: set position to last farm shown
-				farmsLoader = new AddNext25(this);
+				farmsLoader = new AddNext25(this, filter);
 				farmsLoader.execute();
 			}
 		}

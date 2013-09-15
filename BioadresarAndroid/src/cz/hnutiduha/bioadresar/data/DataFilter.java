@@ -17,9 +17,9 @@
 
 package cz.hnutiduha.bioadresar.data;
 
+import java.util.Hashtable;
+
 public interface DataFilter {
 	public boolean match(FarmInfo info);
-	
-	public void store();
-	public DataFilter loadLast();
+	public void prune(Hashtable<Long, FarmInfo> farms);
 }

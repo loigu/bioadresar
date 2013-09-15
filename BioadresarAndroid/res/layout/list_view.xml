@@ -16,48 +16,63 @@
     You should have received a copy of the GNU General Public License
     along with BioAdresar.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="@drawable/background"
-    android:orientation="vertical" >
+    android:layout_height="fill_parent" >
 
-    <!--
+    <ProgressBar
+        android:id="@+id/marker_progress"
+        style="@android:style/Widget.ProgressBar.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:indeterminate="true"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/background"
+        android:orientation="vertical" >
+
+        <!--
     <cz.hnutiduha.bioadresar.SearchView
         android:id="@+id/searchView"
         android:layout_width="fill_parent"
         android:layout_height="60dp" />
-    -->
+        -->
 
-    <ScrollView
-        android:id="@+id/listview"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_margin="10dp" >
-
-        <!-- maybe this should be table -->
-
-        <LinearLayout
-            android:id="@+id/list_uber_layout"
+        <ScrollView
+            android:id="@+id/listview"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:orientation="vertical" >
+            android:layout_margin="10dp" >
+
+            <!-- maybe this should be table -->
 
             <LinearLayout
-                android:id="@+id/list_main_layout"
+                android:id="@+id/list_uber_layout"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:orientation="vertical" >
+
+                <LinearLayout
+                    android:id="@+id/list_main_layout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="vertical" >
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/next_25_button"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:text="@string/next25"
+                    android:textSize="16sp" />
             </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
 
-            <Button
-                android:id="@+id/next_25_button"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:enabled="false"
-                android:text="@string/next25"
-                android:textSize="16sp" />
-        </LinearLayout>
-    </ScrollView>
-
-</LinearLayout>
+</RelativeLayout>

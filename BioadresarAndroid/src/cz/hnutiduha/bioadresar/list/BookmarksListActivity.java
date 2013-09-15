@@ -12,15 +12,16 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
+import cz.hnutiduha.bioadresar.data.DataFilter;
 import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.LocationCache;
 
 class AddBookmarkedFarms extends AddAllFarms
 {
-	public AddBookmarkedFarms(ListActivity activity)
+	public AddBookmarkedFarms(ListActivity activity, DataFilter filter)
 	{
-		super(activity);
+		super(activity, filter);
 	}
 	@Override
 	protected Boolean doInBackground(Void... params) {
@@ -56,7 +57,6 @@ public class BookmarksListActivity extends ListActivity {
         setContentView(R.layout.list_view);
         
         view = (LinearLayout) findViewById(R.id.list_main_layout);
-        context = view.getContext();
         
         next25Button = (Button)findViewById(R.id.next_25_button);
         next25Button.setVisibility(View.GONE);
@@ -83,7 +83,7 @@ public class BookmarksListActivity extends ListActivity {
     	
     	// fire first loader
     	showNextButton(false);
-    	farmsLoader = new AddBookmarkedFarms(this);
+    	farmsLoader = new AddBookmarkedFarms(this, null);
     	farmsLoader.execute();
     }
 

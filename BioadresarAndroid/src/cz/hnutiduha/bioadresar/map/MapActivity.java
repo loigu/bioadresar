@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
+import cz.hnutiduha.bioadresar.data.DataFilter;
 import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.LocationCache;
@@ -58,6 +59,7 @@ public class MapActivity extends com.actionbarsherlock.app.SherlockMapActivity {
 	}
 	
     static boolean centerMap = true;
+    DataFilter filter = null;
 	
     /** Called when the activity is first created. */
     @Override
@@ -73,11 +75,7 @@ public class MapActivity extends com.actionbarsherlock.app.SherlockMapActivity {
         HnutiduhaFarmDb db = HnutiduhaFarmDb.getDefaultDb(this);
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
           String query = intent.getStringExtra(SearchManager.QUERY);
-          db.setFilter(query);
-        }
-        else
-        {
-        	db.setFilter(null);
+          mapView.setFilter(db.getFilter(query));
         }
         // typing on keyboard will fire up search
         setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);

@@ -1,16 +1,15 @@
 package cz.hnutiduha.bioadresar;
 
+import android.app.Activity;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.preference.PreferenceManager;
-import android.widget.ArrayAdapter;
-import android.widget.SpinnerAdapter;
+import android.support.v4.widget.SearchViewCompat;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.SubMenu;
 import com.actionbarsherlock.widget.SearchView;
 
 import cz.hnutiduha.bioadresar.list.ListActivity;
@@ -41,7 +40,7 @@ public class MenuHandler implements OnNavigationListener{
 		*/
 	}
 	
-	public static boolean fillMenu(final Menu menu, Context context, boolean searchable)
+	public static boolean fillMenu(final Menu menu, Activity context, boolean searchable)
 	{
 		MenuItem foo = menu.add(0, R.id.homeLink, 1, "");
 		foo.setIcon(R.drawable.menu_icon);
@@ -49,9 +48,17 @@ public class MenuHandler implements OnNavigationListener{
 		
 		if (searchable)
 		{
-	        //Create the search view
-	        SearchView searchView = new SearchView(context);
+
+			SearchManager searchManager = (SearchManager) context.getSystemService(Context.SEARCH_SERVICE);
+			
+			SearchView searchView = new SearchView(context);
+			
 	        searchView.setQueryHint(context.getText(R.string.search_hint));
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(context.getComponentName()));
+
+	        
+	        searchView.setSubmitButtonEnabled(true);
+	        searchView.setIconifiedByDefault(false);
 
 	        menu.add(0, Menu.NONE, 0, "")
 	            .setIcon(R.drawable.search_icon)
