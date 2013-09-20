@@ -1,10 +1,9 @@
 package cz.hnutiduha.bioadresar;
 
-import android.app.Activity;
 import android.app.SearchManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.widget.SearchViewCompat;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
@@ -40,21 +39,18 @@ public class MenuHandler implements OnNavigationListener{
 		*/
 	}
 	
-	public static boolean fillMenu(final Menu menu, Activity context, boolean searchable)
+	public static boolean fillMenu(final Menu menu, Context context, SearchManager searchManager, ComponentName componentName)
 	{
 		MenuItem foo = menu.add(0, R.id.homeLink, 1, "");
 		foo.setIcon(R.drawable.menu_icon);
 		foo.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
 		
-		if (searchable)
-		{
-
-			SearchManager searchManager = (SearchManager) context.getSystemService(Context.SEARCH_SERVICE);
-			
+		if (searchManager != null)
+		{	
 			SearchView searchView = new SearchView(context);
 			
 	        searchView.setQueryHint(context.getText(R.string.search_hint));
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(context.getComponentName()));
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName));
 
 	        
 	        searchView.setSubmitButtonEnabled(true);

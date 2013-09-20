@@ -21,5 +21,5 @@ import java.util.Hashtable;
 
 public interface DataFilter {
 	public boolean match(FarmInfo info);
-	public void prune(Hashtable<Long, FarmInfo> farms);
+	public Hashtable<Long, FarmInfo> prune(Hashtable<Long, FarmInfo> farms);
 }

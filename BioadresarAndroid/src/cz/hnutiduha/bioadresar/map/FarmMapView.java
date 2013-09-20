@@ -179,7 +179,7 @@ public class FarmMapView extends TapControlledMapView {
 		
 		if (filter != null)
 		{
-			filter.prune(farms);
+			farms = filter.prune(farms);
 		}
 		
 		farmOverlay.setVisiblePoints(farms);

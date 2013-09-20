@@ -22,8 +22,10 @@ import com.actionbarsherlock.view.MenuItem;
 
 import android.app.Activity;
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.DataFilter;
@@ -40,10 +42,10 @@ public class MapActivity extends com.actionbarsherlock.app.SherlockMapActivity {
     @Override
     public boolean onCreateOptionsMenu(final Menu menu)
     {
-    	MenuHandler.fillMenu(menu, this, true);
+    	MenuHandler.fillMenu(menu, getSupportActionBar().getThemedContext(), (SearchManager)getSystemService(Context.SEARCH_SERVICE), getComponentName());
     	menu.removeItem(R.id.mapLink);
     	
-    	return true;
+    	return super.onCreateOptionsMenu(menu);
     }
     
     @Override
@@ -70,11 +72,13 @@ public class MapActivity extends com.actionbarsherlock.app.SherlockMapActivity {
         mapView = (FarmMapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
         
+        HnutiduhaFarmDb db = HnutiduhaFarmDb.getDefaultDb(this);
+        
         // Get the intent, verify the action and get the query
         Intent intent = getIntent();
-        HnutiduhaFarmDb db = HnutiduhaFarmDb.getDefaultDb(this);
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
           String query = intent.getStringExtra(SearchManager.QUERY);
+      		Log.d("Map", "got query " + query);
           mapView.setFilter(db.getFilter(query));
         }
         // typing on keyboard will fire up search

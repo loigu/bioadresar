@@ -230,8 +230,10 @@ public class ListActivity extends SherlockActivity implements View.OnClickListen
     @Override
     public boolean onCreateOptionsMenu(final Menu menu)
     {	
-    	MenuHandler.fillMenu(menu, this, true);
+    	// MenuHandler.fillMenu(menu, getSupportActionBar().getThemedContext(), (SearchManager)getSystemService(Context.SEARCH_SERVICE), getComponentName());
+    	MenuHandler.fillMenu(menu, getSupportActionBar().getThemedContext(), null, null);
     	menu.removeItem(R.id.listLink);
+    	
     	return super.onCreateOptionsMenu(menu);
     }
     
@@ -257,15 +259,21 @@ public class ListActivity extends SherlockActivity implements View.OnClickListen
         view = (LinearLayout) findViewById(R.id.list_main_layout);
 		progress = (ProgressBar) findViewById(R.id.marker_progress);
 		
+		SearchView searchView = (SearchView) findViewById(R.id.search_view);
+		searchView.setIconifiedByDefault(false);
+	    searchView.setSubmitButtonEnabled(true);
+		
 		progress.bringToFront();
 		progress.setVisibility(View.VISIBLE);
         
+		HnutiduhaFarmDb db = HnutiduhaFarmDb.getDefaultDb(this);
+
         // Get the intent, verify the action and get the query
-        Intent intent = getIntent();
-        HnutiduhaFarmDb db = HnutiduhaFarmDb.getDefaultDb(this);
+		Intent intent = getIntent();
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-          String query = intent.getStringExtra(SearchManager.QUERY);
-          filter = db.getFilter(query);
+        	String query = intent.getStringExtra(SearchManager.QUERY);
+        	Log.d("List", "got query " + query);
+        	filter = db.getFilter(query);
         }
 
         // typing on keyboard will fire up search

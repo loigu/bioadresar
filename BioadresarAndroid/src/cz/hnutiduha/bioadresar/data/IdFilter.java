@@ -2,6 +2,9 @@ package cz.hnutiduha.bioadresar.data;
 
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Map;
+
+import android.util.Log;
 
 public class IdFilter implements DataFilter {
 
@@ -10,16 +13,35 @@ public class IdFilter implements DataFilter {
 	public IdFilter(HashSet<Long> ids)
 	{
 		matchingIds = ids;
+		if (ids.isEmpty())
+		{
+			Log.d("Filter", "no ids in filter");
+		}
 	}
 	@Override
 	public boolean match(FarmInfo info) {
 		return matchingIds.contains(info.id);
 	}
 	
-	public void prune(Hashtable<Long, FarmInfo> farms)
+	public Hashtable<Long, FarmInfo> prune(Hashtable<Long, FarmInfo> farms)
 	{
-		for (Long id : matchingIds)
-			farms.remove(id);
+		Hashtable<Long, FarmInfo> ret = new Hashtable<Long, FarmInfo>();
+		if (matchingIds.isEmpty())
+		{
+			return ret;
+		}
+		
+		for (Map.Entry<Long, FarmInfo> entry : farms.entrySet())
+		{
+			if (!matchingIds.contains(entry.getKey()))
+			{
+				Log.d("Filter", "farm " + entry.getKey() + " removed");
+				continue;
+			}
+			ret.put(entry.getKey(), entry.getValue());
+		}
+		
+		return ret;
 	}
 
 }

@@ -57,6 +57,14 @@
                 android:layout_height="fill_parent"
                 android:orientation="vertical" >
 
+                <com.actionbarsherlock.widget.SearchView
+                    android:id="@+id/search_view"
+                    android:layout_width="fill_parent"
+                    android:layout_height="60dp"
+                    android:iconifiedByDefault="false"
+                    android:queryHint="@string/search_hint"
+                    android:showAsAction="always" />
+
                 <LinearLayout
                     android:id="@+id/list_main_layout"
                     android:layout_width="fill_parent"

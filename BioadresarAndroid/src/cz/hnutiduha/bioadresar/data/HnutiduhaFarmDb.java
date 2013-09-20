@@ -273,6 +273,7 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 
 		c.moveToNext();
 		while (!c.isAfterLast()) {
+			Log.d("db", "query found " + c.getLong(0));
 			idsFound.add(Long.valueOf(c.getLong(0)));
 			c.moveToNext();
 		}

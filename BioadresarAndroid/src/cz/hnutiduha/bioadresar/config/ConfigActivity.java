@@ -49,7 +49,7 @@ public class ConfigActivity extends SherlockPreferenceActivity implements OnPref
     @Override
     public boolean onCreateOptionsMenu(final Menu menu)
     {
-    	MenuHandler.fillMenu(menu, this, false);
+    	MenuHandler.fillMenu(menu, getSupportActionBar().getThemedContext(), null, null);
     	//menu.removeItem(R.id.configLink);
     	menu.removeItem(R.id.locationLabel);
     	
