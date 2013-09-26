@@ -33,6 +33,7 @@ import cz.hnutiduha.bioadresar.data.LocationCache;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -43,8 +44,10 @@ import com.actionbarsherlock.widget.SearchView;
 
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 class AddAllFarms extends AsyncTask<Void, FarmInfo, Boolean> {
 	ListActivity activity;
@@ -222,8 +225,11 @@ class AddFarmsInRectangle extends AddAllFarms
 
 public class ListActivity extends SherlockActivity implements View.OnClickListener{
 	LinearLayout view;
+	TextView searchText;
 	Button next25Button;
+	ImageButton searchButton;
 	AsyncTask<Void, FarmInfo, Boolean> farmsLoader = null;
+	String searchHint;
 	DataFilter filter = null;
 	ProgressBar progress = null;
 	
@@ -256,15 +262,19 @@ public class ListActivity extends SherlockActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_view);
         
+        searchHint = getResources().getString(R.string.search_hint);
+        
         view = (LinearLayout) findViewById(R.id.list_main_layout);
+        searchText = (TextView)findViewById(R.id.searchText);
 		progress = (ProgressBar) findViewById(R.id.marker_progress);
-		
-		SearchView searchView = (SearchView) findViewById(R.id.search_view);
-		searchView.setIconifiedByDefault(false);
-	    searchView.setSubmitButtonEnabled(true);
+        next25Button = (Button)findViewById(R.id.next_25_button);
+        searchButton = (ImageButton)findViewById(R.id.searchButton);
 		
 		progress.bringToFront();
 		progress.setVisibility(View.VISIBLE);
+		
+        next25Button.setOnClickListener(this);
+        searchButton.setOnClickListener(this);
         
 		HnutiduhaFarmDb db = HnutiduhaFarmDb.getDefaultDb(this);
 
@@ -274,13 +284,15 @@ public class ListActivity extends SherlockActivity implements View.OnClickListen
         	String query = intent.getStringExtra(SearchManager.QUERY);
         	Log.d("List", "got query " + query);
         	filter = db.getFilter(query);
+        	searchText.setText(query);
+        }
+        else
+        {
+        	searchText.setText(searchHint);
         }
 
         // typing on keyboard will fire up search
         setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
-        
-        next25Button = (Button)findViewById(R.id.next_25_button);
-        next25Button.setOnClickListener(this);
         
     	MenuHandler.installDropDown(getSupportActionBar(), this);
     }
@@ -385,6 +397,16 @@ public class ListActivity extends SherlockActivity implements View.OnClickListen
 				farmsLoader = new AddNext25(this, filter);
 				farmsLoader.execute();
 			}
+		}
+		if (v.equals(searchButton))
+		{
+			String query = searchText.getText().toString();
+			if (query.equals("") || query.equals(searchHint)) { return; }
+			
+			Intent search = new Intent(this, this.getClass());
+			search.putExtra(SearchManager.QUERY, query);
+			search.setAction(Intent.ACTION_SEARCH);
+			startActivity(search);
 		}
 	}
 	

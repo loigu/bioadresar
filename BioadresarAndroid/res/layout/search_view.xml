@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="50dp"
+    android:background="@drawable/search_background_green"
+    android:orientation="horizontal" >
+
+    <EditText
+        android:id="@+id/searchText"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="left|center_horizontal"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:lines="1"
+        android:maxLines="1"
+        android:scrollHorizontally="true"
+        android:selectAllOnFocus="true"
+        android:textAppearance="@style/HnutiDuha.ActionBar.SearchTextStyle"
+        android:textSize="20sp" />
+
+    <ImageView
+        android:id="@+id/searchSpacer"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_weight="0"
+        android:background="@android:color/transparent"
+        android:src="@drawable/search_spacer" />
+
+    <ImageButton
+        android:id="@+id/searchButton"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_weight="0"
+        android:background="@android:color/transparent"
+        android:src="@drawable/search_icon" />
+
+</LinearLayout>

@@ -18,7 +18,8 @@
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent"
+    android:background="@drawable/background" >
 
     <ProgressBar
         android:id="@+id/marker_progress"
@@ -33,37 +34,25 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/background"
+        android:layout_margin="10dp"
         android:orientation="vertical" >
 
-        <!--
-    <cz.hnutiduha.bioadresar.SearchView
-        android:id="@+id/searchView"
-        android:layout_width="fill_parent"
-        android:layout_height="60dp" />
-        -->
+        <include layout="@layout/search_view" />
 
         <ScrollView
             android:id="@+id/listview"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_margin="10dp" >
+            android:layout_height="fill_parent" >
 
             <!-- maybe this should be table -->
+
+            <requestFocus />
 
             <LinearLayout
                 android:id="@+id/list_uber_layout"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:orientation="vertical" >
-
-                <com.actionbarsherlock.widget.SearchView
-                    android:id="@+id/search_view"
-                    android:layout_width="fill_parent"
-                    android:layout_height="60dp"
-                    android:iconifiedByDefault="false"
-                    android:queryHint="@string/search_hint"
-                    android:showAsAction="always" />
 
                 <LinearLayout
                     android:id="@+id/list_main_layout"
@@ -76,6 +65,9 @@
                     android:id="@+id/next_25_button"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginRight="0dp"
                     android:enabled="false"
                     android:text="@string/next25"
                     android:textSize="16sp" />

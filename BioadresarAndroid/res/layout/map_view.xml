@@ -16,9 +16,39 @@
     You should have received a copy of the GNU General Public License
     along with BioAdresar.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<cz.hnutiduha.bioadresar.map.FarmMapView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/mapview"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mapViewUber"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:apiKey="0rTL9ClT6Cj9E3Bnxw2iXZ6Giea8xD7xRLmiCBQ"
-    android:clickable="true" />
+    android:background="@drawable/background" >
+
+    <cz.hnutiduha.bioadresar.map.FarmMapView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/mapview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:apiKey="0rTL9ClT6Cj9E3Bnxw2iXZ6Giea8xD7xRLmiCBQ"
+        android:clickable="true" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="10dp"
+        android:orientation="horizontal" >
+
+        <include layout="@layout/search_view" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/marker_progress"
+        style="@android:style/Widget.ProgressBar.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:indeterminate="true"
+        android:visibility="gone" />
+
+</RelativeLayout>

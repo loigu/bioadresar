@@ -19,6 +19,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="60dp"
+    android:layout_marginTop="-4dp"
     android:orientation="vertical" >
 
     <LinearLayout
@@ -31,6 +32,7 @@
             android:id="@+id/toDetailArea"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+            android:layout_marginLeft="4dp"
             android:layout_weight="1"
             android:gravity="left"
             android:orientation="vertical" >
@@ -40,6 +42,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top"
+                android:layout_marginTop="4dp"
                 android:layout_weight="0.1"
                 android:text="Large Text"
                 android:textColor="@color/White"
