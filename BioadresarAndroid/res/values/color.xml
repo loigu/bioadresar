@@ -2,6 +2,8 @@
 <resources>
 
     <color name="White">#FFFFFF</color>
+    <color name="DuhaSelectionBackground">#b2b2b2ff</color>
+    <color name="DuhaSelectionText">#FFFFFFFF</color>
     <color name="Ivory">#FFFFF0</color>
     <color name="LightYellow">#FFFFE0</color>
     <color name="Yellow">#FFFF00</color>
@@ -146,5 +148,6 @@
     <color name="DuhaBackgroundGray">#4c4c4c</color>
     <color name="DuhaTextGray">#909090</color>
     <color name="DuhaTextGreen">#669900</color>
+    <color name="DuhaSearchTextGray">#777777</color>
 
 </resources>
