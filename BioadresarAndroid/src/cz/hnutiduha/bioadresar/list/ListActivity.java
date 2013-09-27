@@ -284,11 +284,11 @@ public class ListActivity extends SherlockActivity implements View.OnClickListen
         	String query = intent.getStringExtra(SearchManager.QUERY);
         	Log.d("List", "got query " + query);
         	filter = db.getFilter(query);
-        	searchText.setText(query);
+        	searchText.setHint(query);
         }
         else
         {
-        	searchText.setText(searchHint);
+        	searchText.setHint(searchHint);
         }
 
         // typing on keyboard will fire up search

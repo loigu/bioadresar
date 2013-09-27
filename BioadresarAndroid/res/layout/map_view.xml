@@ -36,6 +36,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_margin="10dp"
+        android:background="@drawable/search_background_gray"
         android:orientation="horizontal" >
 
         <include layout="@layout/search_view" />

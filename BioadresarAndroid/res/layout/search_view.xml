@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="50dp"
-    android:background="@drawable/search_background_green"
     android:orientation="horizontal" >
 
     <EditText
@@ -35,6 +34,7 @@
         android:id="@+id/searchButton"
         android:layout_width="60dp"
         android:layout_height="60dp"
+        android:layout_gravity="center_vertical"
         android:layout_weight="0"
         android:background="@android:color/transparent"
         android:src="@drawable/search_icon" />
