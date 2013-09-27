@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="Theme.HnutiDuhaTheme" parent="Theme.Sherlock">
         <item name="actionBarStyle">@style/Widget.HnutiDuha.ActionBar</item>
@@ -16,6 +16,12 @@
     <style name="HnutiDuha.ActionBar.TitleTextStyle" parent="@style/TextAppearance.Sherlock.Widget.ActionBar.Title">
         <item name="android:textColor">@color/DuhaTextGreen</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="HnutiDuha.ActionBar.SearchTextStyle" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">@color/DuhaSearchTextGray</item>
+        <item name="android:textColorHighlight">@color/DuhaSelectionBackground</item>
+        <item name="android:textSize">20sp</item>
     </style>
 
 </resources>

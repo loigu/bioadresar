@@ -51,30 +51,33 @@
             android:label="@string/map_activity_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <action android:name="android.intent.action.SEARCH" />
+                <!-- <action android:name="android.intent.action.SEARCH" /> -->
 
                 <category android:name="android.intent.category.MAIN" >
                 </category>
             </intent-filter>
-
-            <meta-data
+            <!--
+                 <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
+            -->
         </activity>
         <activity
             android:name=".list.ListActivity"
             android:label="@string/list_activity_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <action android:name="android.intent.action.SEARCH" />
+                <!-- <action android:name="android.intent.action.SEARCH" /> -->
 
                 <category android:name="android.intent.category.MAIN" >
                 </category>
             </intent-filter>
 
+            <!--
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
+            -->
         </activity>
         <activity
             android:name=".list.BookmarksListActivity"
