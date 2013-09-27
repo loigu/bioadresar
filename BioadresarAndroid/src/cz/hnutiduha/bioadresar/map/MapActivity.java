@@ -23,21 +23,21 @@ import com.actionbarsherlock.view.MenuItem;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.DataFilter;
 import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.LocationCache;
+import cz.hnutiduha.bioadresar.view.SearchView;
 
 public class MapActivity extends com.actionbarsherlock.app.SherlockMapActivity {
 	
 	public static final String mapNodePropertyName = "farmIdToShow";
 	
 	private FarmMapView mapView;
+	private SearchView searchView;
 	
     @Override
     public boolean onCreateOptionsMenu(final Menu menu)
@@ -61,7 +61,6 @@ public class MapActivity extends com.actionbarsherlock.app.SherlockMapActivity {
 	}
 	
     static boolean centerMap = true;
-    DataFilter filter = null;
 	
     /** Called when the activity is first created. */
     @Override
@@ -72,17 +71,9 @@ public class MapActivity extends com.actionbarsherlock.app.SherlockMapActivity {
         mapView = (FarmMapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
         
-        HnutiduhaFarmDb db = HnutiduhaFarmDb.getDefaultDb(this);
-        
-        // Get the intent, verify the action and get the query
-        Intent intent = getIntent();
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-          String query = intent.getStringExtra(SearchManager.QUERY);
-      		Log.d("Map", "got query " + query);
-          mapView.setFilter(db.getFilter(query));
-        }
-        // typing on keyboard will fire up search
-        setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
+		searchView = (SearchView)findViewById(R.id.searchView);
+
+		mapView.setFilter(searchView.handleQuery(this));
 
         
         Long targetFarmId = getIntent().getLongExtra(mapNodePropertyName, FarmInfo.INVALID_FARM_ID);

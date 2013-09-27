@@ -56,6 +56,9 @@ public class BookmarksListActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_view);
         
+        View search = findViewById(R.id.searchView);
+        search.setVisibility(View.GONE);
+        
         view = (LinearLayout) findViewById(R.id.list_main_layout);
         
         next25Button = (Button)findViewById(R.id.next_25_button);

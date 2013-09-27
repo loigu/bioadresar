@@ -30,17 +30,14 @@
         android:apiKey="0rTL9ClT6Cj9E3Bnxw2iXZ6Giea8xD7xRLmiCBQ"
         android:clickable="true" />
 
-    <LinearLayout
+    <cz.hnutiduha.bioadresar.view.SearchView
+        android:id="@+id/searchView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_margin="10dp"
-        android:background="@drawable/search_background_gray"
-        android:orientation="horizontal" >
-
-        <include layout="@layout/search_view" />
-    </LinearLayout>
+        android:background="@drawable/search_background_gray" />
 
     <ProgressBar
         android:id="@+id/marker_progress"
