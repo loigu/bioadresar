@@ -66,6 +66,7 @@ class AddAllFarms extends AsyncTask<Void, FarmInfo, Boolean> {
 	@Override
 	protected void onPreExecute()
 	{
+		activity.showNextButton(false);
 		farmsLoaded = 0;
 		activity.progress.bringToFront();
 		activity.progress.setVisibility(View.VISIBLE);
@@ -94,6 +95,7 @@ class AddAllFarms extends AsyncTask<Void, FarmInfo, Boolean> {
 	protected void pushFarm(FarmInfo farm)
 	{
 		if (filter != null && !filter.match(farm)) { return; }
+		
 		farmsLoaded++;
 		publishProgress(farm);
 	}
@@ -306,7 +308,6 @@ public class ListActivity extends SherlockActivity implements View.OnClickListen
     	this.usedLocation = newLocation;
     	
     	// fire first loader
-    	showNextButton(false);
     	farmsLoader = new AddFarmsInRectangle(this, filter);
     	farmsLoader.execute();
     }
@@ -367,10 +368,13 @@ public class ListActivity extends SherlockActivity implements View.OnClickListen
 		{
 			if (farmsLoader == null || farmsLoader.getStatus() == AsyncTask.Status.FINISHED)
 			{
-				showNextButton(false);
 				// TODO: set position to last farm shown
 				farmsLoader = new AddNext25(this, filter);
 				farmsLoader.execute();
+			}
+			else
+			{
+				Log.d("List", "blocked by running task");
 			}
 		}
 	}
@@ -390,6 +394,12 @@ public class ListActivity extends SherlockActivity implements View.OnClickListen
     	
 		// default rectangle is empty, load more...
 		if (view.getChildCount() == 0)
-			onClick(next25Button);
+		{
+			Log.d("List", "still empty, loading next...");
+			showNextButton(false);
+			// TODO: set position to last farm shown
+			farmsLoader = new AddNext25(this, filter);
+			farmsLoader.execute();
+		}
 	}
 }
