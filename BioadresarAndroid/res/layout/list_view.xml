@@ -41,8 +41,6 @@
 
         <!-- maybe this should be table -->
 
-        <requestFocus />
-
         <LinearLayout
             android:id="@+id/list_uber_layout"
             android:layout_width="fill_parent"
@@ -53,7 +51,10 @@
                 android:id="@+id/list_main_layout"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
+                android:focusable="true"
                 android:orientation="vertical" >
+
+                <requestFocus />
             </LinearLayout>
 
             <Button

@@ -28,7 +28,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:apiKey="0rTL9ClT6Cj9E3Bnxw2iXZ6Giea8xD7xRLmiCBQ"
-        android:clickable="true" />
+        android:clickable="true"
+        android:focusable="true" >
+
+        <requestFocus />
+    </cz.hnutiduha.bioadresar.map.FarmMapView>
 
     <cz.hnutiduha.bioadresar.view.SearchView
         android:id="@+id/searchView"
