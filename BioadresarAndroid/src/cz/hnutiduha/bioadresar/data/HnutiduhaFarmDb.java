@@ -63,7 +63,7 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 	private HashMap<Long, String> products = null;
 	private HashMap<Long, String> activities = null;
 	
-	private static final int databaseVersion = 15;
+	private static final int databaseVersion = 16;
 	
 	private HnutiduhaFarmDb(Context context) {
 		super(context, DB_NAME, null, databaseVersion);

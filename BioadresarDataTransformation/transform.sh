@@ -637,6 +637,7 @@ function call()
 	# version 13
 	# version 14
 	buildFtsTable # version 15
+	# new farms version 16
 	
 	removeMysql
 }

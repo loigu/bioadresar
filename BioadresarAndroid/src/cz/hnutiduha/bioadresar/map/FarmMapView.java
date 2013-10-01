@@ -125,9 +125,9 @@ public class FarmMapView extends TapControlledMapView {
 		});
 	}
 	
-	private void reinstallOurLocationMark()
+	void reinstallOurLocationMark()
 	{
-		// FIXME: implement this
+		farmOverlay.reinstallOurLocationMark();
 	}
 	
 	public void gotoLastLocation()

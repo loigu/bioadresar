@@ -21,12 +21,14 @@ import com.actionbarsherlock.app.SherlockActivity;
 
 import cz.hnutiduha.bioadresar.data.LocationCache;
 
+import android.app.Activity;
+import android.app.Application.ActivityLifecycleCallbacks;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-public class MainMenuActivity extends SherlockActivity implements OnClickListener {
+public class MainMenuActivity extends SherlockActivity implements OnClickListener{
 
     /** Called when the activity is first created. */
     @Override
@@ -56,5 +58,5 @@ public class MainMenuActivity extends SherlockActivity implements OnClickListene
 	public void onClick(View v) {
 		MenuHandler.idActivated(this,v.getId());
 	}
-	
+		
 }

@@ -24,6 +24,7 @@ import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.DataFilter;
@@ -111,6 +112,12 @@ public class MapActivity extends com.actionbarsherlock.app.SherlockMapActivity {
         
     	MenuHandler.installDropDown(getSupportActionBar(), this);
     }
+    
+	@Override
+	protected void onStart() {
+		super.onStart();
+		mapView.reinstallOurLocationMark();
+	}
     
 	@Override
 	protected boolean isRouteDisplayed() {

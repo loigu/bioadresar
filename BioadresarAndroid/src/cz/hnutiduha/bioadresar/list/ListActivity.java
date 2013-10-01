@@ -272,12 +272,15 @@ public class ListActivity extends SherlockActivity implements View.OnClickListen
 		filter = searchView.handleQuery(this);
         
     	MenuHandler.installDropDown(getSupportActionBar(), this);
+    	
+    	setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
     }
     
     public void onStart()
     {
     	super.onStart();
     	refreshLocation();
+    	Log.d("List", "onStart()");
     }
     
     public void onStop()
@@ -285,6 +288,13 @@ public class ListActivity extends SherlockActivity implements View.OnClickListen
     	super.onStop();
     	if (farmsLoader != null)
     		farmsLoader.cancel(true);
+    	Log.d("List", "onStop()");
+    }
+    
+    @Override
+    public boolean onSearchRequested()
+    {
+    	return searchView.requestFocus();
     }
     
     Location usedLocation = null;

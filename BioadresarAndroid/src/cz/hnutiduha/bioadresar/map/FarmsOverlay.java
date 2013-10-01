@@ -24,15 +24,19 @@ import java.util.Iterator;
 
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 import com.readystatesoftware.maps.OnSingleTapListener;
 
+import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
+import cz.hnutiduha.bioadresar.data.LocationCache;
 
 public class FarmsOverlay extends ItemizedOverlay<OverlayItem> implements OnSingleTapListener{
 	private ArrayList<OverlayItem> overlays = new ArrayList<OverlayItem>();
@@ -163,6 +167,32 @@ public class FarmsOverlay extends ItemizedOverlay<OverlayItem> implements OnSing
 		}
 		
 		populate();
+	}
+	
+	static final String locationTitle = "zde stojíte";
+	OverlayItem lastCenter = null;
+	
+	void reinstallOurLocationMark() {
+		Location currentLocation = LocationCache.getCenter();
+		Log.d("Map", "location mark on " + currentLocation.toString());
+		
+		if (lastCenter != null)
+		{
+			GeoPoint last = lastCenter.getPoint();
+			if (last.getLatitudeE6() == currentLocation.getLatitude() * 1E6 && 
+					last.getLongitudeE6() == currentLocation.getLongitude() * 1E6)
+			{
+				Log.d("Map", "location still the same, doing nothing");
+				return;
+			}
+			
+			overlays.remove(lastCenter);
+			lastCenter = null;
+		}
+		
+		lastCenter = new OverlayItem(new GeoPoint((int)(currentLocation.getLatitude() * 1E6), (int)(currentLocation.getLongitude() * 1E6)), locationTitle, locationTitle);
+		lastCenter.setMarker(map.getResources().getDrawable(R.drawable.here_i_am_center));
+		//overlays.add(lastCenter);
 	}
 	
 	/* NOTE: animating to point generates for some mysterious reason one excessive click
