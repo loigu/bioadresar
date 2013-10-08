@@ -19,7 +19,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cz.hnutiduha.bioadresar"
     android:installLocation="auto"
-    android:versionCode="7"
+    android:versionCode="8"
     android:versionName="@string/versionName" >
 
     <uses-sdk
@@ -48,7 +48,8 @@
         </activity>
         <activity
             android:name=".map.MapActivity"
-            android:label="@string/map_activity_name" >
+            android:label="@string/map_activity_name"
+            android:windowSoftInputMode="stateHidden" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <!-- <action android:name="android.intent.action.SEARCH" /> -->
@@ -64,7 +65,8 @@
         </activity>
         <activity
             android:name=".list.ListActivity"
-            android:label="@string/list_activity_name" >
+            android:label="@string/list_activity_name"
+            android:windowSoftInputMode="stateHidden" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <!-- <action android:name="android.intent.action.SEARCH" /> -->
@@ -81,7 +83,8 @@
         </activity>
         <activity
             android:name=".list.BookmarksListActivity"
-            android:label="@string/bookmarks_activity_name" >
+            android:label="@string/bookmarks_activity_name"
+            android:windowSoftInputMode="stateHidden" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
