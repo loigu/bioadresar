@@ -19,14 +19,23 @@
 <resources>
 
     <string name="app_name">Adresář farmářů</string>
+    <string name="city">Město</string>
+    <string name="farm_name">Název</string>
+    <string name="here_fill_farm_name">zde napište celý název farmy</string>
+    <string name="coordinates">Souřadnice GPS</string>
+    <string name="lat">délka</string>
+    <string name="lon">šířka</string>
+    <string name="street_with_number">Ulice a čp</string>
+    <string name="description">Popis</string>
     <string name="contact">Kontakt</string>
     <string name="main_tab_title">Menu</string>
     <string name="map_tab_title">Mapa</string>
     <string name="list_tab_title">Seznam</string>
     <string name="filter_tab_title">Filtr</string>
     <string name="Produkce">Produkce</string>
-    <string name="Popis">Popis</string>
-    <string name="web">web</string>
+    <string name="web">Web</string>
+    <string name="other_he_form">jiný</string>
+    <string name="other_she_form">jiná</string>
     <string name="email">E-Mail</string>
     <string name="production">Produkce</string>
     <string name="search_hint">Hledej produkt, farmu…</string>
@@ -64,6 +73,7 @@
     <string name="app_name_uppercase">ADRESÁŘ FARMÁŘŮ</string>
     <string name="customContainerDistribution">Rozvoz</string>
     <string name="containerDistributionTime">Výdejní čas</string>
+    <string name="pickup">Odběr</string>
     <string name="containers">Bedýnky</string>
     <string name="containerDistributionPlaces">Výdejní místa</string>
 

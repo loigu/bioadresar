@@ -45,6 +45,7 @@
                 android:layout_marginTop="4dp"
                 android:layout_weight="0.1"
                 android:text="Large Text"
+                android:textAppearance="@style/HnutiDuha.HeaderMedium"
                 android:textColor="@color/White"
                 android:textSize="16sp" />
 

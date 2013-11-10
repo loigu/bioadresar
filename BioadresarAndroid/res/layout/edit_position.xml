@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="@string/farm_name"
+            android:textAppearance="@style/HnutiDuha.HeaderMedium" />
+
+        <EditText
+            android:id="@+id/farmName"
+            style="@style/HnutiDuha.InputMedium"
+            android:layout_width="match_parent"
+            android:hint="@string/here_fill_farm_name" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="@string/coordinates"
+                android:textAppearance="@style/HnutiDuha.HeaderMedium" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <EditText
+                    android:id="@+id/latitude"
+                    style="@style/HnutiDuha.InputMedium"
+                    android:layout_width="fill_parent"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:hint="@string/lat"
+                    android:inputType="numberDecimal" />
+
+                <EditText
+                    android:id="@+id/longtitude"
+                    style="@style/HnutiDuha.InputMedium"
+                    android:layout_width="fill_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:hint="@string/lon"
+                    android:inputType="numberDecimal" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/imageButton1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="0"
+            android:background="@android:color/transparent"
+            android:src="@drawable/next_button" />
+    </LinearLayout>
+
+    <MapView
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent" >
+    </MapView>
+
+</LinearLayout>

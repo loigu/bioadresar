@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background" >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <EditText
+                android:id="@+id/city"
+                style="@style/HnutiDuha.InputMedium"
+                android:layout_width="150dp"
+                android:hint="@string/city" >
+
+                <requestFocus />
+            </EditText>
+
+            <EditText
+                android:id="@+id/street"
+                style="@style/HnutiDuha.InputMedium"
+                android:layout_width="match_parent"
+                android:hint="@string/street_with_number" />
+
+            <EditText
+                android:id="@+id/description"
+                style="@style/HnutiDuha.InputMedium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top|left"
+                android:hint="@string/description"
+                android:inputType="textMultiLine"
+                android:maxLines="4"
+                android:minLines="4" />
+
+            <EditText
+                android:id="@+id/web"
+                style="@style/HnutiDuha.InputMedium"
+                android:layout_width="150dp"
+                android:hint="@string/web" />
+
+            <EditText
+                android:id="@+id/e-shop"
+                style="@style/HnutiDuha.InputMedium"
+                android:layout_width="150dp"
+                android:hint="@string/eshop" />
+
+            <EditText
+                android:id="@+id/mail"
+                style="@style/HnutiDuha.InputMedium"
+                android:layout_width="150dp"
+                android:hint="@string/email" />
+
+            <EditText
+                android:id="@+id/phone"
+                style="@style/HnutiDuha.InputMedium"
+                android:layout_width="150dp"
+                android:hint="@string/phone" />
+
+            <ImageView
+                android:id="@+id/spacer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="0dp"
+                android:src="@drawable/list_spacer" />
+
+            <ImageView
+                android:id="@+id/imageView1"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:src="@drawable/next_button" />
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

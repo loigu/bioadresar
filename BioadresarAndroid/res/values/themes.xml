@@ -24,4 +24,21 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <style name="HnutiDuha.TextMedium" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="HnutiDuha.HeaderMedium" parent="@style/HnutiDuha.TextMedium">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="HnutiDuha.InputMedium">
+        <item name="android:layout_height">35dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:background">@drawable/field_background</item>
+        <item name="background">@drawable/field_background</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:textAppearance">@style/HnutiDuha.TextMedium</item>
+    </style>
+
 </resources>
