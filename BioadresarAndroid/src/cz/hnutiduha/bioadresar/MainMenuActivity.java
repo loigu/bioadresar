@@ -47,6 +47,8 @@ public class MainMenuActivity extends SherlockActivity implements OnClickListene
         item.setOnClickListener(this);
         item = this.findViewById(R.id.mapLink);
         item.setOnClickListener(this);
+        item = this.findViewById(R.id.addFarmLink);
+        item.setOnClickListener(this);
     }
     
     public void onStart()

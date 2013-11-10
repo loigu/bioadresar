@@ -32,13 +32,18 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="HnutiDuha.InputMedium">
+    <style name="HnutiDuha.InputMedium" parent="@style/HnutiDuha.TextMedium">
         <item name="android:layout_height">35dp</item>
         <item name="android:textSize">14sp</item>
         <item name="android:background">@drawable/field_background</item>
         <item name="background">@drawable/field_background</item>
         <item name="android:layout_marginBottom">10dp</item>
         <item name="android:textAppearance">@style/HnutiDuha.TextMedium</item>
+    </style>
+
+    <style name="HnutiDuha.SpinnerMedium" parent="@style/HnutiDuha.InputMedium">
+        <item name="background">@drawable/btn_dropdown</item>
+        <item name="android:background">@drawable/btn_dropdown</item>
     </style>
 
 </resources>

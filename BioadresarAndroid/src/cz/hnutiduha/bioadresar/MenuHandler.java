@@ -11,6 +11,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.SearchView;
 
+import cz.hnutiduha.bioadresar.editFarm.EditFarmActivity;
 import cz.hnutiduha.bioadresar.list.ListActivity;
 import cz.hnutiduha.bioadresar.list.BookmarksListActivity;
 import cz.hnutiduha.bioadresar.map.MapActivity;
@@ -113,22 +114,31 @@ public class MenuHandler implements OnNavigationListener{
 			case R.id.listLink:
 				target = new Intent(context, ListActivity.class);
 				break;
+				
 			case R.id.mapLink:
 				target = new Intent(context, MapActivity.class);
 				break;
+				
 				/*
 			case R.id.configLink:
 				target = new Intent(context, ConfigActivity.class);
 				break;
+				
 			case R.id.aboutLink:
 				target = new Intent(context, AboutActivity.class);
 				break;
 				*/
+				
 			case R.id.bookmarkListLink:
 				target = new Intent(context, BookmarksListActivity.class);
 				break;
+				
 			case R.id.homeLink:
 				target = new Intent(context, MainMenuActivity.class);
+				break;
+				
+			case R.id.addFarmLink:
+				target = new Intent(context, EditFarmActivity.class);
 				break;
 		
 		}

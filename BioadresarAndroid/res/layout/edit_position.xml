@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/editPosition"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="10dp"
@@ -73,7 +74,7 @@
         </LinearLayout>
 
         <ImageButton
-            android:id="@+id/imageButton1"
+            android:id="@+id/nextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|bottom"
@@ -83,10 +84,11 @@
             android:src="@drawable/next_button" />
     </LinearLayout>
 
-    <MapView
+    <ImageView
         android:id="@+id/map"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent" >
-    </MapView>
+        android:layout_height="fill_parent"
+        android:src="@android:drawable/alert_dark_frame" >
+    </ImageView>
 
 </LinearLayout>

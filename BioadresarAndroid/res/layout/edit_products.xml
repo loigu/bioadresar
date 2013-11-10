@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/editProducts"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background" >
@@ -26,19 +27,16 @@
 
                 <Spinner
                     android:id="@+id/production"
+                    style="@style/HnutiDuha.SpinnerMedium"
                     android:layout_width="140dp"
-                    android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
-                    android:background="@drawable/btn_dropdown"
                     android:prompt="@string/production" />
 
                 <EditText
                     android:id="@+id/productionOther"
+                    style="@style/HnutiDuha.InputMedium"
                     android:layout_width="150dp"
-                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@drawable/field_background"
-                    android:ems="10"
                     android:hint="@string/other_he_form" >
 
                     <requestFocus />
@@ -60,20 +58,17 @@
 
                 <Spinner
                     android:id="@+id/activities"
+                    style="@style/HnutiDuha.SpinnerMedium"
                     android:layout_width="140dp"
-                    android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
-                    android:background="@drawable/btn_dropdown"
                     android:prompt="@string/production" />
 
                 <EditText
                     android:id="@+id/activitiesOther"
+                    style="@style/HnutiDuha.InputMedium"
                     android:layout_width="150dp"
-                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@drawable/field_background"
-                    android:ems="10"
                     android:hint="@string/other_she_form" />
             </LinearLayout>
 
@@ -96,7 +91,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/containers"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    android:textAppearance="@style/HnutiDuha.HeaderMedium" />
             </LinearLayout>
 
             <LinearLayout
@@ -116,8 +111,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/customContainerDistribution"
-                        android:text="Large Text"
-                        android:textAppearance="?android:attr/textAppearanceLarge" />
+                        android:textAppearance="@style/HnutiDuha.HeaderMedium" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -131,7 +125,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/pickup"
-                        android:textAppearance="?android:attr/textAppearanceLarge" />
+                        android:textAppearance="@style/HnutiDuha.HeaderMedium" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -141,12 +135,13 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/list_spacer" />
 
-            <ImageView
-                android:id="@+id/imageView2"
+            <ImageButton
+                android:id="@+id/okButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|center_horizontal"
                 android:layout_marginTop="30dp"
+                android:background="@android:color/transparent"
                 android:src="@drawable/ok_button" />
         </LinearLayout>
     </ScrollView>
