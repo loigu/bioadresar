@@ -35,25 +35,16 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
 	boolean latSet = false, lonSet = false;
 	CameraPosition pos = null;
 	
-	
-	private void saveMapState()
+	@Override
+	public void onStart()
 	{
-    	pos = map.getCameraPosition();
-	}
-	
-	private void loadMapState()
-	{
-		if (pos != null)
-		{
-			map.moveCamera(CameraUpdateFactory.newCameraPosition(pos));
-		}
+		super.onStart();
 		
-		if (mark != null)
-		{
-			Marker mk = mark;
-			mark = null;
-			setMarker(mk.getPosition(), false);
-		}
+		if (smf != null) {
+			map = smf.getMap();
+			map.setOnMapLongClickListener(this);
+		} else
+			Log.d("map", "can't get map fragment");
 	}
 	
     @Override
@@ -70,24 +61,17 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
 		lon = (EditText) me.findViewById(R.id.longitude);
 		lon.setOnEditorActionListener(this);
 
-		smf = (SupportMapFragment) getFragmentManager().findFragmentById(R.id.map);
-		if (smf != null) {
-			map = smf.getMap();
-			map.setOnMapLongClickListener(this);
-		} else
-			Log.d("map", "can't get map fragment");
-		
-		loadMapState();
+		if (smf == null)
+		{
+			smf = new SupportMapFragment();
+			getChildFragmentManager().beginTransaction().add(R.id.map, smf).commit();
+		}
+		else
+		{
+			getChildFragmentManager().beginTransaction().show(smf).commit();
+		}
         
         return me;
-    }
-    
-    @Override
-    public void onDestroyView()
-    {
-    	super.onDestroyView();
-    	saveMapState();
-		getFragmentManager().beginTransaction().remove(smf).commit(); //.detach(smf).commit();
     }
     
     private boolean validate()
@@ -102,6 +86,7 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
 		{
 			if (validate())
 			{
+				getChildFragmentManager().beginTransaction().hide(smf).commit();
 				fragmentNavigator.nextFragment(this);
 			}
 		}

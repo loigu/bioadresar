@@ -100,10 +100,10 @@
             android:src="@drawable/next_button" />
     </LinearLayout>
 
-    <fragment
+    <LinearLayout
         android:id="@+id/map"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        class="com.google.android.gms.maps.SupportMapFragment" />
+        android:orientation="horizontal" />
 
 </LinearLayout>
