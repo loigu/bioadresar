@@ -12,6 +12,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.app.Activity;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -24,6 +25,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import cz.hnutiduha.bioadresar.R;
+import cz.hnutiduha.bioadresar.data.FarmInfo;
+import cz.hnutiduha.bioadresar.data.LocationCache;
 
 public class EditPositionFragment extends SherlockFragment implements OnClickListener, OnMapLongClickListener, OnEditorActionListener{
 	private FragmentNavigator fragmentNavigator;
@@ -33,16 +36,27 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
 	GoogleMap map = null;
 	Marker mark = null;
 	boolean latSet = false, lonSet = false;
-	CameraPosition pos = null;
+	
+	private void centerMap()
+	{
+        int zoomLevel = 11;
+        Location loc = LocationCache.getCenter();
+        if (!LocationCache.hasRealLocation())
+        	zoomLevel = 9;
+	
+		map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(loc.getLatitude(), loc.getLongitude()), zoomLevel));
+
+	}
 	
 	@Override
 	public void onStart()
 	{
 		super.onStart();
 		
-		if (smf != null) {
+		if (smf != null && map == null) {
 			map = smf.getMap();
 			map.setOnMapLongClickListener(this);
+			centerMap();
 		} else
 			Log.d("map", "can't get map fragment");
 	}
