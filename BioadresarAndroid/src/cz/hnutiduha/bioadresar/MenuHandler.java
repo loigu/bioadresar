@@ -17,7 +17,6 @@ import cz.hnutiduha.bioadresar.list.BookmarksListActivity;
 import cz.hnutiduha.bioadresar.map.MapActivity;
 
 public class MenuHandler implements OnNavigationListener{
-	private static MenuHandler hnd = null;
 	
 	private Context context = null;
 	

@@ -26,6 +26,7 @@
 
     <style name="HnutiDuha.TextMedium" parent="@android:style/TextAppearance.Medium">
         <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/Black</item>
     </style>
 
     <style name="HnutiDuha.HeaderMedium" parent="@style/HnutiDuha.TextMedium">

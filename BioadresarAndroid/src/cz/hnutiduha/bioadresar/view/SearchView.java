@@ -2,7 +2,6 @@ package cz.hnutiduha.bioadresar.view;
 
 import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.DataFilter;
-import cz.hnutiduha.bioadresar.data.DataSource;
 import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
 import android.app.Activity;
 import android.app.SearchManager;

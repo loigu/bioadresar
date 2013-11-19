@@ -3,11 +3,15 @@ package cz.hnutiduha.bioadresar.editFarm;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.widget.Toast;
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
 
@@ -99,6 +103,32 @@ public class EditFarmActivity extends SherlockFragmentActivity implements Fragme
 	public void previousFragment(Fragment origin) {
 		this.onBackPressed();
 	}
+	
+    static final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 1001;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+      switch (requestCode) {
+        case REQUEST_CODE_RECOVER_PLAY_SERVICES:
+          if (resultCode == RESULT_CANCELED) {
+            Toast.makeText(this, "Google Play Services must be installed.",
+                Toast.LENGTH_SHORT).show();
+            finish();
+          }
+          return;
+      }
+      super.onActivityResult(requestCode, resultCode, data);
+    }
+    
+    @Override
+    public void onResume()
+    {
+    	super.onResume();
+    	
+    	int googlePlayInstalled = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+    	if (googlePlayInstalled != ConnectionResult.SUCCESS)
+    		GooglePlayServicesUtil.getErrorDialog(googlePlayInstalled, this, REQUEST_CODE_RECOVER_PLAY_SERVICES).show();
+    }
     
     
 }

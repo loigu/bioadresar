@@ -29,7 +29,6 @@ import android.util.Log;
 import cz.hnutiduha.bioadresar.R;
 
 import com.google.android.maps.GeoPoint;
-import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.Overlay;
 import com.readystatesoftware.maps.TapControlledMapView;
 

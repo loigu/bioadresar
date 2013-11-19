@@ -24,7 +24,12 @@
             android:id="@+id/farmName"
             style="@style/HnutiDuha.InputMedium"
             android:layout_width="match_parent"
-            android:hint="@string/here_fill_farm_name" />
+            android:hint="@string/here_fill_farm_name"
+            android:inputType="textPersonName"
+            android:maxLines="1"
+            android:nextFocusDown="@+id/latitude"
+            android:nextFocusForward="@+id/latitude"
+            android:nextFocusRight="@+id/latitude" />
     </LinearLayout>
 
     <LinearLayout
@@ -60,16 +65,27 @@
                     android:layout_marginRight="5dp"
                     android:layout_weight="1"
                     android:hint="@string/lat"
-                    android:inputType="numberDecimal" />
+                    android:inputType="numberDecimal"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/longitude"
+                    android:nextFocusForward="@+id/longitude"
+                    android:nextFocusLeft="@+id/farmName"
+                    android:nextFocusRight="@+id/longitude"
+                    android:nextFocusUp="@+id/farmName" />
 
                 <EditText
-                    android:id="@+id/longtitude"
+                    android:id="@+id/longitude"
                     style="@style/HnutiDuha.InputMedium"
                     android:layout_width="fill_parent"
                     android:layout_marginLeft="5dp"
                     android:layout_weight="1"
                     android:hint="@string/lon"
-                    android:inputType="numberDecimal" />
+                    android:inputType="numberDecimal"
+                    android:maxLines="1"
+                    android:nextFocusForward="@+id/nextButton"
+                    android:nextFocusLeft="@+id/latitude"
+                    android:nextFocusRight="@+id/nextButton"
+                    android:nextFocusUp="@+id/farmName" />
             </LinearLayout>
         </LinearLayout>
 
@@ -84,11 +100,10 @@
             android:src="@drawable/next_button" />
     </LinearLayout>
 
-    <ImageView
+    <fragment
         android:id="@+id/map"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:src="@android:drawable/alert_dark_frame" >
-    </ImageView>
+        class="com.google.android.gms.maps.SupportMapFragment" />
 
 </LinearLayout>

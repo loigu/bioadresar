@@ -239,17 +239,9 @@ public class FarmInfo implements OnClickListener{
 		}
 		
 		TextView places = (TextView)parent.findViewById(placesTextId);
-		boolean first = true;
 		// places
 		for (String place : distr.places)
 		{
-			/*
-			if (!first)
-			{
-				places.append("<br/>");
-				first = false;
-			}
-			*/
 			places.append(place);
 		}
 		

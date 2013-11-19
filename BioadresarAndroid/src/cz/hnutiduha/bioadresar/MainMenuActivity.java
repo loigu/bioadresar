@@ -18,15 +18,16 @@
 package cz.hnutiduha.bioadresar;
 
 import com.actionbarsherlock.app.SherlockActivity;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import cz.hnutiduha.bioadresar.data.LocationCache;
-
-import android.app.Activity;
-import android.app.Application.ActivityLifecycleCallbacks;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
 
 public class MainMenuActivity extends SherlockActivity implements OnClickListener{
 
