@@ -14,8 +14,10 @@ import android.util.Log;
 import android.widget.Toast;
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
+import cz.hnutiduha.bioadresar.data.FarmInfo;
 
 public class EditFarmActivity extends SherlockFragmentActivity implements FragmentNavigator{
+	private FarmInfo farm = null;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,7 +37,8 @@ public class EditFarmActivity extends SherlockFragmentActivity implements Fragme
                 return;
             }
             
-            Fragment firstFragment = new EditPositionFragment();
+            farm = new FarmInfo();
+            Fragment firstFragment = new EditPositionFragment(farm, this);
             
             // In case this activity was started with special instructions from an
             // Intent, pass the Intent's extras to the fragment as arguments
@@ -74,9 +77,9 @@ public class EditFarmActivity extends SherlockFragmentActivity implements Fragme
 		Fragment next;
 		
 		if (origin instanceof EditPositionFragment)
-			next = new EditContactFragment();
+			next = new EditContactFragment(farm);
 		else if (origin instanceof EditContactFragment)
-			next = new EditProductsFragment();
+			next = new EditProductsFragment(farm);
 		else if (origin instanceof EditProductsFragment)
 		{
 			commitFarm();

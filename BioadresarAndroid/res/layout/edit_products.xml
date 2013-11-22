@@ -19,6 +19,17 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
+            <EditText
+                android:id="@+id/description"
+                style="@style/HnutiDuha.InputMedium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top|left"
+                android:hint="@string/description"
+                android:inputType="textMultiLine"
+                android:maxLines="4"
+                android:minLines="4" />
+
             <LinearLayout
                 android:id="@+id/addProductLayout"
                 android:layout_width="match_parent"

@@ -1,17 +1,21 @@
 package cz.hnutiduha.bioadresar.editFarm;
 
+import java.io.IOException;
+import java.util.List;
+
 import com.actionbarsherlock.app.SherlockFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.app.Activity;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,6 +29,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import cz.hnutiduha.bioadresar.R;
+import cz.hnutiduha.bioadresar.data.FarmContact;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.LocationCache;
 
@@ -32,17 +37,31 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
 	private FragmentNavigator fragmentNavigator;
 	View me = null;
 	SupportMapFragment smf = null;
-	EditText lat = null, lon = null;
+	EditText lat = null, lon = null, farmName = null;
 	GoogleMap map = null;
 	Marker mark = null;
 	boolean latSet = false, lonSet = false;
+	FarmInfo farm;
+	Activity parent;
+	
+	public EditPositionFragment(FarmInfo farm, Activity parent)
+	{
+		super();
+		this.farm = farm;
+		this.parent = parent;
+	}
 	
 	private void centerMap()
 	{
         int zoomLevel = 11;
-        Location loc = LocationCache.getCenter();
-        if (!LocationCache.hasRealLocation())
-        	zoomLevel = 9;
+        Location loc = farm.getLocation();
+        
+        if (loc == null)
+        {
+        	loc = LocationCache.getCenter();        	
+	        if (!LocationCache.hasRealLocation())
+	        	zoomLevel = 9;
+        }
 	
 		map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(loc.getLatitude(), loc.getLongitude()), zoomLevel));
 
@@ -74,6 +93,8 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
 		lat.setOnEditorActionListener(this);
 		lon = (EditText) me.findViewById(R.id.longitude);
 		lon.setOnEditorActionListener(this);
+		
+		farmName = (EditText) me.findViewById(R.id.farmName);
 
 		if (smf == null)
 		{
@@ -90,8 +111,46 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
     
     private boolean validate()
     {
-    	// FIXME: implement this
+    	if (farmName.getText().toString().isEmpty()) { return false; }
+    	try
+    	{
+        	double latValue = Double.valueOf(lat.getText().toString());
+        	double lonValue = Double.valueOf(this.lon.getText().toString());
+        	
+        	if (latValue < -90 || latValue > 90) { return false; }
+        	if (lonValue < -180 || lonValue > 180) { return false; }
+        	
+    	} catch (NumberFormatException e) { return false; }
+    	
     	return true;
+    }
+    
+    /// only call when validate returns true
+    private void updateFarm()
+    {
+    	
+    	farm.name = farmName.toString();
+    			
+    	double latValue = Double.valueOf(lat.getText().toString());
+    	double lonValue = Double.valueOf(this.lon.getText().toString());
+    	farm.setLocation(latValue, lonValue);
+    	
+    	// if there is no address, try to get it from location
+    	if (farm.getFarmContact() == null)
+    	{
+	        Geocoder geocoder = new Geocoder(parent);
+	        try {
+	            List<Address> addresses = geocoder.getFromLocation(latValue, lonValue, 1);
+	            Address address = addresses.get(0);
+	            if (address != null)
+	            {
+	            	FarmContact contact = new FarmContact();
+	            	contact.street = address.getAddressLine(0);
+	            	contact.city = address.getAddressLine(1);
+	            	farm.setFarmContact(contact);
+	            }
+	        } catch(IOException e) {}
+    	}
     }
 
 	@Override
@@ -100,8 +159,14 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
 		{
 			if (validate())
 			{
+				updateFarm();
+				
 				getChildFragmentManager().beginTransaction().hide(smf).commit();
 				fragmentNavigator.nextFragment(this);
+			}
+			else
+			{
+				// FIXME: error dialog
 			}
 		}
 	}
@@ -169,8 +234,11 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
 			
 			if (latSet && lonSet)
 			{
-				LatLng point = new LatLng(Double.valueOf(lat.getText().toString()), Double.valueOf(lon.getText().toString()));
-				setMarker(point, true);
+				if (validate())
+				{
+					LatLng point = new LatLng(Double.valueOf(lat.getText().toString()), Double.valueOf(lon.getText().toString()));
+					setMarker(point, true);
+				}
 			}
 		}
 		return false;

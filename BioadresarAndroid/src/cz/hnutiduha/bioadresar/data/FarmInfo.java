@@ -42,11 +42,11 @@ public class FarmInfo implements OnClickListener{
 	// NOTE: we ignore location type 
 	public static long INVALID_FARM_ID = -1;
 	// these are always present
-	public long id;
-	public String name;
-	public double lat, lon;
+	public long id = INVALID_FARM_ID;
+	public String name = null;
+	public double lat = Double.NEGATIVE_INFINITY, lon = Double.NEGATIVE_INFINITY;
 	
-	HnutiduhaFarmDb source;
+	HnutiduhaFarmDb source = null;
 	
 	protected String description = null;
 	protected FarmContact contact = null;
@@ -61,6 +61,12 @@ public class FarmInfo implements OnClickListener{
 	private static final String viewTargetDetail = "detail";
 	
 	private Location location = null;
+	
+	/// crate new (empty) farm
+	public FarmInfo()
+	{
+		
+	}
 	
 	public FarmInfo(HnutiduhaFarmDb source, long id, String name, double lat, double lon)
 	{
@@ -88,9 +94,14 @@ public class FarmInfo implements OnClickListener{
 		return description;
 	}
 	
+	public void setFarmContact(FarmContact contact)
+	{
+		this.contact = contact;
+	}
+	
 	public FarmContact getFarmContact()
 	{
-		if (contact == null)
+		if (contact == null && source != null)
 			source.fillContact(this);
 		
 		return contact;
@@ -145,13 +156,24 @@ public class FarmInfo implements OnClickListener{
 	}
 	
 	public Location getLocation() {
+		if (lat < -90 || lon < -180)
+			return null;
+		
 		if (location == null) {
-			location = new Location("");
-			location.setLatitude(lat);
-			location.setLongitude(lon);
+			this.setLocation(lat,  lon);
 		}
 		
 		return location;
+	}
+	
+	public void setLocation(double lat, double lon)
+	{
+		this.lat = lat;
+		this.lon = lon;
+		
+		location = new Location("");
+		location.setLatitude(lat);
+		location.setLongitude(lon);
 	}
 	
 	public void goToMap(View parent)

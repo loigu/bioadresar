@@ -10,10 +10,18 @@ import android.view.ViewGroup;
 import com.actionbarsherlock.app.SherlockFragment;
 
 import cz.hnutiduha.bioadresar.R;
+import cz.hnutiduha.bioadresar.data.FarmInfo;
 
 
 public class EditProductsFragment extends SherlockFragment implements OnClickListener{
 	private FragmentNavigator fragmentNavigator;
+	private FarmInfo farm;
+	
+	public EditProductsFragment(FarmInfo farm) {
+		super();
+		
+		this.farm = farm;
+	}
 	
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
