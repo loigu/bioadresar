@@ -43,7 +43,7 @@ public class MapActivity extends com.actionbarsherlock.app.SherlockMapActivity {
     @Override
     public boolean onCreateOptionsMenu(final Menu menu)
     {
-    	MenuHandler.fillMenu(menu, getSupportActionBar().getThemedContext(), (SearchManager)getSystemService(Context.SEARCH_SERVICE), getComponentName());
+    	MenuHandler.fillMenu(menu, getSupportActionBar().getThemedContext(), null, null);
     	menu.removeItem(R.id.mapLink);
     	
     	return super.onCreateOptionsMenu(menu);
