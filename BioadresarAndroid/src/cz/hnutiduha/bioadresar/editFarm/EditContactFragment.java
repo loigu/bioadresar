@@ -70,15 +70,15 @@ public class EditContactFragment extends SherlockFragment implements OnClickList
     
     private void updateFarm() {
     	FarmContact contact = new FarmContact();
-    	contact.city = city.toString();
-    	contact.street = street.toString();
-    	contact.email = mail.toString();
-    	contact.web = web.toString();
-    	contact.eshop = eshop.toString();
+    	contact.city = city.getText().toString();
+    	contact.street = street.getText().toString();
+    	contact.email = mail.getText().toString();
+    	contact.web = web.getText().toString();
+    	contact.eshop = eshop.getText().toString();
     	contact.phoneNumbers = new LinkedList<String>();
     	
     	// FIXME: iterate all numbers
-    	contact.phoneNumbers.add(phone.toString());
+    	contact.phoneNumbers.add(phone.getText().toString());
     	
     	farm.setFarmContact(contact);
     }
