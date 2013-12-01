@@ -141,13 +141,16 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
 	        Geocoder geocoder = new Geocoder(parent);
 	        try {
 	            List<Address> addresses = geocoder.getFromLocation(latValue, lonValue, 1);
-	            Address address = addresses.get(0);
-	            if (address != null)
+	            if (addresses != null && addresses.size() > 0)
 	            {
-	            	FarmContact contact = new FarmContact();
-	            	contact.street = address.getAddressLine(0);
-	            	contact.city = address.getAddressLine(1);
-	            	farm.setFarmContact(contact);
+		            Address address = addresses.get(0);
+		            if (address != null)
+		            {
+		            	FarmContact contact = new FarmContact();
+		            	contact.street = address.getAddressLine(0);
+		            	contact.city = address.getAddressLine(1);
+		            	farm.setFarmContact(contact);
+		            }
 	            }
 	        } catch(IOException e) {}
     	}

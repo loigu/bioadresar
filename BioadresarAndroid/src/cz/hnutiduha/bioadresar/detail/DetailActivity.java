@@ -129,7 +129,7 @@ public class DetailActivity extends SherlockActivity implements OnClickListener{
     {
     	while(it.hasNext())
     	{
-			out.append(((StringifiedFromDb)it.next()).toString(db));
+			out.append(((StringifiedFromDb)it.next()).toString());
 			if (it.hasNext())
 				out.append(", ");
     	}

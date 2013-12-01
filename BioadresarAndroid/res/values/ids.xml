@@ -3,5 +3,6 @@
 
     <item name="locationLabel" type="id"/>
     <item name="homeLink" type="id"/>
+    <item name="buttonTag" type="id"/>
 
 </resources>

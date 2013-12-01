@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -474,7 +475,7 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 			String comment = null;
 			if (!c.isNull(1))
 				comment = c.getString(1);
-			products.add(new ProductWithComment(c.getLong(0), comment));
+			products.add(new ProductWithComment(c.getLong(0), comment, this));
 			c.moveToNext();
 		}
 		c.close();
@@ -490,7 +491,7 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 			String comment = null;
 			if (!c.isNull(1))
 				comment = c.getString(1);
-			activities.add(new ActivityWithComment(c.getLong(0), comment));
+			activities.add(new ActivityWithComment(c.getLong(0), comment, this));
 			c.moveToNext();
 		}
 		c.close();
@@ -657,7 +658,73 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 		}
 		c.close();
 	}
-
+	
+	public Map<Long, String> getActivities()
+	{
+		if (activities == null)
+			loadActivityNames();
+		
+		return activities;
+	}
+	
+	static ActivityWithComment[] sortedActivities = null;
+	
+	public ActivityWithComment[] getActivitiesSortedByName()
+	{
+		if (sortedActivities != null)
+			return sortedActivities;
+		
+		if (activities == null)
+			loadActivityNames();
+		if (activities == null)
+		{
+			return null;
+		}
+		
+		sortedActivities = new ActivityWithComment[activities.size()];
+		int i = 0;
+		for(Long key : activities.keySet())
+		{
+			sortedActivities[i++] = new ActivityWithComment(key.longValue(), this);
+		}
+		Arrays.sort(sortedActivities, StringifiedFromDb.stringComparator(this));
+		
+		return sortedActivities;
+	}
+	
+	public Map<Long, String> getProducts()
+	{
+		if (products == null)
+			loadProductNames();
+		
+		return products;
+	}
+	
+	static ProductWithComment[] sortedProducts = null;
+	
+	public ProductWithComment[] getProductsSortedByName()
+	{
+		if (sortedProducts != null)
+			return sortedProducts;
+		
+		if (products == null)
+			loadProductNames();
+		if (products == null)
+		{
+			return null;
+		}
+		
+		sortedProducts = new ProductWithComment[products.size()];
+		int i = 0;
+		for(Long key : products.keySet())
+		{
+			sortedProducts[i++] = new ProductWithComment(key.longValue(), this);
+		}
+		Arrays.sort(sortedProducts, StringifiedFromDb.stringComparator(this));
+		
+		return sortedProducts;
+	}
+	
 	public String getCategoryName(Long id) {
 		if (this.categories == null) {
 			this.loadCategoryNames();

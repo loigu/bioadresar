@@ -1,0 +1,208 @@
+package cz.hnutiduha.bioadresar.editFarm;
+
+
+import java.util.List;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+
+import com.actionbarsherlock.app.SherlockFragment;
+
+import cz.hnutiduha.bioadresar.R;
+import cz.hnutiduha.bioadresar.data.ActivityWithComment;
+import cz.hnutiduha.bioadresar.data.FarmInfo;
+import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
+import cz.hnutiduha.bioadresar.data.ProductWithComment;
+import cz.hnutiduha.bioadresar.data.StringifiedFromDb;
+import cz.hnutiduha.bioadresar.layout.FlowLayout;
+
+class SomethingHolder<T extends StringifiedFromDb> implements OnClickListener {
+	Context context;
+	List<T> list;
+	T[] options;
+	FlowLayout layout;
+	
+	class AddListener implements DialogInterface.OnClickListener {
+		SomethingHolder<T> holder;
+		T[] values;
+		
+		AddListener(SomethingHolder<T> holder, T[] values)
+		{
+			this.holder = holder;
+			this.values = values;
+		}
+		
+
+		@Override
+	    public void onClick(DialogInterface dialog, int which) {
+			holder.addSomething(values[which]);
+			dialog.dismiss();
+		}
+	}
+
+	public void showAddDialog(String title)
+	{
+    	ArrayAdapter<T> adapter = new ArrayAdapter<T>(context,
+    	        android.R.layout.simple_spinner_dropdown_item, options);
+    	
+    	 new AlertDialog.Builder(context)
+    	  .setTitle(title)
+    	  .setAdapter(adapter, this.new AddListener(this, options)).show();
+    }
+	
+	private void addButton(StringifiedFromDb something)
+	{
+		Button b = (Button) LayoutInflater.from(context).inflate(R.layout.item_button, null);
+		b.setText(something.toString());
+		b.setTag(R.id.buttonTag, something);
+		b.setOnClickListener(this);
+		layout.addView(b);
+	}
+	
+	SomethingHolder(Context context, List<T> list, T[] options, FlowLayout layout)
+	{
+		this.context = context;
+		this.list = list;
+		this.layout = layout;
+		this.options = options;
+		
+		for (StringifiedFromDb something : list)
+		{
+			addButton(something);
+		}
+	}
+	
+	private void addSomething(T something)
+	{ 
+		for (T existing : list)
+		{
+			if (existing.toString().equals(something.toString()))
+			{
+				return;
+			}
+		}
+		
+		list.add(something);
+		addButton(something);
+	}
+
+	@Override
+	public void onClick(View v) {
+		Object tag = v.getTag(R.id.buttonTag);
+		if (tag != null)
+		{
+			list.remove(tag);
+		}
+		
+		layout.removeView(v);
+	}
+}
+
+public class EditDetailsFragment extends SherlockFragment implements OnClickListener{
+	private FragmentNavigator fragmentNavigator;
+	private FarmInfo farm;
+	private Context context;
+	SomethingHolder<ProductWithComment> productionHolder;
+	SomethingHolder<ActivityWithComment> activitiesHolder;
+	private EditText description;
+
+	
+	public EditDetailsFragment(FarmInfo farm, Context context) {
+		super();
+		
+		this.farm = farm;
+		this.context = context;
+	}
+	
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View me = inflater.inflate(R.layout.edit_details, container, false);
+        HnutiduhaFarmDb db = HnutiduhaFarmDb.getDefaultDb(context);
+        
+        me.findViewById(R.id.okButton).setOnClickListener(this);
+        me.findViewById(R.id.backButton).setOnClickListener(this);
+        
+    	FlowLayout productsLayout = (FlowLayout) me.findViewById(R.id.productListLayout);
+    	productionHolder = new SomethingHolder<ProductWithComment>(context, farm.getProducts(),
+    			db.getProductsSortedByName(), productsLayout);
+    	FlowLayout activitiesLayout = (FlowLayout) me.findViewById(R.id.activityListLayout);
+    	activitiesHolder = new SomethingHolder<ActivityWithComment>(context, farm.getActivities(),
+    			db.getActivitiesSortedByName(), activitiesLayout);
+    	
+    	description = (EditText) me.findViewById(R.id.description);
+    	description.setText(farm.getDescription());
+    	
+    	me.findViewById(R.id.production).setOnClickListener(this);
+    	me.findViewById(R.id.activities).setOnClickListener(this);
+    	
+    	
+        
+        return me;
+    }
+    
+    private boolean validate()
+    {
+    	return true;
+    }
+    
+    private void updateFarm()
+    {
+    	farm.setDescription(description.getText().toString());
+    }
+    
+	@Override
+	public void onClick(View v) {
+		switch(v.getId())
+		{
+			case R.id.okButton:
+			{
+				if (validate())
+				{
+					updateFarm();
+					fragmentNavigator.nextFragment(this);
+				}
+				// FIXME: else write error
+			}
+			break;
+			
+			case R.id.backButton:
+			{
+				if (validate())
+					updateFarm();
+				fragmentNavigator.previousFragment(this);
+			}
+			break;
+			
+			case R.id.activities:
+				activitiesHolder.showAddDialog("Vyber aktivitu");
+			break;
+			
+			case R.id.production:
+				productionHolder.showAddDialog("Vyber produkt");
+			break;
+		}
+					
+	}
+	
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            fragmentNavigator = (FragmentNavigator)activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement FragmentNavigator");
+        }
+    }
+}

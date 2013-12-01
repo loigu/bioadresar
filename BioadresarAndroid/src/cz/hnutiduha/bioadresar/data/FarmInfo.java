@@ -18,6 +18,7 @@
 package cz.hnutiduha.bioadresar.data;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import android.content.Context;
@@ -88,10 +89,15 @@ public class FarmInfo implements OnClickListener{
 	
 	public String getDescription()
 	{
-		if (description == null)
+		if (description == null && source != null)
 			source.fillDescription(this);
 		
 		return description;
+	}
+	
+	public void setDescription(String description)
+	{
+		this.description = description;
 	}
 	
 	public void setFarmContact(FarmContact contact)
@@ -110,7 +116,16 @@ public class FarmInfo implements OnClickListener{
 	public List<ProductWithComment> getProducts()
 	{
 		if (products == null)
-			source.fillProducts(this);
+		{
+			if (source != null)
+			{
+				source.fillProducts(this);
+			}
+			else
+			{
+				this.products = new LinkedList<ProductWithComment>();
+			}
+		}
 		
 		return products;
 	}
@@ -133,14 +148,21 @@ public class FarmInfo implements OnClickListener{
 	{
 		if (activities == null)
 		{
-			source.fillActivities(this);
-			getActivities();
-			for (ActivityWithComment activity : activities)
+			if (source != null)
 			{
-				if (activity.getName(source).equals("bedýnkový prodej"))
+				source.fillActivities(this);
+				// FIXME: move this to db
+				for (ActivityWithComment activity : activities)
 				{
-					hasContainerDistribution = true;
+					if (activity.getName(source).equals("bedýnkový prodej"))
+					{
+						hasContainerDistribution = true;
+					}
 				}
+			}
+			else
+			{
+				activities = new LinkedList<ActivityWithComment>();
 			}
 		}
 		

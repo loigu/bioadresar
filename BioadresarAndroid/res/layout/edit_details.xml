@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/editProducts"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:orientation="vertical" >
+
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <LinearLayout
+                android:id="@+id/uberLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+
+                <EditText
+                    android:id="@+id/description"
+                    style="@style/HnutiDuha.InputMedium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top|left"
+                    android:hint="@string/description"
+                    android:inputType="textMultiLine"
+                    android:maxLines="4"
+                    android:minLines="4" />
+
+                <requestFocus />
+
+                <LinearLayout
+                    android:id="@+id/addProductLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="10dp" >
+
+                    <Button
+                        android:id="@+id/production"
+                        style="@style/HnutiDuha.SpinnerMedium"
+                        android:layout_width="140dp"
+                        android:layout_marginRight="10dp"
+                        android:text="@string/product" />
+
+                    <EditText
+                        android:id="@+id/productionOther"
+                        style="@style/HnutiDuha.InputMedium"
+                        android:layout_width="140dp"
+                        android:layout_weight="1"
+                        android:hint="@string/other_he_form"
+                        android:visibility="gone" >
+                    </EditText>
+                </LinearLayout>
+
+                <cz.hnutiduha.bioadresar.layout.FlowLayout
+                    android:id="@+id/productListLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp" >
+                </cz.hnutiduha.bioadresar.layout.FlowLayout>
+
+                <LinearLayout
+                    android:id="@+id/addActivityLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="10dp" >
+
+                    <Button
+                        android:id="@+id/activities"
+                        style="@style/HnutiDuha.SpinnerMedium"
+                        android:layout_width="140dp"
+                        android:layout_marginRight="10dp"
+                        android:text="@string/activity" />
+
+                    <EditText
+                        android:id="@+id/activitiesOther"
+                        style="@style/HnutiDuha.InputMedium"
+                        android:layout_width="140dp"
+                        android:layout_weight="1"
+                        android:hint="@string/other_she_form"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <cz.hnutiduha.bioadresar.layout.FlowLayout
+                    android:id="@+id/activityListLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+                </cz.hnutiduha.bioadresar.layout.FlowLayout>
+
+                <LinearLayout
+                    android:id="@+id/containersProvided"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/containersLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/containers"
+                        android:textAppearance="@style/HnutiDuha.HeaderMedium" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/containersLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <LinearLayout
+                        android:id="@+id/customContainerDeliveryLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" >
+
+                        <TextView
+                            android:id="@+id/textView2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/customContainerDistribution"
+                            android:textAppearance="@style/HnutiDuha.HeaderMedium" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/containerPickupPlaces"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" >
+
+                        <TextView
+                            android:id="@+id/textView3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/pickup"
+                            android:textAppearance="@style/HnutiDuha.HeaderMedium" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="bottom"
+            android:gravity="bottom"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/spacer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="0dp"
+                android:src="@drawable/list_spacer" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal" >
+
+                <ImageView
+                    android:id="@+id/backButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:src="@drawable/back_button" />
+
+                <ImageView
+                    android:id="@+id/okButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="10dp"
+                    android:src="@drawable/ok_button" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

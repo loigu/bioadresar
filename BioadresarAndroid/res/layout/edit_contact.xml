@@ -5,85 +5,108 @@
     android:layout_height="fill_parent"
     android:background="@drawable/background" >
 
-    <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp" >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:orientation="vertical" >
+
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical" >
+
+                <EditText
+                    android:id="@+id/city"
+                    style="@style/HnutiDuha.InputMedium"
+                    android:layout_width="150dp"
+                    android:hint="@string/city"
+                    android:inputType="textPostalAddress"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/street"
+                    android:nextFocusForward="@+id/street"
+                    android:nextFocusRight="@+id/street" >
+
+                    <requestFocus />
+                </EditText>
+
+                <EditText
+                    android:id="@+id/street"
+                    style="@style/HnutiDuha.InputMedium"
+                    android:layout_width="match_parent"
+                    android:hint="@string/street_with_number"
+                    android:inputType="textPostalAddress"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/web"
+                    android:nextFocusForward="@+id/web"
+                    android:nextFocusLeft="@+id/city"
+                    android:nextFocusRight="@+id/web"
+                    android:nextFocusUp="@+id/city" />
+
+                <EditText
+                    android:id="@+id/web"
+                    style="@style/HnutiDuha.InputMedium"
+                    android:layout_width="150dp"
+                    android:hint="@string/web"
+                    android:inputType="textUri"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/eshop"
+                    android:nextFocusForward="@+id/eshop"
+                    android:nextFocusLeft="@+id/street"
+                    android:nextFocusRight="@+id/eshop"
+                    android:nextFocusUp="@+id/street" />
+
+                <EditText
+                    android:id="@+id/eshop"
+                    style="@style/HnutiDuha.InputMedium"
+                    android:layout_width="150dp"
+                    android:hint="@string/eshop"
+                    android:inputType="textUri"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/mail"
+                    android:nextFocusForward="@+id/mail"
+                    android:nextFocusLeft="@+id/web"
+                    android:nextFocusRight="@+id/mail"
+                    android:nextFocusUp="@+id/web" />
+
+                <EditText
+                    android:id="@+id/mail"
+                    style="@style/HnutiDuha.InputMedium"
+                    android:layout_width="150dp"
+                    android:hint="@string/email"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/phone"
+                    android:nextFocusForward="@+id/phone"
+                    android:nextFocusLeft="@+id/eshop"
+                    android:nextFocusRight="@+id/phone"
+                    android:nextFocusUp="@+id/eshop" />
+
+                <EditText
+                    android:id="@+id/phone"
+                    style="@style/HnutiDuha.InputMedium"
+                    android:layout_width="150dp"
+                    android:hint="@string/phone"
+                    android:inputType="phone"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/nextButton"
+                    android:nextFocusForward="@+id/nextButton"
+                    android:nextFocusLeft="@+id/mail"
+                    android:nextFocusRight="@+id/nextButton"
+                    android:nextFocusUp="@+id/mail" />
+            </LinearLayout>
+        </ScrollView>
 
         <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_gravity="bottom"
+            android:gravity="bottom"
             android:orientation="vertical" >
-
-            <EditText
-                android:id="@+id/city"
-                style="@style/HnutiDuha.InputMedium"
-                android:layout_width="150dp"
-                android:hint="@string/city"
-                android:nextFocusDown="@+id/street"
-                android:nextFocusForward="@+id/street"
-                android:nextFocusRight="@+id/street" >
-
-                <requestFocus />
-            </EditText>
-
-            <EditText
-                android:id="@+id/street"
-                style="@style/HnutiDuha.InputMedium"
-                android:layout_width="match_parent"
-                android:hint="@string/street_with_number"
-                android:nextFocusDown="@+id/web"
-                android:nextFocusForward="@+id/web"
-                android:nextFocusLeft="@+id/city"
-                android:nextFocusRight="@+id/web"
-                android:nextFocusUp="@+id/city" />
-
-            <EditText
-                android:id="@+id/web"
-                style="@style/HnutiDuha.InputMedium"
-                android:layout_width="150dp"
-                android:hint="@string/web"
-                android:nextFocusDown="@+id/eshop"
-                android:nextFocusForward="@+id/eshop"
-                android:nextFocusLeft="@+id/street"
-                android:nextFocusRight="@+id/eshop"
-                android:nextFocusUp="@+id/street" />
-
-            <EditText
-                android:id="@+id/eshop"
-                style="@style/HnutiDuha.InputMedium"
-                android:layout_width="150dp"
-                android:hint="@string/eshop"
-                android:nextFocusDown="@+id/mail"
-                android:nextFocusForward="@+id/mail"
-                android:nextFocusLeft="@+id/web"
-                android:nextFocusRight="@+id/mail"
-                android:nextFocusUp="@+id/web" />
-
-            <EditText
-                android:id="@+id/mail"
-                style="@style/HnutiDuha.InputMedium"
-                android:layout_width="150dp"
-                android:hint="@string/email"
-                android:nextFocusDown="@+id/phone"
-                android:nextFocusForward="@+id/phone"
-                android:nextFocusLeft="@+id/eshop"
-                android:nextFocusRight="@+id/phone"
-                android:nextFocusUp="@+id/eshop" />
-
-            <EditText
-                android:id="@+id/phone"
-                style="@style/HnutiDuha.InputMedium"
-                android:layout_width="150dp"
-                android:hint="@string/phone"
-                android:nextFocusDown="@+id/nextButton"
-                android:nextFocusForward="@+id/nextButton"
-                android:nextFocusLeft="@+id/mail"
-                android:nextFocusRight="@+id/nextButton"
-                android:nextFocusUp="@+id/mail" />
 
             <ImageView
                 android:id="@+id/spacer"
@@ -93,13 +116,27 @@
                 android:layout_marginTop="0dp"
                 android:src="@drawable/list_spacer" />
 
-            <ImageView
-                android:id="@+id/nextButton"
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_gravity="center_vertical|center_horizontal"
-                android:src="@drawable/next_button" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal" >
+
+                <ImageView
+                    android:id="@+id/backButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:src="@drawable/back_button" />
+
+                <ImageView
+                    android:id="@+id/nextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="10dp"
+                    android:src="@drawable/next_button" />
+            </LinearLayout>
         </LinearLayout>
-    </ScrollView>
+    </LinearLayout>
 
 </RelativeLayout>

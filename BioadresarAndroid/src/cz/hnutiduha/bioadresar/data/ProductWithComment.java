@@ -1,12 +1,15 @@
 package cz.hnutiduha.bioadresar.data;
 
 public class ProductWithComment extends StringifiedFromDb{
-	public long id;
 	
-	public ProductWithComment(long id, String comment) {
-		this.id = id;
-		this.comment = comment;
+	ProductWithComment(long id, String comment, HnutiduhaFarmDb db) {
+		super(id, comment, db);
 	}
+	
+	public ProductWithComment(long id, HnutiduhaFarmDb db) {
+		super(id,  db);
+	}
+
 	protected String getName(HnutiduhaFarmDb db) {
 		return db.getProductName(id);
 	}

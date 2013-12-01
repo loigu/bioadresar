@@ -31,8 +31,8 @@ public class EditContactFragment extends SherlockFragment implements OnClickList
         // Inflate the layout for this fragment
         View me = inflater.inflate(R.layout.edit_contact, container, false);
         
-        View item = me.findViewById(R.id.nextButton);
-        item.setOnClickListener(this);
+        me.findViewById(R.id.nextButton).setOnClickListener(this);
+        me.findViewById(R.id.backButton).setOnClickListener(this);
         
         city = (EditText) me.findViewById(R.id.city);
         street = (EditText) me.findViewById(R.id.street);
@@ -96,17 +96,28 @@ public class EditContactFragment extends SherlockFragment implements OnClickList
 
 	@Override
 	public void onClick(View v) {
-		if (v.getId() == R.id.nextButton)
+		switch(v.getId())
 		{
-			if(validate())
+			case R.id.nextButton:
 			{
-				updateFarm();
-				fragmentNavigator.nextFragment(this);
+				if(validate())
+				{
+					updateFarm();
+					fragmentNavigator.nextFragment(this);
+				}
+				else
+				{
+					/// FIXME: show error
+				}
 			}
-			else
-			{
-				/// FIXME: show error
-			}
+			break;
+			case R.id.backButton:
+				if (validate())
+				{
+					updateFarm();
+				}
+				fragmentNavigator.previousFragment(this);
+				break;
 		}
 	}
 	
