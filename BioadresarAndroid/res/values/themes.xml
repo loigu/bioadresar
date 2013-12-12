@@ -44,6 +44,8 @@
 
     <style name="HnutiDuha.SpinnerMedium" parent="@style/HnutiDuha.InputMedium">
         <item name="background">@drawable/btn_dropdown</item>
+        <item name="android:height">30dp</item>
+        <item name="android:layout_height">30dp</item>
         <item name="android:background">@drawable/btn_dropdown</item>
         <item name="android:textColor">@color/DuhaTextGray</item>
     </style>
@@ -54,12 +56,7 @@
     </style>
 
     <declare-styleable name="FlowLayout">
-        <attr name="horizontalSpacing" format="dimension" />
-        <attr name="verticalSpacing" format="dimension" />
-    </declare-styleable>
-    <declare-styleable name="FlowLayout_LayoutParams">
-        <attr name="layout_breakLine" format="boolean" />
-        <attr name="layout_horizontalSpacing" format="dimension" />
+        <attr name="maxRowHeight" format="dimension" />
     </declare-styleable>
 
 </resources>

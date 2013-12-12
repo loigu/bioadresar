@@ -19,6 +19,8 @@
 <resources>
 
     <string name="app_name">Adresář farmářů</string>
+    <string name="select_products">Vyber produkci</string>
+    <string name="select_activities">Vyber aktivity</string>
     <string name="city">Město</string>
     <string name="farm_name">Název</string>
     <string name="add_farm">Přidat farmu</string>

@@ -5,9 +5,11 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
@@ -31,6 +34,8 @@ class SomethingHolder<T extends StringifiedFromDb> implements OnClickListener {
 	List<T> list;
 	T[] options;
 	FlowLayout layout;
+	Builder addDialog = null;
+	
 	
 	class AddListener implements DialogInterface.OnClickListener {
 		SomethingHolder<T> holder;
@@ -49,15 +54,23 @@ class SomethingHolder<T extends StringifiedFromDb> implements OnClickListener {
 			dialog.dismiss();
 		}
 	}
-
-	public void showAddDialog(String title)
+	
+	protected void buildDialog(int titleResId)
 	{
-    	ArrayAdapter<T> adapter = new ArrayAdapter<T>(context,
-    	        android.R.layout.simple_spinner_dropdown_item, options);
-    	
-    	 new AlertDialog.Builder(context)
-    	  .setTitle(title)
-    	  .setAdapter(adapter, this.new AddListener(this, options)).show();
+		ArrayAdapter<T> adapter = new ArrayAdapter<T>(context,
+    	        R.layout.selectable_item_layout, options);
+		
+		new DialogFragment();
+    	 addDialog = new AlertDialog.Builder(context)
+    	  .setAdapter(adapter, this.new AddListener(this, options))
+    	  .setTitle(titleResId);
+	}
+
+	public void showAddDialog(int titleResId)
+	{
+		if (addDialog == null)
+			buildDialog(titleResId);
+    	addDialog.show();
     }
 	
 	private void addButton(StringifiedFromDb something)
@@ -65,6 +78,7 @@ class SomethingHolder<T extends StringifiedFromDb> implements OnClickListener {
 		Button b = (Button) LayoutInflater.from(context).inflate(R.layout.item_button, null);
 		b.setText(something.toString());
 		b.setTag(R.id.buttonTag, something);
+		b.setLayoutParams(new FlowLayout.LayoutParams(5,5));
 		b.setOnClickListener(this);
 		layout.addView(b);
 	}
@@ -146,8 +160,6 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
     	
     	me.findViewById(R.id.production).setOnClickListener(this);
     	me.findViewById(R.id.activities).setOnClickListener(this);
-    	
-    	
         
         return me;
     }
@@ -186,11 +198,11 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
 			break;
 			
 			case R.id.activities:
-				activitiesHolder.showAddDialog("Vyber aktivitu");
+				activitiesHolder.showAddDialog(R.string.select_activities);
 			break;
 			
 			case R.id.production:
-				productionHolder.showAddDialog("Vyber produkt");
+				productionHolder.showAddDialog(R.string.select_products);
 			break;
 		}
 					

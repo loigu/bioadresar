@@ -35,7 +35,7 @@ public class FarmLinearLayout extends LinearLayout {
     	farmId = farm.id;
     	distance = farm.getDistance(centerOfOurUniverse);
     	LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    	View v = inflater.inflate(R.layout.list_item_layout, this);
+    	View v = inflater.inflate(R.layout.farm_list_item_layout, this);
 		
 		LinearLayout toDetail = (LinearLayout)v.findViewById(R.id.toDetailArea);
 		farm.setToDetailListener(toDetail);

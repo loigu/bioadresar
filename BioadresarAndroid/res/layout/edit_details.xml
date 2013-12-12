@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bioadresar="http://schemas.android.com/apk/res-auto"
     android:id="@+id/editProducts"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -37,7 +38,7 @@
                 <LinearLayout
                     android:id="@+id/addProductLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp" >
 
                     <Button
@@ -61,13 +62,13 @@
                     android:id="@+id/productListLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp" >
-                </cz.hnutiduha.bioadresar.layout.FlowLayout>
+                    android:layout_marginBottom="10dp"
+                    bioadresar:maxRowHeight="35dp" />
 
                 <LinearLayout
                     android:id="@+id/addActivityLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp" >
 
                     <Button
@@ -89,7 +90,8 @@
                 <cz.hnutiduha.bioadresar.layout.FlowLayout
                     android:id="@+id/activityListLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" >
+                    android:layout_height="wrap_content"
+                    bioadresar:maxRowHeight="35dp" >
                 </cz.hnutiduha.bioadresar.layout.FlowLayout>
 
                 <LinearLayout
@@ -147,6 +149,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_gravity="bottom"
+            android:layout_weight="0.1"
             android:gravity="bottom"
             android:orientation="vertical" >
 
