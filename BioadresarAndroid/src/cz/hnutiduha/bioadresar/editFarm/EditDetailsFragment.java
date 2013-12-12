@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
@@ -129,6 +130,7 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
 	SomethingHolder<ProductWithComment> productionHolder;
 	SomethingHolder<ActivityWithComment> activitiesHolder;
 	private EditText description;
+	private LinearLayout pickupPlacesList;
 
 	
 	public EditDetailsFragment(FarmInfo farm, Context context) {
@@ -160,6 +162,11 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
     	
     	me.findViewById(R.id.production).setOnClickListener(this);
     	me.findViewById(R.id.activities).setOnClickListener(this);
+    	
+    	pickupPlacesList = (LinearLayout)me.findViewById(R.id.pickupPlacesList);
+    	addPickupPlace();
+    	
+    	me.findViewById(R.id.addButton).setOnClickListener(this);
         
         return me;
     }
@@ -174,10 +181,39 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
     	farm.setDescription(description.getText().toString());
     }
     
+    private void addPickupPlace()
+    {
+    	View p = LayoutInflater.from(context).inflate(R.layout.edit_pickup_place, null);
+    	View minus = p.findViewById(R.id.removeButton);
+    	minus.setOnClickListener(this);
+    	pickupPlacesList.addView(p);
+    }
+    
+    private void removePickupPlace(View minusButton)
+    {
+    	View parent = (View)minusButton.getParent();
+    	if (pickupPlacesList.getChildCount() == 1)
+    	{
+    		((TextView)parent.findViewById(R.id.placeAndTime)).setText("");
+    	}
+    	else
+    	{
+        	pickupPlacesList.removeView(parent);	
+    	}
+    }
+    
 	@Override
 	public void onClick(View v) {
 		switch(v.getId())
 		{
+			case R.id.removeButton:
+				removePickupPlace(v);
+				break;
+				
+			case R.id.addButton:
+				addPickupPlace();
+				break;
+				
 			case R.id.okButton:
 			{
 				if (validate())

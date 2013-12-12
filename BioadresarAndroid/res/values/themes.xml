@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <dimen name="row_height">35dp</dimen>
+    <dimen name="btn_in_row_height">30dp</dimen>
+
     <style name="Theme.HnutiDuhaTheme" parent="Theme.Sherlock">
         <item name="actionBarStyle">@style/Widget.HnutiDuha.ActionBar</item>
         <item name="searchViewSearchIcon">@drawable/search_icon</item>
@@ -34,7 +37,7 @@
     </style>
 
     <style name="HnutiDuha.InputMedium" parent="@style/HnutiDuha.TextMedium">
-        <item name="android:layout_height">35dp</item>
+        <item name="android:layout_height">@dimen/row_height</item>
         <item name="android:textSize">14sp</item>
         <item name="android:background">@drawable/field_background</item>
         <item name="background">@drawable/field_background</item>

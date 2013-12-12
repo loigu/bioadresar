@@ -81,5 +81,6 @@
     <string name="pickup">Odběr</string>
     <string name="containers">Bedýnky</string>
     <string name="containerDistributionPlaces">Výdejní místa</string>
+    <string name="placeAndTime">Místo a čas</string>
 
 </resources>

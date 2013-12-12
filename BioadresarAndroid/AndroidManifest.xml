@@ -120,7 +120,8 @@
         <activity
             android:name=".editFarm.EditFarmActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/add_farm" >
+            android:label="@string/add_farm"
+            android:windowSoftInputMode="adjustPan" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
