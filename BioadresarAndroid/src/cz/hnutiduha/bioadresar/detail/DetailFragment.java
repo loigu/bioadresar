@@ -47,21 +47,13 @@ public class DetailFragment extends SherlockFragment implements OnClickListener{
 	private FarmInfo farm = null;
 	View view = null;
 	ImageView bookmarkView = null;
-	static Bitmap bookmarkedBitmap = null;
-    static Bitmap notBookmarkedBitmap = null;
-    Context context;
+	Context context;
     
 	public DetailFragment(FarmInfo farm, Context context) {
 		super();
 		
 		this.farm = farm;
 		this.context = context;
-	}
-	
-	static void loadBitmaps(Context context)
-	{
-	    notBookmarkedBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.bookmark_icon);
-	    bookmarkedBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.bookmarked_icon);
 	}
 	
     /** Called when the activity is first created. */
@@ -75,11 +67,6 @@ public class DetailFragment extends SherlockFragment implements OnClickListener{
     	
     	ImageView map = (ImageView)view.findViewById(R.id.mapIcon);
     	farm.setToMapListener(map);
-        
-        if (bookmarkedBitmap == null)
-        {
-        	loadBitmaps(context);
-        }
         
         return view;
     }
@@ -130,10 +117,9 @@ public class DetailFragment extends SherlockFragment implements OnClickListener{
     private void updateBookmarked()
     {	
     	if (farm.isBookmarked())
-    		bookmarkView.setImageBitmap(bookmarkedBitmap);
+    		bookmarkView.setImageResource(R.drawable.bookmarked_icon);
     	else
-    		bookmarkView.setImageBitmap(notBookmarkedBitmap);
-    		
+    		bookmarkView.setImageResource(R.drawable.bookmark_icon);
     }
     
     private void fillFarmInfo()

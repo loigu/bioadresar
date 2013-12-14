@@ -8,6 +8,8 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -131,13 +133,14 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
 	SomethingHolder<ActivityWithComment> activitiesHolder;
 	private EditText description;
 	private LinearLayout pickupPlacesList;
-
-	
+	private TextView customDeliveryYes, customDeliveryNo;
+    
 	public EditDetailsFragment(FarmInfo farm, Context context) {
 		super();
 		
 		this.farm = farm;
 		this.context = context;
+		
 	}
 	
     @Override
@@ -162,6 +165,11 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
     	
     	me.findViewById(R.id.production).setOnClickListener(this);
     	me.findViewById(R.id.activities).setOnClickListener(this);
+    	
+    	customDeliveryYes = (TextView)me.findViewById(R.id.customDeliveryYes);
+    	customDeliveryNo = (TextView)me.findViewById(R.id.customDeliveryNo);
+    	customDeliveryYes.setOnClickListener(this);
+    	customDeliveryNo.setOnClickListener(this);
     	
     	pickupPlacesList = (LinearLayout)me.findViewById(R.id.pickupPlacesList);
     	addPickupPlace();
@@ -202,17 +210,38 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
     	}
     }
     
+    private void switchCustomDelivery(boolean yes)
+    {
+    	if (yes)
+    	{
+    		customDeliveryYes.setBackgroundResource(R.drawable.btn_checkbox_selected);
+    		customDeliveryNo.setBackgroundResource(R.drawable.btn_checkbox_unselected);
+    	}
+    	else
+    	{
+    		customDeliveryYes.setBackgroundResource(R.drawable.btn_checkbox_unselected);
+    		customDeliveryNo.setBackgroundResource(R.drawable.btn_checkbox_selected);
+    	}
+    }
+    
 	@Override
 	public void onClick(View v) {
 		switch(v.getId())
 		{
 			case R.id.removeButton:
 				removePickupPlace(v);
-				break;
+			break;
 				
 			case R.id.addButton:
 				addPickupPlace();
-				break;
+			break;
+				
+			case R.id.customDeliveryYes:
+				switchCustomDelivery(true);
+			break;
+			case R.id.customDeliveryNo:
+				switchCustomDelivery(false);
+			break;
 				
 			case R.id.okButton:
 			{

@@ -65,6 +65,8 @@
     <string name="defaultLocationSummary">V případě nedostupnosti polohy zvolí jako střed</string>
     <string name="renewLocationLabel">Načíst pozici</string>
     <string name="realLocation">reálná</string>
+    <string name="yes">Ano</string>
+    <string name="no">Ne</string>
     <string name="virtualLocation">zadaná</string>
     <string name="versionName">1.2</string>
     <string name="next25">Dalších 25</string>
@@ -76,9 +78,8 @@
     <string name="list_activity_name">SEZNAM</string>
     <string name="bookmarks_activity_name">OBLÍBENÉ</string>
     <string name="app_name_uppercase">ADRESÁŘ FARMÁŘŮ</string>
-    <string name="customContainerDistribution">Rozvoz</string>
+    <string name="customDistribution">Rozvoz domů</string>
     <string name="containerDistributionTime">Výdejní čas</string>
-    <string name="pickup">Odběr</string>
     <string name="containers">Bedýnky</string>
     <string name="containerDistributionPlaces">Výdejní místa</string>
     <string name="placeAndTime">Místo a čas</string>
