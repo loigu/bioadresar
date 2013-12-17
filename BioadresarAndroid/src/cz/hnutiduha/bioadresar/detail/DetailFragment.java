@@ -188,7 +188,7 @@ public class DetailFragment extends SherlockFragment implements OnClickListener{
         }
     	setFieldTextOrHideEmpty(address, Linkify.MAP_ADDRESSES, R.id.addressLabel, R.id.addressText);
     	
-    	farm.fillContainerDistribution(this.view, R.id.containerLayout, R.id.containerDistributionPlacesText, R.id.containerDistributionTimeLayout, R.id.conteinerDistributionTimeText, R.id.customConteinerDistributionText);
+    	farm.fillDeliveryOptions(view, R.id.containerLayout, R.id.containerDistributionPlacesLayout,  R.id.containerDistributionPlacesText, R.id.customConteinerDistributionText);
     }
 
 	@Override

@@ -36,6 +36,38 @@ public class ConfigDb {
 		db.execSQL("CREATE TABLE local (variable STRING NOT NULL, value STRING NOT NULL, PRIMARY KEY (variable, value));");
 		db.execSQL("INSERT INTO local(variable, value) VALUES('version', '1')");
 	}
+	
+	public String getOwnerName()
+	{
+		String ret = null;
+		Cursor c  = db.query("local", new String [] {  }, " variable = 'ownerName'", null, null, null, null);
+		if (c != null && ! c.isAfterLast())
+		{
+			ret = c.getString(0);
+		}
+		c.close();
+		
+		return ret;
+	}
+	
+	public String getOwnerMail()
+	{
+		String ret = null;
+		Cursor c  = db.query("local", new String [] {  }, " variable = 'ownerMail'", null, null, null, null);
+		if (c != null && ! c.isAfterLast())
+		{
+			ret = c.getString(0);
+		}
+		c.close();
+		
+		return ret;
+	}
+	
+	public void setOwnerInfo(String name, String email)
+	{
+		db.execSQL("INSERT OR REPLACE INTO local(variable, value) VALUES('ownerName', " + name + ");");
+		db.execSQL("INSERT OR REPLACE INTO local(variable, value) VALUES('ownerMail', " + email + ");");
+	}
 
 	
 	public void setBookmarked(int source, long objectId, boolean bookmarked)

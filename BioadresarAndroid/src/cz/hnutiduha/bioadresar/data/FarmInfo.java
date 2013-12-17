@@ -55,7 +55,7 @@ public class FarmInfo implements OnClickListener{
 	protected List<ActivityWithComment> activities = null;
 	protected List<Long> categories = null;
 	protected Boolean bookmarked = null;
-	protected ContainerDistribution containers = null;
+	protected DeliveryOptions delivery = null;
 	
 	private static final int viewTagTarget = 0xdeadbeef;
 	private static final String viewTargetMap = "map";
@@ -130,18 +130,28 @@ public class FarmInfo implements OnClickListener{
 		return products;
 	}
 	
+	public void setProducts(List<ProductWithComment> products)
+	{
+		this.products = products;
+	}
+	
 	boolean hasContainerDistribution = false;
 	
-	public ContainerDistribution getContainerDistributionInfo()
+	public DeliveryOptions getDeliveryInfo()
 	{
-		if (containers != null)
-			return containers;
+		if (delivery != null)
+			return delivery;
 		
 		getActivities();
 		if (hasContainerDistribution == false)
 			return null;
 		
-		return source.fillContainerDistributionInfo(this);
+		return source.fillDeliveryOptions(this);
+	}
+	
+	public void setDelieryInfo(DeliveryOptions opts)
+	{
+		this.delivery = opts;
 	}
 	
 	public List<ActivityWithComment> getActivities()
@@ -167,6 +177,11 @@ public class FarmInfo implements OnClickListener{
 		}
 		
 		return activities;
+	}
+	
+	public void setActivities(List<ActivityWithComment> activities)
+	{
+		this.activities = activities;
 	}
 	
 	public List<Long> getCategories()
@@ -217,42 +232,6 @@ public class FarmInfo implements OnClickListener{
 		Intent detail = new Intent(context, DetailActivity.class);
 		context.startActivity(detail);
 	}
-	
-	/*
-	public void addToContacts(View parent)
-	{
-		// Creates a new intent for sending to the device's contacts application
-        Intent insertIntent = new Intent(ContactsContract.Intents.Insert.ACTION);
-
-        // Sets the MIME type to the one expected by the insertion activity
-        insertIntent.setType(ContactsContract.RawContacts.CONTENT_TYPE);
-        insertIntent.putExtra(ContactsContract.Intents.Insert.NAME, this.name);
-        
-        if (contact.email != null)
-        	insertIntent.putExtra(ContactsContract.Intents.Insert.EMAIL, contact.email);
-        if (contact.phoneNumbers != null && !contact.phoneNumbers.isEmpty())
-        	
-        for (String phone: contact.phoneNumbers)
-        	insertIntent.putExtra(ContactsContract.Intents.Insert.PHONE, phone);
-        
-        // TODO: eshop, web
-        if (contact.eshop != null)
-        	insertIntent.putExtra(, contact.eshop);
-        if (contact.web)
-        	
-        
-        lat/lon
-        contact.city
-        contact.street
-        contact.
-        
-        insertIntent.putExtra(ContactsContract.Intents.Insert.COMPANY, company);
-        insertIntent.putExtra(ContactsContract.Intents.Insert.POSTAL, postal);
-
-        // Send out the intent to start the device's contacts app in its add contact activity.
-        startActivity(insertIntent);
-	}
-	*/
 
 	// this is little hack, it doesn't belong to data class, but it serve us nicely :)
 	@Override
@@ -272,31 +251,28 @@ public class FarmInfo implements OnClickListener{
 			Log.e("gui", "farm set as on click listener with unknown target tag " + targetTag.toString());
 	}
 	
-	public void fillContainerDistribution(View parent, int layoutId, int placesTextId, int timeLayoutId, int timeTextId, int customTextId)
+	public void fillDeliveryOptions(View parent, int layoutId, int placesLayoutId, int placesTextId, int customTextId)
 	{
 		// supports?
-		ContainerDistribution distr = getContainerDistributionInfo();
-		if (distr == null || distr.places == null)
+		DeliveryOptions distr = getDeliveryInfo();
+		if (distr == null || (distr.placesWithTime == null && distr.customDistribution == false))
 		{
 			((LinearLayout)parent.findViewById(layoutId)).setVisibility(LinearLayout.GONE);
 			return;
 		}
 		
-		TextView places = (TextView)parent.findViewById(placesTextId);
-		// places
-		for (String place : distr.places)
+		if (distr.placesWithTime != null && distr.placesWithTime.length != 0)
 		{
-			places.append(place);
-		}
-		
-		// time
-		if (distr.time == null)
-		{
-			((LinearLayout)parent.findViewById(timeLayoutId)).setVisibility(LinearLayout.GONE);
+			TextView places = (TextView)parent.findViewById(placesTextId);
+			// places
+			for (String place : distr.placesWithTime)
+			{
+				places.append(place);
+			}
 		}
 		else
 		{
-			((TextView)parent.findViewById(timeTextId)).setText(distr.time);
+			((LinearLayout)parent.findViewById(placesLayoutId)).setVisibility(LinearLayout.GONE);
 		}
 		
 		// custom

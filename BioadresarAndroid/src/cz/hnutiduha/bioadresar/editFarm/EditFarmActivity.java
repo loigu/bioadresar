@@ -38,7 +38,7 @@ public class EditFarmActivity extends SherlockFragmentActivity implements Fragme
             }
             
             farm = new FarmInfo();
-            Fragment firstFragment = new EditDetailsFragment(farm, this); //new EditPositionFragment(farm, this);
+            Fragment firstFragment = new EditContactFragment(farm); //new EditPositionFragment(farm, this);
             
             // In case this activity was started with special instructions from an
             // Intent, pass the Intent's extras to the fragment as arguments

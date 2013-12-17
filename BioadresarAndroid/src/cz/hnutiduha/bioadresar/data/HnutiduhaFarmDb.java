@@ -415,6 +415,11 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 		return configDb.isBookmarked(SOURCE_ID, farm.id);
 	}
 	
+	public ConfigDb getConfigDb()
+	{
+		return this.configDb;
+	}
+	
 	public FarmInfo getFarm(long id) {
 		FarmInfo ret = null;
 		
@@ -566,13 +571,8 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 		return products.get(id);
 	}
 	
-	public ContainerDistribution fillContainerDistributionInfo(FarmInfo farm)
+	public DeliveryOptions fillDeliveryOptions(FarmInfo farm)
 	{
-		if (!farm.hasContainerDistribution)
-		{
-			return null;
-		}
-		
 		String[] columns = new String[] { "distributionPlace", "distributionTime", "customDistributionProvided" };
 		Cursor c = db.query("containerDistribution", columns, "locationId = " + farm.id, null, null, null, null);
 		
@@ -582,14 +582,17 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 			return null;
 		}
 		
-		farm.containers = new ContainerDistribution();
-		farm.containers.places = c.getString(0).split(":");
-		farm.containers.time = c.getString(1);
-		farm.containers.customDistribution = c.getInt(2) == 1;
+		farm.delivery = new DeliveryOptions();
+		farm.delivery.placesWithTime = new String[1];
+		farm.delivery.placesWithTime[0] = c.getString(0);
+		String time = c.getString(1);
+		if (time != null && !time.isEmpty())
+			farm.delivery.placesWithTime[0] += " " + time;
+		farm.delivery.customDistribution = c.getInt(2) == 1;
 	
 		c.close();
 		
-		return farm.containers;
+		return farm.delivery;
 	}
 	
 	public String getActivityName(Long id) {

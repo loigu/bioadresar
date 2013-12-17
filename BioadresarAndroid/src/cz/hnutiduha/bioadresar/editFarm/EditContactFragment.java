@@ -18,7 +18,7 @@ import cz.hnutiduha.bioadresar.data.FarmInfo;
 public class EditContactFragment extends SherlockFragment implements OnClickListener{
 	FragmentNavigator fragmentNavigator;
 	FarmInfo farm = null;
-	EditText city, street, mail, web, eshop, phone;
+	EditText city, street, mail, web, eshop, phone, person;
 	
 	public EditContactFragment(FarmInfo farm) {
 		super();
@@ -40,6 +40,7 @@ public class EditContactFragment extends SherlockFragment implements OnClickList
         web = (EditText) me.findViewById(R.id.web);
         eshop = (EditText) me.findViewById(R.id.eshop);
         phone = (EditText) me.findViewById(R.id.phone);
+        person = (EditText) me.findViewById(R.id.contactPerson);
         
         fillFarmContact();
         
@@ -60,12 +61,18 @@ public class EditContactFragment extends SherlockFragment implements OnClickList
         mail.setText(contact.email);
         web.setText(contact.web);
         eshop.setText(contact.eshop);
+        person.setText(contact.person);
         
-        // FIXME: list to multiple edit boxes
+        String phoneText = "";
         if (contact.phoneNumbers != null)
-        {
-        	phone.setText(contact.phoneNumbers.toString());
-        }
+        	for (String number : contact.phoneNumbers)
+        	{
+        		if (phoneText.length() != 0)
+        			phoneText += " ";
+        		phoneText += number;
+        	}
+       phone.setText(phoneText);
+       
     }
     
     private void updateFarm() {
@@ -75,9 +82,9 @@ public class EditContactFragment extends SherlockFragment implements OnClickList
     	contact.email = mail.getText().toString();
     	contact.web = web.getText().toString();
     	contact.eshop = eshop.getText().toString();
-    	contact.phoneNumbers = new LinkedList<String>();
+    	contact.person = person.getText().toString();
     	
-    	// FIXME: iterate all numbers
+    	contact.phoneNumbers = new LinkedList<String>();
     	contact.phoneNumbers.add(phone.getText().toString());
     	
     	farm.setFarmContact(contact);
@@ -85,8 +92,10 @@ public class EditContactFragment extends SherlockFragment implements OnClickList
     
     private boolean validate()
     {
-    	if (city.getText().toString().isEmpty() ||
-    			street.getText().toString().isEmpty())
+    	if (city.getText().toString().isEmpty() &&
+    			street.getText().toString().isEmpty() &&
+    			phone.getText().toString().isEmpty() &&
+    			mail.getText().toString().isEmpty())
     	{
     		return false;
     	}

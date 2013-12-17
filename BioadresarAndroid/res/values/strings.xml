@@ -19,6 +19,7 @@
 <resources>
 
     <string name="app_name">Adresář farmářů</string>
+    <string name="name">Jméno</string>
     <string name="select_products">Vyber produkci</string>
     <string name="select_activities">Vyber aktivity</string>
     <string name="city">Město</string>
@@ -82,6 +83,9 @@
     <string name="containerDistributionTime">Výdejní čas</string>
     <string name="containers">Bedýnky</string>
     <string name="containerDistributionPlaces">Výdejní místa</string>
+    <string name="commentHint">poznámky, co se jinam nevešlo...</string>
+    <string name="contactPerson">Kontaktní osoba</string>
+    <string name="editorContact">Kontakt na Vás</string>
     <string name="placeAndTime">Místo a čas</string>
 
 </resources>

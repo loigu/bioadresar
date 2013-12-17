@@ -35,8 +35,6 @@
                     android:maxLines="4"
                     android:minLines="4" />
 
-                <requestFocus />
-
                 <LinearLayout
                     android:id="@+id/addProductLayout"
                     android:layout_width="match_parent"
@@ -208,12 +206,12 @@
                     android:src="@drawable/back_button" />
 
                 <ImageView
-                    android:id="@+id/okButton"
+                    android:id="@+id/nextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginLeft="10dp"
-                    android:src="@drawable/ok_button" />
+                    android:src="@drawable/next_button" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

@@ -26,6 +26,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 
 import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.ActivityWithComment;
+import cz.hnutiduha.bioadresar.data.DeliveryOptions;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
 import cz.hnutiduha.bioadresar.data.ProductWithComment;
@@ -56,6 +57,20 @@ class SomethingHolder<T extends StringifiedFromDb> implements OnClickListener {
 			holder.addSomething(values[which]);
 			dialog.dismiss();
 		}
+	}
+	
+	private void putListToLayout()
+	{
+		layout.removeAllViews();
+		for (StringifiedFromDb something : list)
+		{
+			addButton(something);
+		}
+	}
+	
+	public List<T> getList()
+	{
+		return list;
 	}
 	
 	protected void buildDialog(int titleResId)
@@ -93,10 +108,7 @@ class SomethingHolder<T extends StringifiedFromDb> implements OnClickListener {
 		this.layout = layout;
 		this.options = options;
 		
-		for (StringifiedFromDb something : list)
-		{
-			addButton(something);
-		}
+		putListToLayout();
 	}
 	
 	private void addSomething(T something)
@@ -134,11 +146,17 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
 	private EditText description;
 	private LinearLayout pickupPlacesList;
 	private TextView customDeliveryYes, customDeliveryNo;
+	DeliveryOptions deliveryOpts;
     
 	public EditDetailsFragment(FarmInfo farm, Context context) {
 		super();
 		
 		this.farm = farm;
+		deliveryOpts = farm.getDeliveryInfo();
+		if (deliveryOpts == null)
+		{
+			deliveryOpts = new DeliveryOptions();
+		}
 		this.context = context;
 		
 	}
@@ -148,23 +166,14 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View me = inflater.inflate(R.layout.edit_details, container, false);
-        HnutiduhaFarmDb db = HnutiduhaFarmDb.getDefaultDb(context);
         
-        me.findViewById(R.id.okButton).setOnClickListener(this);
+        me.findViewById(R.id.nextButton).setOnClickListener(this);
         me.findViewById(R.id.backButton).setOnClickListener(this);
-        
-    	FlowLayout productsLayout = (FlowLayout) me.findViewById(R.id.productListLayout);
-    	productionHolder = new SomethingHolder<ProductWithComment>(context, farm.getProducts(),
-    			db.getProductsSortedByName(), productsLayout);
-    	FlowLayout activitiesLayout = (FlowLayout) me.findViewById(R.id.activityListLayout);
-    	activitiesHolder = new SomethingHolder<ActivityWithComment>(context, farm.getActivities(),
-    			db.getActivitiesSortedByName(), activitiesLayout);
-    	
-    	description = (EditText) me.findViewById(R.id.description);
-    	description.setText(farm.getDescription());
     	
     	me.findViewById(R.id.production).setOnClickListener(this);
     	me.findViewById(R.id.activities).setOnClickListener(this);
+    	
+    	description = (EditText) me.findViewById(R.id.description);
     	
     	customDeliveryYes = (TextView)me.findViewById(R.id.customDeliveryYes);
     	customDeliveryNo = (TextView)me.findViewById(R.id.customDeliveryNo);
@@ -172,9 +181,10 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
     	customDeliveryNo.setOnClickListener(this);
     	
     	pickupPlacesList = (LinearLayout)me.findViewById(R.id.pickupPlacesList);
-    	addPickupPlace();
     	
     	me.findViewById(R.id.addButton).setOnClickListener(this);
+    	
+    	loadFromFarm(me);
         
         return me;
     }
@@ -184,17 +194,59 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
     	return true;
     }
     
+    private void loadFromFarm(View me)
+    {
+    	description.setText(farm.getDescription());
+    	
+        HnutiduhaFarmDb db = HnutiduhaFarmDb.getDefaultDb(context);
+        
+    	FlowLayout productsLayout = (FlowLayout) me.findViewById(R.id.productListLayout);
+    	productionHolder = new SomethingHolder<ProductWithComment>(context, farm.getProducts(),
+    			db.getProductsSortedByName(), productsLayout);
+    	FlowLayout activitiesLayout = (FlowLayout) me.findViewById(R.id.activityListLayout);
+    	activitiesHolder = new SomethingHolder<ActivityWithComment>(context, farm.getActivities(),
+    			db.getActivitiesSortedByName(), activitiesLayout);
+    	
+    	pickupPlacesList.removeAllViews();
+    	if (deliveryOpts.placesWithTime != null)
+    	{
+    		for (String placeAndTime : deliveryOpts.placesWithTime)
+    			addPickupPlace().setText(placeAndTime);
+    	}
+    }
+    
     private void updateFarm()
     {
     	farm.setDescription(description.getText().toString());
+    	
+    	farm.setProducts(productionHolder.getList());
+    	farm.setActivities(activitiesHolder.getList());
+    	
+    	int childCount = pickupPlacesList.getChildCount();
+    	if (childCount == 0)
+    	{
+    		deliveryOpts.placesWithTime = null;
+    	}
+    	else
+    	{
+    		deliveryOpts.placesWithTime = new String[childCount];
+	    	for (int i = 0; i < childCount; i++)
+	    	{
+	    		TextView t = (TextView) pickupPlacesList.getChildAt(i).findViewById(R.id.placeAndTime);
+	    		deliveryOpts.placesWithTime[i] = t.getText().toString();
+	    	}
+    	}
+    	farm.setDelieryInfo(deliveryOpts);
     }
     
-    private void addPickupPlace()
+    private TextView addPickupPlace()
     {
     	View p = LayoutInflater.from(context).inflate(R.layout.edit_pickup_place, null);
     	View minus = p.findViewById(R.id.removeButton);
     	minus.setOnClickListener(this);
     	pickupPlacesList.addView(p);
+    	
+    	return (TextView)p.findViewById(R.id.placeAndTime);
     }
     
     private void removePickupPlace(View minusButton)
@@ -212,6 +264,8 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
     
     private void switchCustomDelivery(boolean yes)
     {
+    	deliveryOpts.customDistribution = yes;
+    	
     	if (yes)
     	{
     		customDeliveryYes.setBackgroundResource(R.drawable.btn_checkbox_selected);
@@ -243,14 +297,17 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
 				switchCustomDelivery(false);
 			break;
 				
-			case R.id.okButton:
+			case R.id.nextButton:
 			{
 				if (validate())
 				{
 					updateFarm();
 					fragmentNavigator.nextFragment(this);
 				}
-				// FIXME: else write error
+				else
+				{
+					// FIXME: else write error
+				}
 			}
 			break;
 			
