@@ -13,6 +13,7 @@ import android.widget.EditText;
 import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.ConfigDb;
 import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
+import cz.hnutiduha.bioadresar.util.StringOperations;
 
 public class EditAppendixFragment extends SherlockFragment implements OnClickListener, NamedFragment{
 	FragmentNavigator fragmentNavigator;
@@ -77,22 +78,22 @@ public class EditAppendixFragment extends SherlockFragment implements OnClickLis
     }
     
     private void update() {
-    	cache.comment = comment.getText().toString();
-    	cache.mail = mail.getText().toString();
-    	cache.name = person.getText().toString();
+    	cache.comment = StringOperations.getStringFromEditBox(comment);
+    	cache.mail = StringOperations.getStringFromEditBox(mail);
+    	cache.name = StringOperations.getStringFromEditBox(person);
     }
     
     private boolean validate(boolean alerts)
     {
     	
-    	if (!android.util.Patterns.EMAIL_ADDRESS.matcher(mail.getText()).matches())
+    	if (!android.util.Patterns.EMAIL_ADDRESS.matcher(StringOperations.getStringFromEditBox(mail)).matches())
     	{
     		if (alerts)
     			fragmentNavigator.fragmentWarning(R.string.emailNonValid);
     		return false;
     	}
     	
-    	if (person.getText().toString().isEmpty())
+    	if (StringOperations.getStringFromEditBox(person).isEmpty())
     	{
     		if (alerts)
     			fragmentNavigator.fragmentWarning(R.string.fillInName);

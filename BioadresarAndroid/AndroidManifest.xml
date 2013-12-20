@@ -19,11 +19,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cz.hnutiduha.bioadresar"
     android:installLocation="auto"
-    android:versionCode="9"
+    android:versionCode="10"
     android:versionName="@string/versionName" >
 
     <uses-sdk
-        android:minSdkVersion="7"
+        android:minSdkVersion="8"
         android:targetSdkVersion="16" />
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />

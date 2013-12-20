@@ -30,6 +30,7 @@ import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
 import cz.hnutiduha.bioadresar.data.ProductWithComment;
 import cz.hnutiduha.bioadresar.data.StringifiedFromDb;
 import cz.hnutiduha.bioadresar.layout.FlowLayout;
+import cz.hnutiduha.bioadresar.util.StringOperations;
 
 class SomethingHolder<T extends StringifiedFromDb> implements OnClickListener {
 	Context context;
@@ -219,7 +220,7 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
     
     private void updateFarm()
     {
-    	farm.setDescription(description.getText().toString());
+    	farm.setDescription(StringOperations.getStringFromEditBox(description));
     	
     	farm.setProducts(productionHolder.getList());
     	farm.setActivities(activitiesHolder.getList());
@@ -235,7 +236,7 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
     		deliveryOpts.placesWithTime = new String[childCount];
 	    	for (int i = 0; i < childCount; i++)
 	    	{
-	    		String placeWithTime = ((TextView)pickupPlacesList.getChildAt(i).findViewById(R.id.placeAndTime)).getText().toString();
+	    		String placeWithTime = StringOperations.getStringFromEditBox((EditText)pickupPlacesList.getChildAt(i).findViewById(R.id.placeAndTime));
 	    		if (!placeWithTime.isEmpty())
 	    			deliveryOpts.placesWithTime[j++] = placeWithTime;
 	    	}
@@ -243,7 +244,12 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
 	    	if (j == 0)
 	    		deliveryOpts.placesWithTime = null;
 	    	else if (j < childCount)
-	    		deliveryOpts.placesWithTime = java.util.Arrays.copyOf(deliveryOpts.placesWithTime, j);
+	    	{
+	    		String[] tmp = new String[j];
+	    		for (j--; j >= 0; j++)
+	    			tmp[j] = deliveryOpts.placesWithTime[j];
+	    		deliveryOpts.placesWithTime = tmp;
+	    	}
     	}
     	farm.setDelieryInfo(deliveryOpts);
     }

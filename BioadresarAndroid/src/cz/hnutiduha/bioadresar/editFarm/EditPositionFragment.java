@@ -33,6 +33,7 @@ import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.FarmContact;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.LocationCache;
+import cz.hnutiduha.bioadresar.util.StringOperations;
 
 public class EditPositionFragment extends SherlockFragment implements OnClickListener, OnMapLongClickListener, OnEditorActionListener, NamedFragment{
 	private FragmentNavigator fragmentNavigator;
@@ -134,7 +135,7 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
     
     private boolean validate()
     {
-    	if (farmName.getText().toString().isEmpty())
+    	if (StringOperations.getStringFromEditBox(farmName).isEmpty())
     	{
     		fragmentNavigator.fragmentWarning(R.string.fillInName);
     		return false;
@@ -167,7 +168,7 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
     private void updateFarm()
     {
     	
-    	farm.name = farmName.getText().toString();
+    	farm.name = StringOperations.getStringFromEditBox(farmName);
     			
     	double latValue = Double.valueOf(lat.getText().toString());
     	double lonValue = Double.valueOf(this.lon.getText().toString());

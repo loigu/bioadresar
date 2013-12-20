@@ -63,7 +63,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    bioadresar:maxRowHeight="35dp" />
+                    bioadresar:maxRowHeight="32dp" />
 
                 <LinearLayout
                     android:id="@+id/addActivityLayout"
@@ -91,7 +91,7 @@
                     android:id="@+id/activityListLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    bioadresar:maxRowHeight="35dp" >
+                    bioadresar:maxRowHeight="32dp" >
                 </cz.hnutiduha.bioadresar.layout.FlowLayout>
 
                 <LinearLayout

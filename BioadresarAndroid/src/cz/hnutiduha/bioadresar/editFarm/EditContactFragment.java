@@ -16,6 +16,7 @@ import android.widget.EditText;
 import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.FarmContact;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
+import cz.hnutiduha.bioadresar.util.StringOperations;
 
 public class EditContactFragment extends SherlockFragment implements OnClickListener, NamedFragment{
 	FragmentNavigator fragmentNavigator;
@@ -76,15 +77,15 @@ public class EditContactFragment extends SherlockFragment implements OnClickList
        phone.setText(phoneText);
        
     }
-    
+        
     private void updateFarm() {
     	FarmContact contact = new FarmContact();
-    	contact.city = city.getText().toString();
-    	contact.street = street.getText().toString();
-    	contact.email = mail.getText().toString();
-    	contact.web = web.getText().toString();
-    	contact.eshop = eshop.getText().toString();
-    	contact.person = person.getText().toString();
+    	contact.city = StringOperations.getStringFromEditBox(city);
+    	contact.street = StringOperations.getStringFromEditBox(street);
+    	contact.email = StringOperations.getStringFromEditBox(mail);
+    	contact.web = StringOperations.getStringFromEditBox(web);
+    	contact.eshop = StringOperations.getStringFromEditBox(eshop);
+    	contact.person = StringOperations.getStringFromEditBox(person);
     	
     	contact.phoneNumbers = new LinkedList<String>();
     	contact.phoneNumbers.add(phone.getText().toString());
@@ -94,12 +95,34 @@ public class EditContactFragment extends SherlockFragment implements OnClickList
     
     private boolean validate()
     {
+    	String mailString = mail.getText().toString().trim();
+    	String webString = web.getText().toString().trim(); 
+    	String eshopString = eshop.getText().toString().trim();
+    	
     	if (city.getText().toString().isEmpty() &&
     			street.getText().toString().isEmpty() &&
     			phone.getText().toString().isEmpty() &&
-    			mail.getText().toString().isEmpty())
+    			mailString.isEmpty())
     	{
     		fragmentNavigator.fragmentWarning(R.string.fillAtLeastOneContact);
+    		return false;
+    	}
+    	
+    	if (!mailString.isEmpty() && !android.util.Patterns.EMAIL_ADDRESS.matcher(mailString).matches())
+    	{
+    		fragmentNavigator.fragmentWarning(R.string.emailNonValid);
+    		return false;
+    	}
+    	
+    	if (!webString.isEmpty() && !android.util.Patterns.WEB_URL.matcher(mailString).matches())
+    	{
+    		fragmentNavigator.fragmentWarning(R.string.webNonValid);
+    		return false;    		
+    	}
+    	
+    	if (!eshopString.isEmpty() && !android.util.Patterns.WEB_URL.matcher(mailString).matches())
+    	{
+    		fragmentNavigator.fragmentWarning(R.string.eshopNonValid);
     		return false;
     	}
     	
