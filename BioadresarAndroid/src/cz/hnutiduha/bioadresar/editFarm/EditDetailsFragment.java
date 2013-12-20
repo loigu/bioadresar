@@ -8,8 +8,6 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -76,12 +74,11 @@ class SomethingHolder<T extends StringifiedFromDb> implements OnClickListener {
 	protected void buildDialog(int titleResId)
 	{
 		ArrayAdapter<T> adapter = new ArrayAdapter<T>(context,
-    	        R.layout.selectable_item_layout, options);
+				android.R.layout.simple_spinner_dropdown_item, options);
 		
-		new DialogFragment();
-    	 addDialog = new AlertDialog.Builder(context)
-    	  .setAdapter(adapter, this.new AddListener(this, options))
-    	  .setTitle(titleResId);
+		addDialog = new AlertDialog.Builder(context)
+			.setTitle(titleResId)
+			.setAdapter(adapter, this.new AddListener(this, options));
 	}
 
 	public void showAddDialog(int titleResId)
@@ -137,7 +134,7 @@ class SomethingHolder<T extends StringifiedFromDb> implements OnClickListener {
 	}
 }
 
-public class EditDetailsFragment extends SherlockFragment implements OnClickListener{
+public class EditDetailsFragment extends SherlockFragment implements OnClickListener, NamedFragment{
 	private FragmentNavigator fragmentNavigator;
 	private FarmInfo farm;
 	private Context context;
@@ -208,10 +205,15 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
     			db.getActivitiesSortedByName(), activitiesLayout);
     	
     	pickupPlacesList.removeAllViews();
-    	if (deliveryOpts.placesWithTime != null)
+    	if (deliveryOpts.placesWithTime != null && deliveryOpts.placesWithTime.length > 0)
     	{
     		for (String placeAndTime : deliveryOpts.placesWithTime)
-    			addPickupPlace().setText(placeAndTime);
+    			if (!placeAndTime.isEmpty())
+    				addPickupPlace().setText(placeAndTime);
+    	}
+    	else
+    	{
+    		addPickupPlace();
     	}
     }
     
@@ -229,12 +231,19 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
     	}
     	else
     	{
+    		int j = 0;
     		deliveryOpts.placesWithTime = new String[childCount];
 	    	for (int i = 0; i < childCount; i++)
 	    	{
-	    		TextView t = (TextView) pickupPlacesList.getChildAt(i).findViewById(R.id.placeAndTime);
-	    		deliveryOpts.placesWithTime[i] = t.getText().toString();
+	    		String placeWithTime = ((TextView)pickupPlacesList.getChildAt(i).findViewById(R.id.placeAndTime)).getText().toString();
+	    		if (!placeWithTime.isEmpty())
+	    			deliveryOpts.placesWithTime[j++] = placeWithTime;
 	    	}
+	    	
+	    	if (j == 0)
+	    		deliveryOpts.placesWithTime = null;
+	    	else if (j < childCount)
+	    		deliveryOpts.placesWithTime = java.util.Arrays.copyOf(deliveryOpts.placesWithTime, j);
     	}
     	farm.setDelieryInfo(deliveryOpts);
     }
@@ -339,4 +348,9 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
             throw new ClassCastException(activity.toString() + " must implement FragmentNavigator");
         }
     }
+    
+	public int getName()
+	{
+		return R.string.farmDetails;
+	}
 }

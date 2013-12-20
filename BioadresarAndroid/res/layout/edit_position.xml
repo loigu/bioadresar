@@ -17,22 +17,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="FIXME: typ objektu"
-            android:textAppearance="@style/HnutiDuha.HeaderMedium"
-            android:textColor="@color/White" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:orientation="vertical" >
-
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
             android:text="@string/farm_name"
             android:textAppearance="@style/HnutiDuha.HeaderMedium"
             android:textColor="@color/White" />
@@ -52,7 +36,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp" >
+        android:layout_marginBottom="10dp"
+        android:layout_weight="0.1" >
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -122,6 +107,7 @@
         android:id="@+id/map"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:layout_weight="0.9"
         android:orientation="horizontal" />
 
 </LinearLayout>

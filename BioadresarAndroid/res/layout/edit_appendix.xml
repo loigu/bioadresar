@@ -32,7 +32,10 @@
                     android:hint="@string/commentHint"
                     android:inputType="textMultiLine"
                     android:maxLines="6"
-                    android:minLines="6" />
+                    android:minLines="6"
+                    android:nextFocusDown="@+id/name"
+                    android:nextFocusForward="@+id/name"
+                    android:nextFocusRight="@+id/name" />
 
                 <LinearLayout
                     android:id="@+id/senderContactLayout"
@@ -53,7 +56,12 @@
                         android:layout_width="match_parent"
                         android:hint="@string/name"
                         android:inputType="textPersonName"
-                        android:maxLines="1" />
+                        android:maxLines="1"
+                        android:nextFocusDown="@+id/mail"
+                        android:nextFocusForward="@+id/mail"
+                        android:nextFocusLeft="@+id/comments"
+                        android:nextFocusRight="@+id/mail"
+                        android:nextFocusUp="@+id/comments" />
 
                     <EditText
                         android:id="@+id/mail"
@@ -61,6 +69,11 @@
                         android:layout_width="match_parent"
                         android:hint="@string/email"
                         android:inputType="textEmailAddress"
+                        android:nextFocusDown="@+id/sendButton"
+                        android:nextFocusForward="@+id/sendButton"
+                        android:nextFocusLeft="@+id/name"
+                        android:nextFocusRight="@+id/sendButton"
+                        android:nextFocusUp="@+id/name" />
                         android:maxLines="1" />
                 </LinearLayout>
             </LinearLayout>
@@ -95,12 +108,12 @@
                     android:src="@drawable/back_button" />
 
                 <ImageView
-                    android:id="@+id/okButton"
+                    android:id="@+id/sendButton"
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginLeft="10dp"
-                    android:src="@drawable/ok_button" />
+                    android:src="@drawable/send_button" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

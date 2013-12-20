@@ -48,13 +48,19 @@ public class DetailFragment extends SherlockFragment implements OnClickListener{
 	View view = null;
 	ImageView bookmarkView = null;
 	Context context;
+	boolean isInteractive = true;
     
-	public DetailFragment(FarmInfo farm, Context context) {
+	public DetailFragment(FarmInfo farm, Context context, boolean interactive) {
 		super();
 		
 		this.farm = farm;
 		this.context = context;
+		this.isInteractive = interactive;
 	}
+	
+    public DetailFragment(FarmInfo farm, Context context) {
+    	this(farm, context, false);
+    }
 	
     /** Called when the activity is first created. */
     @Override
@@ -63,15 +69,23 @@ public class DetailFragment extends SherlockFragment implements OnClickListener{
     	view = inflater.inflate(R.layout.detail_view, container, false);
         
         bookmarkView = (ImageView)view.findViewById(R.id.bookmarkIcon);
-    	bookmarkView.setOnClickListener(this);
-    	
-    	ImageView map = (ImageView)view.findViewById(R.id.mapIcon);
-    	farm.setToMapListener(map);
+        ImageView map = (ImageView)view.findViewById(R.id.mapIcon);
+        
+        if (isInteractive)
+        {
+        	bookmarkView.setOnClickListener(this);
+        	farm.setToMapListener(map);
+        }
+        else
+        {
+        	bookmarkView.setVisibility(View.GONE);
+        	map.setVisibility(View.GONE);
+        }
         
         return view;
     }
-    
-    public void onResume()
+ 
+	public void onResume()
     {
     	super.onResume();
     	if (farm != null)
@@ -124,7 +138,8 @@ public class DetailFragment extends SherlockFragment implements OnClickListener{
     
     private void fillFarmInfo()
     {	
-    	updateBookmarked();
+    	if (isInteractive)
+    		updateBookmarked();
     	
     	TextView field = (TextView) view.findViewById(R.id.farmName);
     	field.setText(farm.name);

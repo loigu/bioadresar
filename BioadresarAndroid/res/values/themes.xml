@@ -44,6 +44,10 @@
         <item name="android:textColor">@color/White</item>
     </style>
 
+    <style name="HnutiDuha.HeaderLargeWhite" parent="@style/HnutiDuha.HeaderMediumWhite">
+        <item name="android:textSize">20sp</item>
+    </style>
+
     <style name="HnutiDuha.InputMedium" parent="@style/HnutiDuha.TextMedium">
         <item name="android:layout_height">@dimen/row_height</item>
         <item name="android:textSize">14sp</item>

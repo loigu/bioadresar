@@ -74,6 +74,7 @@
     <string name="activities">Aktivity</string>
     <string name="requireGps">Vyžadovat gps</string>
     <string name="enableGps">Zapnout gps?</string>
+    <string name="enableNetwork">Je potřeba připojení k internetu</string>
     <string name="bookmarkListLabel">Záložky</string>
     <string name="map_activity_name">MAPA</string>
     <string name="list_activity_name">SEZNAM</string>
@@ -87,5 +88,15 @@
     <string name="contactPerson">Kontaktní osoba</string>
     <string name="editorContact">Kontakt na Vás</string>
     <string name="placeAndTime">Místo a čas</string>
+    <string name="emailNonValid">E-mail není validní</string>
+    <string name="invalidCoordinates">Gps souřadnice nejsou validní</string>
+    <string name="invalidForm">Chyba v formuláři</string>
+    <string name="fillInName">"Je třeba vyplnit jméno"</string>
+    <string name="fillAtLeastOneContact">Vyplňte alespoň jeden kontakt</string>
+    <string name="farmOverview">náhled</string>
+    <string name="farmPosition">pozice</string>
+    <string name="farmContact">kontakt</string>
+    <string name="farmDetails">detail</string>
+    <string name="farmSend">odeslat</string>
 
 </resources>

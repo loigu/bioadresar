@@ -14,6 +14,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -33,14 +34,13 @@ import cz.hnutiduha.bioadresar.data.FarmContact;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.LocationCache;
 
-public class EditPositionFragment extends SherlockFragment implements OnClickListener, OnMapLongClickListener, OnEditorActionListener{
+public class EditPositionFragment extends SherlockFragment implements OnClickListener, OnMapLongClickListener, OnEditorActionListener, NamedFragment{
 	private FragmentNavigator fragmentNavigator;
 	View me = null;
 	SupportMapFragment smf = null;
 	EditText lat = null, lon = null, farmName = null;
 	GoogleMap map = null;
 	Marker mark = null;
-	boolean latSet = false, lonSet = false;
 	FarmInfo farm;
 	Activity parent;
 	
@@ -53,18 +53,22 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
 	
 	private void centerMap()
 	{
-        int zoomLevel = 11;
-        Location loc = farm.getLocation();
-        
-        if (loc == null)
+        // expect this to be loaded in loadFarm()
+        if (validateCoordinates())
         {
-        	loc = LocationCache.getCenter();        	
+        	LatLng point = new LatLng(Double.valueOf(lat.getText().toString()), Double.valueOf(lon.getText().toString()));
+        	map.moveCamera(CameraUpdateFactory.zoomTo(11));
+        	setMarker(point, true);
+        }
+        else
+        {
+        	int zoomLevel = 11;
+        	Location loc = LocationCache.getCenter();        	
 	        if (!LocationCache.hasRealLocation())
 	        	zoomLevel = 9;
+	        
+			map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(loc.getLatitude(), loc.getLongitude()), zoomLevel));
         }
-	
-		map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(loc.getLatitude(), loc.getLongitude()), zoomLevel));
-
 	}
 	
 	@Override
@@ -76,6 +80,7 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
 			map = smf.getMap();
 			map.setOnMapLongClickListener(this);
 			centerMap();
+			
 		} else
 			Log.d("map", "can't get map fragment");
 	}
@@ -105,31 +110,64 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
 		{
 			getChildFragmentManager().beginTransaction().show(smf).commit();
 		}
+		
+		loadFromFarm();
         
         return me;
     }
     
-    private boolean validate()
+    private boolean validateCoordinates()
     {
-    	if (farmName.getText().toString().isEmpty()) { return false; }
     	try
     	{
         	double latValue = Double.valueOf(lat.getText().toString());
         	double lonValue = Double.valueOf(this.lon.getText().toString());
         	
-        	if (latValue < -90 || latValue > 90) { return false; }
-        	if (lonValue < -180 || lonValue > 180) { return false; }
+        	if ((latValue > -90 && latValue < 90) &&
+        			(lonValue > -180 && lonValue < 180))
+        		return true;
         	
-    	} catch (NumberFormatException e) { return false; }
+    	} catch (NumberFormatException e) { }
+    	
+    	return false;
+    }
+    
+    private boolean validate()
+    {
+    	if (farmName.getText().toString().isEmpty())
+    	{
+    		fragmentNavigator.fragmentWarning(R.string.fillInName);
+    		return false;
+    	}
+    	
+    	if (!validateCoordinates())
+    	{
+    		fragmentNavigator.fragmentWarning(R.string.invalidCoordinates);
+    		return false;
+    	}
     	
     	return true;
+    }
+    
+    private void loadFromFarm()
+    {
+    	farmName.setText(farm.name);
+    	
+    	if (farm.lat > -90 && farm.lat < 90)
+    	{
+    		lat.setText(String.valueOf(farm.lat));
+    	}
+    	if (farm.lon > -180 && farm.lon < 180)
+    	{
+    		lon.setText(String.valueOf(farm.lon));
+    	}
     }
     
     /// only call when validate returns true
     private void updateFarm()
     {
     	
-    	farm.name = farmName.toString();
+    	farm.name = farmName.getText().toString();
     			
     	double latValue = Double.valueOf(lat.getText().toString());
     	double lonValue = Double.valueOf(this.lon.getText().toString());
@@ -166,10 +204,6 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
 				
 				getChildFragmentManager().beginTransaction().hide(smf).commit();
 				fragmentNavigator.nextFragment(this);
-			}
-			else
-			{
-				// FIXME: error dialog
 			}
 		}
 	}
@@ -216,34 +250,17 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
 		Log.d("map", String.format("editor action %d", actionId));
 		if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT)
 		{
-			boolean textValid = false;
-			try {
-				Double.valueOf((v.getText().toString()));
-				textValid = true;
-			} catch (NumberFormatException e)
+			if (validateCoordinates())
 			{
-				Log.e("map", String.format("invalid coordinate '%s' entered", v.getText().toString()));
-			}
-			
-			switch(v.getId())
-			{
-			case R.id.latitude:
-				latSet = textValid;
-				break;
-			case R.id.longitude:
-				lonSet = textValid;
-				break;
-			}
-			
-			if (latSet && lonSet)
-			{
-				if (validate())
-				{
-					LatLng point = new LatLng(Double.valueOf(lat.getText().toString()), Double.valueOf(lon.getText().toString()));
-					setMarker(point, true);
-				}
+				LatLng point = new LatLng(Double.valueOf(lat.getText().toString()), Double.valueOf(lon.getText().toString()));
+				setMarker(point, true);
 			}
 		}
 		return false;
+	}
+	
+	public int getName()
+	{
+		return R.string.farmPosition;
 	}
 }

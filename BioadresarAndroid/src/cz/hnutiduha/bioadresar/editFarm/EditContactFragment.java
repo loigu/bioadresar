@@ -5,7 +5,9 @@ import java.util.LinkedList;
 import com.actionbarsherlock.app.SherlockFragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.os.Bundle;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,7 +17,7 @@ import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.FarmContact;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
 
-public class EditContactFragment extends SherlockFragment implements OnClickListener{
+public class EditContactFragment extends SherlockFragment implements OnClickListener, NamedFragment{
 	FragmentNavigator fragmentNavigator;
 	FarmInfo farm = null;
 	EditText city, street, mail, web, eshop, phone, person;
@@ -97,6 +99,7 @@ public class EditContactFragment extends SherlockFragment implements OnClickList
     			phone.getText().toString().isEmpty() &&
     			mail.getText().toString().isEmpty())
     	{
+    		fragmentNavigator.fragmentWarning(R.string.fillAtLeastOneContact);
     		return false;
     	}
     	
@@ -114,17 +117,10 @@ public class EditContactFragment extends SherlockFragment implements OnClickList
 					updateFarm();
 					fragmentNavigator.nextFragment(this);
 				}
-				else
-				{
-					/// FIXME: show error
-				}
 			}
 			break;
 			case R.id.backButton:
-				if (validate())
-				{
-					updateFarm();
-				}
+				updateFarm();
 				fragmentNavigator.previousFragment(this);
 				break;
 		}
@@ -139,5 +135,10 @@ public class EditContactFragment extends SherlockFragment implements OnClickList
             throw new ClassCastException(activity.toString() + " must implement FragmentNavigator");
         }
     }
+    
+	public int getName()
+	{
+		return R.string.farmContact;
+	}
 
 }

@@ -193,7 +193,7 @@ public class FarmInfo implements OnClickListener{
 	}
 	
 	public Location getLocation() {
-		if (lat < -90 || lon < -180)
+		if (lat < -90 || lat > 90 || lon < -180 || lon > 180)
 			return null;
 		
 		if (location == null) {
@@ -265,9 +265,13 @@ public class FarmInfo implements OnClickListener{
 		{
 			TextView places = (TextView)parent.findViewById(placesTextId);
 			// places
+			boolean first = true;
 			for (String place : distr.placesWithTime)
 			{
+				if (!first)
+					places.append("\n");
 				places.append(place);
+				first = false;
 			}
 		}
 		else

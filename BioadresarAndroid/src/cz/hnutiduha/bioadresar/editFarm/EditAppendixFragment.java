@@ -1,10 +1,9 @@
 package cz.hnutiduha.bioadresar.editFarm;
 
-import java.util.LinkedList;
-
 import com.actionbarsherlock.app.SherlockFragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,18 +12,43 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.ConfigDb;
-import cz.hnutiduha.bioadresar.data.FarmContact;
-import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
 
-public class EditAppendixFragment extends SherlockFragment implements OnClickListener{
+public class EditAppendixFragment extends SherlockFragment implements OnClickListener, NamedFragment{
 	FragmentNavigator fragmentNavigator;
-	String commentText;
 	EditText comment, person, mail;
+	static Cache cache = null;
+	Context context;
 	
-	public EditAppendixFragment(String comment) {
+	public static class Cache {
+		String name, mail, comment;
+		ConfigDb db;
+		public Cache(Context context) {
+			db = HnutiduhaFarmDb.getDefaultDb(context).getConfigDb();
+			
+			name = db.getOwnerName();
+			mail = db.getOwnerMail();
+		}
+		
+		public void save()
+		{
+			db.setOwnerInfo(name,  mail);
+		}
+	}
+	
+	public static String getComment()
+	{
+		if (cache != null)
+			return cache.comment;
+		
+		return null;
+	}
+	
+	public EditAppendixFragment(Context context) {
 		super();
-		this.commentText = comment;
+		this.context = context;
+		if (cache == null)
+			cache = new Cache(context);
 	}
 	
     @Override
@@ -33,7 +57,7 @@ public class EditAppendixFragment extends SherlockFragment implements OnClickLis
         // Inflate the layout for this fragment
         View me = inflater.inflate(R.layout.edit_appendix, container, false);
         
-        me.findViewById(R.id.okButton).setOnClickListener(this);
+        me.findViewById(R.id.sendButton).setOnClickListener(this);
         me.findViewById(R.id.backButton).setOnClickListener(this);
         
         mail = (EditText) me.findViewById(R.id.mail);
@@ -47,21 +71,31 @@ public class EditAppendixFragment extends SherlockFragment implements OnClickLis
     
     private void fillFields()
     {
-    	ConfigDb db = HnutiduhaFarmDb.getDefaultDb(context).getConfigDb();
-        mail.setText(db.getOwnerMail());
-        person.setText(db.getOwnerName());
-        comment.setText(commentText);
+        mail.setText(cache.mail);
+        person.setText(cache.name);
+        comment.setText(cache.comment);
     }
     
     private void update() {
-    	// FIXME: person, mail, comment
-    	    }
+    	cache.comment = comment.getText().toString();
+    	cache.mail = mail.getText().toString();
+    	cache.name = person.getText().toString();
+    }
     
-    private boolean validate()
+    private boolean validate(boolean alerts)
     {
-    	if (mail.getText().toString().isEmpty() ||
-    			person.getText().toString().isEmpty())
+    	
+    	if (!android.util.Patterns.EMAIL_ADDRESS.matcher(mail.getText()).matches())
     	{
+    		if (alerts)
+    			fragmentNavigator.fragmentWarning(R.string.emailNonValid);
+    		return false;
+    	}
+    	
+    	if (person.getText().toString().isEmpty())
+    	{
+    		if (alerts)
+    			fragmentNavigator.fragmentWarning(R.string.fillInName);
     		return false;
     	}
     	
@@ -72,24 +106,20 @@ public class EditAppendixFragment extends SherlockFragment implements OnClickLis
 	public void onClick(View v) {
 		switch(v.getId())
 		{
-			case R.id.nextButton:
+			case R.id.sendButton:
 			{
-				if(validate())
+				if(validate(true))
 				{
 					update();
+			    	cache.save();
 					fragmentNavigator.nextFragment(this);
-				}
-				else
-				{
-					/// FIXME: show error
 				}
 			}
 			break;
 			case R.id.backButton:
-				if (validate())
-				{
-					update();
-				}
+				update();
+				if (validate(false))
+			    	cache.save();
 				fragmentNavigator.previousFragment(this);
 				break;
 		}
@@ -104,5 +134,9 @@ public class EditAppendixFragment extends SherlockFragment implements OnClickLis
             throw new ClassCastException(activity.toString() + " must implement FragmentNavigator");
         }
     }
-
+    
+	public int getName()
+	{
+		return R.string.farmSend;
+	}
 }

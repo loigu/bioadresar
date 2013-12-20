@@ -65,8 +65,8 @@ public class ConfigDb {
 	
 	public void setOwnerInfo(String name, String email)
 	{
-		db.execSQL("INSERT OR REPLACE INTO local(variable, value) VALUES('ownerName', " + name + ");");
-		db.execSQL("INSERT OR REPLACE INTO local(variable, value) VALUES('ownerMail', " + email + ");");
+		db.execSQL("INSERT OR REPLACE INTO local(variable, value) VALUES('ownerName', '" + name + "');");
+		db.execSQL("INSERT OR REPLACE INTO local(variable, value) VALUES('ownerMail', '" + email + "');");
 	}
 
 	
