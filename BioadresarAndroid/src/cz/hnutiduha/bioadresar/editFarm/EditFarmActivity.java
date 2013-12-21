@@ -1,5 +1,14 @@
 package cz.hnutiduha.bioadresar.editFarm;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -26,9 +35,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
+import cz.hnutiduha.bioadresar.data.ActivityWithComment;
 import cz.hnutiduha.bioadresar.data.ConfigDb;
+import cz.hnutiduha.bioadresar.data.DeliveryOptions;
+import cz.hnutiduha.bioadresar.data.FarmContact;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
+import cz.hnutiduha.bioadresar.data.ProductWithComment;
+import cz.hnutiduha.bioadresar.net.CoexConnector;
 
 public class EditFarmActivity extends SherlockFragmentActivity implements FragmentNavigator, OnClickListener{
 	private FarmInfo farm = null;
@@ -119,6 +133,86 @@ public class EditFarmActivity extends SherlockFragmentActivity implements Fragme
 			AlertDialog dialog = builder.create();
 			dialog.show();
 	}
+	
+	private static String formatMessage(FarmInfo farm, String comment) 
+	{
+		
+		StringBuilder message = new StringBuilder();
+		message.append("Není potřeba založit nový producent?\n\n");
+		
+		message.append("Název lokality: ").append(farm.name).append("\n");
+		message.append("Popis lokality:\n").append(farm.getDescription()).append("\n\n");
+		message.append("GPS: latitude ").append(farm.lat).append(", longitude ").append(farm.lon).append('\n');
+		
+		FarmContact contact = farm.getFarmContact();
+		message.append("Kontaktní osoba: ").append(contact.person).append(", e-mail: ").append(contact.email).append("\n");
+		message.append("Adresa: \n\tulice: ").append(contact.street).append("\n\tměsto: ").append(contact.city).append("\n");
+		
+		message.append("Telefon(y): ");
+		boolean first = true;
+		for (String phone : contact.phoneNumbers)
+		{
+			if (!first) message.append(", ");
+			message.append(phone);
+			first = false;
+		}
+		message.append("\n");
+		
+		message.append("Web: ").append(contact.web).append("\n");
+		message.append("E-shop: ").append(contact.eshop).append("\n");
+		
+		DeliveryOptions delivery = farm.getDeliveryInfo();
+		if (delivery != null)
+		{
+			message.append("Rozvoz domů: ").append(delivery.customDistribution ? "ano" : "ne").append("\n");
+			message.append("Výdejní místa:\n");
+			for (String placeAndTime : delivery.placesWithTime)
+				message.append("\t").append(placeAndTime).append("\n");
+			message.append("\n");
+		}
+		
+		message.append("Produkce:\n");
+		for (ProductWithComment product : farm.getProducts())
+		{
+			message.append("\t").append(product.toString()).append("\n");
+		}
+		message.append("\n");
+		
+		message.append("Činnosti:\n");
+		for (ActivityWithComment activity : farm.getActivities())
+		{
+			message.append("\t").append(activity.toString()).append("\n");
+		}
+		message.append("\n");
+		
+		if (comment != null && !comment.isEmpty())
+		{
+			message.append("Vzkaz od přidávájícího:\n").append(comment).append("\n");
+		}
+		
+		return message.toString();
+	}
+		
+		    /*
+author	loigu@volny.cz
+author_name	jirka
+client	www
+cmd	add
+lang	cs
+message	toto je testovaci zprava misto: 15.15 x 50.11111 popis: naše krásná farmička, roste na ní travička, na ní se pase kravička. jóó, to bude mlíčka
+place-message	toto je testovaci zprava misto: 15.15 x 50.11111 popis: naše krásná farmička, roste na ní travička, na ní se pase kravička. jóó, to bude mlíčka
+user-email	loigu@volny.cz
+user-name	jirka
+
+Source
+user-name=jirka&user-email=loigu%40volny.cz&place-message=toto+je+testovaci+zprava%0A%0Amisto%3A+15.15+x+50.11111%0A%0Apopis%3A+%0Ana%C5%A1e+kr%C3%A1sn%C3%A1+farmi%C4%8Dka%2C+%0Aroste+na+n%C3%AD+travi%C4%8Dka%2C+%0Ana+n%C3%AD+se+pase+kravi%C4%8Dka.%0Aj%C3%B3%C3%B3%2C+to+bude+ml%C3%AD%C4%8Dka&lang=cs&client=www&cmd=add&author=loigu%40volny.cz&author_name=jirka&message=toto+je+testovaci+zprava%0A%0Amisto%3A+15.15+x+50.11111%0A%0Apopis%3A+%0Ana%C5%A1e+kr%C3%A1sn%C3%A1+farmi%C4%8Dka%2C+%0Aroste+na+n%C3%AD+travi%C4%8Dka%2C+%0Ana+n%C3%AD+se+pase+kravi%C4%8Dka.%0Aj%C3%B3%C3%B3%2C+to+bude+ml%C3%AD%C4%8Dka
+
+
+response:
+{"ok":"M\u00edsto bylo p\u0159id\u00e1no","form":{"author":"loigu@volny.cz","author_name":"jirka"},"location_id":null}
+		 * 
+
+		*/
     
     private boolean commitFarm()
     {
@@ -128,7 +222,34 @@ public class EditFarmActivity extends SherlockFragmentActivity implements Fragme
     		return false;
     	}
     	
-    	// FIXME: send
+		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+		nameValuePairs.add(new BasicNameValuePair("client", "android"));
+		nameValuePairs.add(new BasicNameValuePair("cmd", "add"));
+		nameValuePairs.add(new BasicNameValuePair("lang", "cs"));
+
+		EditAppendixFragment.Cache cache = EditAppendixFragment.getCache();
+		nameValuePairs.add(new BasicNameValuePair("author", cache.mail));
+		nameValuePairs.add(new BasicNameValuePair("author_name", cache.name));
+		
+		nameValuePairs.add(new BasicNameValuePair("message", formatMessage(farm, cache.comment)));
+		
+		boolean success = false;
+		String response = null;
+		Resources res = getResources();
+		try
+		{
+			JSONArray result = CoexConnector.post(nameValuePairs);
+			// FIXME: get 'ok' object, decode content and put to res
+			
+			success = true;
+		} catch (IOException e)
+		{
+			response = res.getString(R.string.networkError);
+		} catch (JSONException e) {
+			response = res.getString(R.string.invalidResponse);
+		}
+		
+		// FIXME: display result
     	return true;
     }
     

@@ -18,7 +18,7 @@ import cz.hnutiduha.bioadresar.util.StringOperations;
 public class EditAppendixFragment extends SherlockFragment implements OnClickListener, NamedFragment{
 	FragmentNavigator fragmentNavigator;
 	EditText comment, person, mail;
-	static Cache cache = null;
+	private static Cache cache = null;
 	Context context;
 	
 	public static class Cache {
@@ -37,12 +37,9 @@ public class EditAppendixFragment extends SherlockFragment implements OnClickLis
 		}
 	}
 	
-	public static String getComment()
+	public static Cache getCache()
 	{
-		if (cache != null)
-			return cache.comment;
-		
-		return null;
+		return cache;
 	}
 	
 	public EditAppendixFragment(Context context) {

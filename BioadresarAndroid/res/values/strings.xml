@@ -95,6 +95,8 @@
     <string name="invalidForm">Chyba v formuláři</string>
     <string name="fillInName">"Je třeba vyplnit jméno"</string>
     <string name="fillAtLeastOneContact">Vyplňte alespoň jeden kontakt</string>
+    <string name="networkError">Chyba ve spojení</string>
+    <string name="invalidResponse">Chybná odpověď ze serveru</string>
     <string name="farmOverview">náhled</string>
     <string name="farmPosition">pozice</string>
     <string name="farmContact">kontakt</string>
