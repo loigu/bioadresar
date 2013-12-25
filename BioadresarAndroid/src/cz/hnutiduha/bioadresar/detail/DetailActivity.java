@@ -17,46 +17,35 @@
 
 package cz.hnutiduha.bioadresar.detail;
 
-import java.util.Iterator;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.Intent;
 import android.os.Bundle;
-import android.text.util.Linkify;
-import android.util.Log;
+import android.widget.LinearLayout;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
-import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
-import cz.hnutiduha.bioadresar.data.FarmContact;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
-import cz.hnutiduha.bioadresar.data.StringifiedFromDb;
+import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
 
 public class DetailActivity extends SherlockFragmentActivity{
 	
-	// we expect only one detail activity to be shown at a time
-	private static FarmInfo currentFarm = null;	
-	
-	public static void setFarm(FarmInfo farm)
-	{
-		currentFarm = farm;
-	}
+	private FarmInfo currentFarm = null;	
 	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        Intent myIntent= getIntent();
+        long farmId = myIntent.getLongExtra("farmId", FarmInfo.INVALID_FARM_ID);
+        
+        HnutiduhaFarmDb db = HnutiduhaFarmDb.getDefaultDb(this);
+        currentFarm = db.getFarm(farmId);
         
         LinearLayout me = new LinearLayout(this);
         me.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT));

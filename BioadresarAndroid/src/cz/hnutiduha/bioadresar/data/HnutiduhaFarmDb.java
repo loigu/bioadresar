@@ -322,11 +322,14 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 	}
 	
 	private List<FarmInfo> allFarmsList = null;
+	private Hashtable<Long, FarmInfo> allFarmsHash = null;
 	
 	private List<FarmInfo> getAllFarms()
 	{
 		if (allFarmsList != null)
 			return allFarmsList;
+		
+		allFarmsHash = new Hashtable<Long, FarmInfo>();
 		
 		LinkedList<FarmInfo> res = new LinkedList<FarmInfo>();
 		
@@ -337,6 +340,7 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 			farmInfo = fromCursor(c);
 			
 			res.add(farmInfo);
+			allFarmsHash.put(Long.valueOf(farmInfo.id), farmInfo);
 			c.moveToNext();
 		}
 		c.close();
@@ -422,6 +426,12 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 	
 	public FarmInfo getFarm(long id) {
 		FarmInfo ret = null;
+		
+		if (allFarmsHash != null)
+		{
+			ret = allFarmsHash.get(Long.valueOf(id));
+			if (ret != null) return ret;
+		}
 		
 		String[] columns = new String[] { "name", "gpsLatitude", "gpsLongtitude",};
 		Cursor c = db.query("locations", columns, "_id = " + id, null, null, null, null);

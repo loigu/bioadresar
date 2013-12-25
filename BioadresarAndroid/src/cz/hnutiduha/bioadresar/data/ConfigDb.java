@@ -37,11 +37,14 @@ public class ConfigDb {
 		db.execSQL("INSERT INTO local(variable, value) VALUES('version', '1')");
 	}
 	
+	static String[] valueColumn = { "value" };
+	
 	public String getOwnerName()
 	{
 		String ret = null;
-		Cursor c  = db.query("local", new String [] {  }, " variable = 'ownerName'", null, null, null, null);
-		if (c != null && ! c.isAfterLast())
+		Cursor c  = db.query("local", valueColumn , " variable = 'ownerName'", null, null, null, null);
+		c.moveToNext();
+		if (!c.isAfterLast())
 		{
 			ret = c.getString(0);
 		}
@@ -53,8 +56,9 @@ public class ConfigDb {
 	public String getOwnerMail()
 	{
 		String ret = null;
-		Cursor c  = db.query("local", new String [] {  }, " variable = 'ownerMail'", null, null, null, null);
-		if (c != null && ! c.isAfterLast())
+		Cursor c  = db.query("local", valueColumn, " variable = 'ownerMail'", null, null, null, null);
+		c.moveToNext();
+		if (!c.isAfterLast())
 		{
 			ret = c.getString(0);
 		}

@@ -36,6 +36,7 @@ import android.widget.TextView;
 import com.google.android.maps.GeoPoint;
 
 import cz.hnutiduha.bioadresar.detail.DetailActivity;
+import cz.hnutiduha.bioadresar.editFarm.EditFarmActivity;
 import cz.hnutiduha.bioadresar.map.MapActivity;
 
 public class FarmInfo implements OnClickListener{
@@ -225,11 +226,19 @@ public class FarmInfo implements OnClickListener{
 		context.startActivity(map);
 	}
 	
+	public void editFarm(View parent)
+	{
+		Context context = parent.getContext();
+		Intent detail = new Intent(context, EditFarmActivity.class);
+		detail.putExtra("farmId", this.id);
+		context.startActivity(detail);
+	}
+	
 	public void goToDetail(View parent)
 	{
 		Context context = parent.getContext();
-		DetailActivity.setFarm(this);
 		Intent detail = new Intent(context, DetailActivity.class);
+		detail.putExtra("farmId", this.id);
 		context.startActivity(detail);
 	}
 

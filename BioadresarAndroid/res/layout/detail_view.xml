@@ -14,7 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with BioAdresar.  If not, see <http://www.gnu.org/licenses/>.
+    along with BioAdresar.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/detailView"
@@ -382,11 +382,35 @@
             </LinearLayout>
 
             <ImageView
-                android:id="@+id/imageView42"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:scaleType="fitXY"
                 android:src="@drawable/duha_border_green" />
+
+            <LinearLayout
+                android:id="@+id/feedbackView"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="0dp"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:orientation="horizontal" >
+
+                <TextView
+                    style="@style/HnutiDuha.TextLargeWhite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/somethingIsWrong" />
+
+                <ImageView
+                    android:id="@+id/feedback_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="20dp"
+                    android:src="@drawable/feedback_button" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

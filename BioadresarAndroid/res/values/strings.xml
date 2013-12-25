@@ -25,6 +25,7 @@
     <string name="city">Město</string>
     <string name="farm_name">Název</string>
     <string name="add_farm">Přidat farmu</string>
+    <string name="edit_farm">Upravit farmu</string>
     <string name="here_fill_farm_name">zde napište celý název farmy</string>
     <string name="coordinates">Souřadnice GPS</string>
     <string name="lat">délka</string>
@@ -102,5 +103,6 @@
     <string name="farmContact">kontakt</string>
     <string name="farmDetails">detail</string>
     <string name="farmSend">odeslat</string>
+    <string name="somethingIsWrong">Něco se změnilo?</string>
 
 </resources>

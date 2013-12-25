@@ -11,7 +11,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.SearchView;
 
-import cz.hnutiduha.bioadresar.editFarm.EditFarmActivity;
+import cz.hnutiduha.bioadresar.editFarm.AddFarmActivity;
 import cz.hnutiduha.bioadresar.list.ListActivity;
 import cz.hnutiduha.bioadresar.list.BookmarksListActivity;
 import cz.hnutiduha.bioadresar.map.MapActivity;
@@ -137,7 +137,7 @@ public class MenuHandler implements OnNavigationListener{
 				break;
 				
 			case R.id.addFarmLink:
-				target = new Intent(context, EditFarmActivity.class);
+				target = new Intent(context, AddFarmActivity.class);
 				break;
 		
 		}

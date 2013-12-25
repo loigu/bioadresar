@@ -112,7 +112,17 @@
         </activity>
         <activity
             android:name=".detail.DetailActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".editFarm.AddFarmActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/add_farm"
+            android:windowSoftInputMode="adjustPan" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>

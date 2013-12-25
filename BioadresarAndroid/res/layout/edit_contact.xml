@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/editContact"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bioadresar="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/background" >
+    android:background="@drawable/background"
+    android:orientation="vertical" >
 
     <LinearLayout
+        android:id="@+id/editProducts"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="10dp"
@@ -13,31 +15,43 @@
 
         <ScrollView
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="fill_parent"
+            android:layout_gravity="top"
+            android:layout_weight="0.9" >
 
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:orientation="vertical" >
 
-                <EditText
-                    android:id="@+id/city"
-                    style="@style/HnutiDuha.InputMedium"
-                    android:layout_width="150dp"
-                    android:hint="@string/city"
-                    android:inputType="textPostalAddress"
-                    android:maxLines="1"
-                    android:nextFocusDown="@+id/street"
-                    android:nextFocusForward="@+id/street"
-                    android:nextFocusRight="@+id/street" >
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
 
-                    <requestFocus />
-                </EditText>
+                    <EditText
+                        android:id="@+id/city"
+                        style="@style/HnutiDuha.InputMedium"
+                        android:layout_width="fill_parent"
+                        android:layout_weight="0.1"
+                        android:hint="@string/city"
+                        android:inputType="textPostalAddress"
+                        android:maxLines="1"
+                        android:nextFocusDown="@+id/street"
+                        android:nextFocusForward="@+id/street"
+                        android:nextFocusRight="@+id/street" />
+
+                    <ImageView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="0.1" />
+                </LinearLayout>
 
                 <EditText
                     android:id="@+id/street"
                     style="@style/HnutiDuha.InputMedium"
                     android:layout_width="match_parent"
+                    android:layout_weight="0.1"
                     android:hint="@string/street_with_number"
                     android:inputType="textPostalAddress"
                     android:maxLines="1"
@@ -47,83 +61,144 @@
                     android:nextFocusRight="@+id/web"
                     android:nextFocusUp="@+id/city" />
 
-                <EditText
-                    android:id="@+id/web"
-                    style="@style/HnutiDuha.InputMedium"
-                    android:layout_width="150dp"
-                    android:hint="@string/web"
-                    android:inputType="textUri"
-                    android:maxLines="1"
-                    android:nextFocusDown="@+id/eshop"
-                    android:nextFocusForward="@+id/eshop"
-                    android:nextFocusLeft="@+id/street"
-                    android:nextFocusRight="@+id/eshop"
-                    android:nextFocusUp="@+id/street" />
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="horizontal" >
 
-                <EditText
-                    android:id="@+id/eshop"
-                    style="@style/HnutiDuha.InputMedium"
-                    android:layout_width="150dp"
-                    android:hint="@string/eshop"
-                    android:inputType="textUri"
-                    android:maxLines="1"
-                    android:nextFocusDown="@+id/mail"
-                    android:nextFocusForward="@+id/mail"
-                    android:nextFocusLeft="@+id/web"
-                    android:nextFocusRight="@+id/mail"
-                    android:nextFocusUp="@+id/web" />
+                    <EditText
+                        android:id="@+id/web"
+                        style="@style/HnutiDuha.InputMedium"
+                        android:layout_width="fill_parent"
+                        android:layout_weight="0.1"
+                        android:hint="@string/web"
+                        android:inputType="textUri"
+                        android:maxLines="1"
+                        android:nextFocusDown="@+id/eshop"
+                        android:nextFocusForward="@+id/eshop"
+                        android:nextFocusLeft="@+id/street"
+                        android:nextFocusRight="@+id/eshop"
+                        android:nextFocusUp="@+id/street" />
 
-                <EditText
-                    android:id="@+id/mail"
-                    style="@style/HnutiDuha.InputMedium"
-                    android:layout_width="150dp"
-                    android:hint="@string/email"
-                    android:inputType="textEmailAddress"
-                    android:maxLines="1"
-                    android:nextFocusDown="@+id/phone"
-                    android:nextFocusForward="@+id/phone"
-                    android:nextFocusLeft="@+id/eshop"
-                    android:nextFocusRight="@+id/phone"
-                    android:nextFocusUp="@+id/eshop" />
+                    <ImageView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="0.1" />
+                </LinearLayout>
 
-                <EditText
-                    android:id="@+id/phone"
-                    style="@style/HnutiDuha.InputMedium"
-                    android:layout_width="150dp"
-                    android:hint="@string/phone"
-                    android:inputType="phone"
-                    android:maxLines="1"
-                    android:nextFocusDown="@+id/contactPerson"
-                    android:nextFocusForward="@+id/contactPerson"
-                    android:nextFocusLeft="@+id/mail"
-                    android:nextFocusRight="@+id/contactPerson"
-                    android:nextFocusUp="@+id/mail" />
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="horizontal" >
 
-                <EditText
-                    android:id="@+id/contactPerson"
-                    style="@style/HnutiDuha.InputMedium"
-                    android:layout_width="150dp"
-                    android:hint="@string/contactPerson"
-                    android:inputType="textPersonName"
-                    android:maxLines="1"
-                    android:nextFocusDown="@+id/nextButton"
-                    android:nextFocusForward="@+id/nextButton"
-                    android:nextFocusLeft="@+id/phone"
-                    android:nextFocusRight="@+id/nextButton"
-                    android:nextFocusUp="@+id/phone" />
+                    <EditText
+                        android:id="@+id/eshop"
+                        style="@style/HnutiDuha.InputMedium"
+                        android:layout_width="fill_parent"
+                        android:layout_weight="0.1"
+                        android:hint="@string/eshop"
+                        android:inputType="textUri"
+                        android:maxLines="1"
+                        android:nextFocusDown="@+id/mail"
+                        android:nextFocusForward="@+id/mail"
+                        android:nextFocusLeft="@+id/web"
+                        android:nextFocusRight="@+id/mail"
+                        android:nextFocusUp="@+id/web" />
+
+                    <ImageView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="0.1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="horizontal" >
+
+                    <EditText
+                        android:id="@+id/mail"
+                        style="@style/HnutiDuha.InputMedium"
+                        android:layout_width="fill_parent"
+                        android:layout_weight="0.1"
+                        android:hint="@string/email"
+                        android:inputType="textEmailAddress"
+                        android:maxLines="1"
+                        android:nextFocusDown="@+id/phone"
+                        android:nextFocusForward="@+id/phone"
+                        android:nextFocusLeft="@+id/eshop"
+                        android:nextFocusRight="@+id/phone"
+                        android:nextFocusUp="@+id/eshop" />
+
+                    <ImageView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="0.1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="horizontal" >
+
+                    <EditText
+                        android:id="@+id/phone"
+                        style="@style/HnutiDuha.InputMedium"
+                        android:layout_width="fill_parent"
+                        android:layout_weight="0.1"
+                        android:hint="@string/phone"
+                        android:inputType="phone"
+                        android:maxLines="1"
+                        android:nextFocusDown="@+id/contactPerson"
+                        android:nextFocusForward="@+id/contactPerson"
+                        android:nextFocusLeft="@+id/mail"
+                        android:nextFocusRight="@+id/contactPerson"
+                        android:nextFocusUp="@+id/mail" />
+
+                    <ImageView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="0.1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="horizontal" >
+
+                    <EditText
+                        android:id="@+id/contactPerson"
+                        style="@style/HnutiDuha.InputMedium"
+                        android:layout_width="fill_parent"
+                        android:layout_weight="0.1"
+                        android:hint="@string/contactPerson"
+                        android:inputType="textPersonName"
+                        android:maxLines="1"
+                        android:nextFocusDown="@+id/nextButton"
+                        android:nextFocusForward="@+id/nextButton"
+                        android:nextFocusLeft="@+id/phone"
+                        android:nextFocusRight="@+id/nextButton"
+                        android:nextFocusUp="@+id/phone" />
+
+                    <ImageView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="0.1" />
+                </LinearLayout>
             </LinearLayout>
         </ScrollView>
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_gravity="bottom"
+            android:id="@+id/navigationButtons"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.1"
             android:gravity="bottom"
             android:orientation="vertical" >
 
             <ImageView
                 android:id="@+id/spacer"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="0dp"
@@ -152,4 +227,4 @@
         </LinearLayout>
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>
