@@ -44,7 +44,6 @@ public class FlowLayout extends ViewGroup {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FlowLayout);
         try {
         	mMaxRowHeight = a.getDimensionPixelSize(R.styleable.FlowLayout_maxRowHeight, 0);
-        	Log.d("layout", "got maxRowHeight " + mMaxRowHeight);
         } finally {
         	a.recycle();
         }

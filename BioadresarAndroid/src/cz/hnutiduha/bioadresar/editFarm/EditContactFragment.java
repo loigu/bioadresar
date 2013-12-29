@@ -114,13 +114,13 @@ public class EditContactFragment extends SherlockFragment implements OnClickList
     		return false;
     	}
     	
-    	if (!webString.isEmpty() && !android.util.Patterns.WEB_URL.matcher(mailString).matches())
+    	if (!webString.isEmpty() && !android.util.Patterns.WEB_URL.matcher(webString).matches())
     	{
     		fragmentNavigator.fragmentWarning(R.string.webNonValid);
     		return false;    		
     	}
     	
-    	if (!eshopString.isEmpty() && !android.util.Patterns.WEB_URL.matcher(mailString).matches())
+    	if (!eshopString.isEmpty() && !android.util.Patterns.WEB_URL.matcher(eshopString).matches())
     	{
     		fragmentNavigator.fragmentWarning(R.string.eshopNonValid);
     		return false;
