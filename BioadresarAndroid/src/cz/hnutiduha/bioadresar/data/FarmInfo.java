@@ -17,6 +17,7 @@
 
 package cz.hnutiduha.bioadresar.data;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -54,7 +55,7 @@ public class FarmInfo implements OnClickListener{
 	protected FarmContact contact = null;
 	protected List<ProductWithComment> products = null;
 	protected List<ActivityWithComment> activities = null;
-	protected List<Long> categories = null;
+	protected LinkedList<Long> categories = null;
 	protected Boolean bookmarked = null;
 	protected DeliveryOptions delivery = null;
 	
@@ -63,6 +64,42 @@ public class FarmInfo implements OnClickListener{
 	private static final String viewTargetDetail = "detail";
 	
 	private Location location = null;
+	
+	public FarmInfo(FarmInfo origin)
+	{
+		if (origin == null) return;
+		
+		id = origin.id;
+		name = origin.name;
+		lat = origin.lat;
+		lon = origin.lon;
+		source = origin.source;
+		description = origin.description;
+
+		if (origin.contact != null)
+			contact = new FarmContact(origin.contact);
+		
+		if (origin.products != null)
+		{
+			products = new LinkedList<ProductWithComment>();
+			for (ProductWithComment product : origin.products)
+				products.add(new ProductWithComment(product));
+		}
+		
+		if (origin.activities != null)
+		{
+			activities = new LinkedList<ActivityWithComment>();
+			for (ActivityWithComment activity : origin.activities)
+				activities.add(new ActivityWithComment(activity));
+		}
+		
+		if (origin.categories != null)
+			categories = (LinkedList<Long>)categories.clone(); 
+		
+		delivery = new DeliveryOptions(origin.delivery);
+		
+		
+	}
 	
 	/// crate new (empty) farm
 	public FarmInfo()
@@ -187,7 +224,7 @@ public class FarmInfo implements OnClickListener{
 	
 	public List<Long> getCategories()
 	{
-		if (categories == null)
+		if (categories == null && source != null)
 			source.fillCategories(this);
 		
 		return categories;

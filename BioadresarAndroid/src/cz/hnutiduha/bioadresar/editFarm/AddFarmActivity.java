@@ -8,6 +8,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
@@ -45,9 +46,10 @@ import cz.hnutiduha.bioadresar.data.ProductWithComment;
 import cz.hnutiduha.bioadresar.net.CoexConnector;
 
 public class AddFarmActivity extends SherlockFragmentActivity implements FragmentNavigator, OnClickListener{
-	private FarmInfo farm = null;
+	protected FarmInfo farm = null;
+	protected FarmInfo originalFarm = null;
 	private TextView warningText;
-	private LinearLayout warningLayout;
+	protected LinearLayout warningLayout;
 	
 	
 	
@@ -84,7 +86,9 @@ public class AddFarmActivity extends SherlockFragmentActivity implements Fragmen
                 return;
             }
             
-            farm = getFarm();
+            originalFarm = getFarm();
+            farm = new FarmInfo(originalFarm);
+            
             Fragment firstFragment = new EditPositionFragment(farm, this);
             
             // In case this activity was started with special instructions from an
@@ -115,7 +119,7 @@ public class AddFarmActivity extends SherlockFragmentActivity implements Fragmen
     	return MenuHandler.idActivated(this, item.getItemId());
 	}
     
-	private boolean networkAvailable()
+	protected boolean networkAvailable()
 	{
 		ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
 		 
@@ -124,7 +128,7 @@ public class AddFarmActivity extends SherlockFragmentActivity implements Fragmen
 		                      activeNetwork.isConnected();
 	}
 	
-	private void requestNetwork()
+	protected void requestNetwork()
 	{
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			// Add the buttons
@@ -141,7 +145,7 @@ public class AddFarmActivity extends SherlockFragmentActivity implements Fragmen
 			dialog.show();
 	}
 	
-	private static String formatMessage(FarmInfo farm, String comment) 
+	protected static String formatFarmInfo(FarmInfo farm, String comment) 
 	{
 		
 		StringBuilder message = new StringBuilder();
@@ -152,8 +156,10 @@ public class AddFarmActivity extends SherlockFragmentActivity implements Fragmen
 		}
 		else
 		{
-			message.append("ID lokality: ").append(farm.id).append("\n");
+			message.append("Aktualizace lokality ID ").append(farm.id).append("\n");
 		}
+		
+		// FIXME: use copy to put diff only
 		
 		message.append("Název lokality: ").append(farm.name).append("\n");
 		message.append("Popis lokality:\n").append(farm.getDescription()).append("\n\n");
@@ -181,8 +187,11 @@ public class AddFarmActivity extends SherlockFragmentActivity implements Fragmen
 		{
 			message.append("Rozvoz domů: ").append(delivery.customDistribution ? "ano" : "ne").append("\n");
 			message.append("Výdejní místa:\n");
-			for (String placeAndTime : delivery.placesWithTime)
-				message.append("\t").append(placeAndTime).append("\n");
+			if (delivery.placesWithTime != null)
+			{
+				for (String placeAndTime : delivery.placesWithTime)
+					message.append("\t").append(placeAndTime).append("\n");
+			}
 			message.append("\n");
 		}
 		
@@ -207,6 +216,21 @@ public class AddFarmActivity extends SherlockFragmentActivity implements Fragmen
 		
 		return message.toString();
 	}
+	
+	protected List<NameValuePair> formatMessage(EditAppendixFragment.Cache cache)
+	{
+		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+		nameValuePairs.add(new BasicNameValuePair("client", "android"));
+		nameValuePairs.add(new BasicNameValuePair("cmd", "add"));
+		nameValuePairs.add(new BasicNameValuePair("lang", "cs"));
+
+		nameValuePairs.add(new BasicNameValuePair("author", cache.mail));
+		nameValuePairs.add(new BasicNameValuePair("author_name", cache.name));
+		
+		nameValuePairs.add(new BasicNameValuePair("message", formatFarmInfo(farm, cache.comment)));
+		
+		return nameValuePairs;
+	}
 		
 		    /*
 author	loigu@volny.cz
@@ -229,43 +253,52 @@ response:
 
 		*/
     
-    private boolean commitFarm()
+    protected void commitFarm()
     {
     	if (!networkAvailable())
     	{
     		requestNetwork();
-    		return false;
+    		return;
     	}
     	
-		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-		nameValuePairs.add(new BasicNameValuePair("client", "android"));
-		nameValuePairs.add(new BasicNameValuePair("cmd", "add"));
-		nameValuePairs.add(new BasicNameValuePair("lang", "cs"));
-
 		EditAppendixFragment.Cache cache = EditAppendixFragment.getCache();
-		nameValuePairs.add(new BasicNameValuePair("author", cache.mail));
-		nameValuePairs.add(new BasicNameValuePair("author_name", cache.name));
+		List<NameValuePair> nameValuePairs = formatMessage(cache);
 		
-		nameValuePairs.add(new BasicNameValuePair("message", formatMessage(farm, cache.comment)));
 		
 		boolean success = false;
-		String response = null;
+		String response = "ok, hotovo";
 		Resources res = getResources();
 		try
 		{
-			JSONArray result = CoexConnector.post(nameValuePairs);
-			// FIXME: get 'ok' object, decode content and put to res
+			JSONObject result = CoexConnector.post(nameValuePairs);
 			
-			success = true;
+			if (result.has("ok"))
+			{
+				response = result.getString("ok");
+				success = true;
+			}
+			else if (result.has("error"))
+				response = result.getString("error");
+			
 		} catch (IOException e)
 		{
+			Log.e("net", "ioexception when sending", e);
 			response = res.getString(R.string.networkError);
 		} catch (JSONException e) {
+			Log.e("net", "json wtf", e);
 			response = res.getString(R.string.invalidResponse);
 		}
 		
-		// FIXME: display result
-    	return true;
+		// FIXME: this is not warning
+		if (success)
+			warningLayout.findViewById(R.id.dismissButton).setOnClickListener(new OnClickListener(){
+
+				@Override
+				public void onClick(View v) {
+					MenuHandler.idActivated(getBaseContext(),  R.id.homeLink);
+				}});
+		
+		fragmentWarning(response);
     }
     
 	@Override
@@ -286,11 +319,7 @@ response:
 		}
 		else if (origin instanceof EditAppendixFragment)
 		{
-			if (commitFarm())
-			{
-		    	MenuHandler.idActivated(this,  R.id.homeLink);
-			}
-			
+			commitFarm();
 			return;
 		}
 		else

@@ -2,6 +2,11 @@ package cz.hnutiduha.bioadresar.data;
 
 public class ActivityWithComment extends StringifiedFromDb{
 	
+	public ActivityWithComment(ActivityWithComment origin)
+	{
+		super(origin.id, origin.comment, origin.db);
+	}
+	
 	ActivityWithComment(long id, String comment, HnutiduhaFarmDb db) {
 		super(id, comment, db);
 	}

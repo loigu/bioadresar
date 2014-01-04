@@ -467,7 +467,7 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 	
 	protected void fillCategories(FarmInfo info) {
 		String[] columns = new String[] { "categoryId" };
-		List<Long> categories = new LinkedList<Long>();
+		LinkedList<Long> categories = new LinkedList<Long>();
 		// TODO add category "Others" (164) and join with products (and find by products too - because product has category assigned too)
 		Cursor c = db.query("location_category", columns, "locationId = " + info.id, null, null, null, "categoryId");
 		
@@ -680,6 +680,7 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 		return activities;
 	}
 	
+	//NOTE: old weird junk, check validity
 	static ActivityWithComment[] sortedActivities = null;
 	
 	public ActivityWithComment[] getActivitiesSortedByName()

@@ -18,6 +18,7 @@
 package cz.hnutiduha.bioadresar.detail;
 
 import java.util.Iterator;
+import java.util.List;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -36,9 +37,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import cz.hnutiduha.bioadresar.R;
+import cz.hnutiduha.bioadresar.data.ActivityWithComment;
 import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
 import cz.hnutiduha.bioadresar.data.FarmContact;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
+import cz.hnutiduha.bioadresar.data.ProductWithComment;
 import cz.hnutiduha.bioadresar.data.StringifiedFromDb;
 
 public class DetailFragment extends SherlockFragment implements OnClickListener{
@@ -123,7 +126,7 @@ public class DetailFragment extends SherlockFragment implements OnClickListener{
     {
     	while(it.hasNext())
     	{
-			out.append(((StringifiedFromDb)it.next()).toString());
+			out.append(it.next().toString());
 			if (it.hasNext())
 				out.append(", ");
     	}
@@ -151,21 +154,30 @@ public class DetailFragment extends SherlockFragment implements OnClickListener{
 		HnutiduhaFarmDb db = HnutiduhaFarmDb.getDefaultDb(context);
 		
         StringBuilder products = new StringBuilder();
-		fillListFromIterator(products, db, farm.getProducts().iterator());
+        
+        List<ProductWithComment> productList = farm.getProducts();
+        if (productList != null)
+        	fillListFromIterator(products, db, farm.getProducts().iterator());
 		
 		
 		// if there is no products, try to use categories
-		Iterator<Long> it = farm.getCategories().iterator();
-		if (products.length() == 0)	{
-			while (it.hasNext()) {
-				products.append(db.getCategoryName(it.next()));
-				if (it.hasNext())
-					products.append(", ");
+		List<Long> categories = farm.getCategories();
+		if (categories != null)
+		{
+			Iterator<Long> it = categories.iterator();
+			if (products.length() == 0)	{
+				while (it.hasNext()) {
+					products.append(db.getCategoryName(it.next()));
+					if (it.hasNext())
+						products.append(", ");
+				}
 			}
 		}
 
         StringBuilder activities = new StringBuilder();
-		fillListFromIterator(activities, db, farm.getActivities().iterator());
+        List<ActivityWithComment> activityList = farm.getActivities();
+        if (activityList != null)
+        	fillListFromIterator(activities, db, farm.getActivities().iterator());
 		
     	setFieldTextOrHideEmpty(products.toString(), NO_LINKIFY, R.id.productionLayout, R.id.productionText);
     	setFieldTextOrHideEmpty(activities.toString(), NO_LINKIFY, R.id.activitiesLayout, R.id.activitiesText);

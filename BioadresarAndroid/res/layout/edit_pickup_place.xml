@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp" >
 
     <EditText
         android:id="@+id/placeAndTime"
@@ -9,7 +10,9 @@
         android:layout_width="fill_parent"
         android:layout_alignParentLeft="true"
         android:layout_marginRight="50dp"
-        android:hint="@string/placeAndTime" >
+        android:hint="@string/placeAndTime"
+        android:inputType="textPostalAddress"
+        android:maxLines="1" >
     </EditText>
 
     <ImageView

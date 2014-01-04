@@ -17,9 +17,28 @@
 
 package cz.hnutiduha.bioadresar.data;
 
-import java.util.List;
+import java.util.LinkedList;
 
 public class FarmContact {
-	public List <String> phoneNumbers;
+	public LinkedList <String> phoneNumbers;
 	public String email, web, eshop, street, city, person;
+	
+	public FarmContact(FarmContact origin)
+	{
+		if (origin == null) return;
+		
+		email = origin.email;
+		web = origin.web;
+		eshop = origin.eshop;
+		street = origin.street;
+		city = origin.city;
+		person = origin.person;
+		
+		if (origin.phoneNumbers != null)
+			phoneNumbers = (LinkedList<String>) origin.phoneNumbers.clone();
+	}
+
+	public FarmContact() {
+		
+	}
 }

@@ -143,6 +143,7 @@ public class MenuHandler implements OnNavigationListener{
 		}
 		if (target != null)
 		{
+			target.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			context.startActivity(target);
 			return true;
 		}
