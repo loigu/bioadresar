@@ -47,14 +47,14 @@ user-name	jirka
     protected List<NameValuePair> formatMessage(EditAppendixFragment.Cache cache) {
     	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 		nameValuePairs.add(new BasicNameValuePair("client", "android"));
-		nameValuePairs.add(new BasicNameValuePair("cmd", "add_comment"));
+		nameValuePairs.add(new BasicNameValuePair("cmd", "add_feedback"));
 		nameValuePairs.add(new BasicNameValuePair("lang", "cs"));
 
 		nameValuePairs.add(new BasicNameValuePair("user-email", cache.mail));
 		nameValuePairs.add(new BasicNameValuePair("user-name", cache.name));
 		nameValuePairs.add(new BasicNameValuePair("place-id", String.valueOf(farm.id)));
 		
-		nameValuePairs.add(new BasicNameValuePair("place-comment-text", formatFarmInfo(farm, cache.comment)));
+		nameValuePairs.add(new BasicNameValuePair("place-feedback", formatFarmInfo(farm, cache.comment)));
 		
 		return nameValuePairs;
     }

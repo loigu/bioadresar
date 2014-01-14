@@ -1,11 +1,15 @@
 package cz.hnutiduha.bioadresar.editFarm;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,7 +53,6 @@ public class AddFarmActivity extends SherlockFragmentActivity implements Fragmen
 	protected FarmInfo farm = null;
 	protected FarmInfo originalFarm = null;
 	private TextView warningText;
-	protected LinearLayout warningLayout;
 	
 	
 	
@@ -71,9 +74,8 @@ public class AddFarmActivity extends SherlockFragmentActivity implements Fragmen
         
     	MenuHandler.installDropDown(getSupportActionBar(), this);
     	
-    	warningLayout = (LinearLayout)findViewById(R.id.warningLayout);
-    	warningText = (TextView)warningLayout.findViewById(R.id.warningText);
-    	warningLayout.findViewById(R.id.dismissButton).setOnClickListener(this);
+    	warningText = (TextView)findViewById(R.id.warningText);
+    	warningText.setOnClickListener(this);
 
         // Check that the activity is using the layout version with
         // the fragment_container FrameLayout
@@ -159,6 +161,11 @@ public class AddFarmActivity extends SherlockFragmentActivity implements Fragmen
 			message.append("Aktualizace lokality ID ").append(farm.id).append("\n");
 		}
 		
+		if (comment != null && !comment.isEmpty())
+		{
+			message.append("Vzkaz od uživatele:\n").append(comment).append("\n");
+		}
+		
 		// FIXME: use copy to put diff only
 		
 		message.append("Název lokality: ").append(farm.name).append("\n");
@@ -209,11 +216,6 @@ public class AddFarmActivity extends SherlockFragmentActivity implements Fragmen
 		}
 		message.append("\n");
 		
-		if (comment != null && !comment.isEmpty())
-		{
-			message.append("Vzkaz od přidávájícího:\n").append(comment).append("\n");
-		}
-		
 		return message.toString();
 	}
 	
@@ -227,7 +229,10 @@ public class AddFarmActivity extends SherlockFragmentActivity implements Fragmen
 		nameValuePairs.add(new BasicNameValuePair("author", cache.mail));
 		nameValuePairs.add(new BasicNameValuePair("author_name", cache.name));
 		
-		nameValuePairs.add(new BasicNameValuePair("message", formatFarmInfo(farm, cache.comment)));
+		String message = formatFarmInfo(farm, cache.comment);
+		Log.d("net", "with message " + message);
+		nameValuePairs.add(new BasicNameValuePair("message", message));
+		nameValuePairs.add(new BasicNameValuePair("place-message", formatFarmInfo(farm, cache.comment)));
 		
 		return nameValuePairs;
 	}
@@ -291,7 +296,7 @@ response:
 		
 		// FIXME: this is not warning
 		if (success)
-			warningLayout.findViewById(R.id.dismissButton).setOnClickListener(new OnClickListener(){
+			warningText.setOnClickListener(new OnClickListener(){
 
 				@Override
 				public void onClick(View v) {
@@ -356,7 +361,7 @@ response:
 	
 	public void fragmentWarning(String warning) {
 		warningText.setText(warning);
-		warningLayout.setVisibility(View.VISIBLE);
+		warningText.setVisibility(View.VISIBLE);
 	}
 	public void fragmentWarning(int resid) {
 		fragmentWarning(getResources().getString(resid));
@@ -392,8 +397,8 @@ response:
 	public void onClick(View v) {
 		switch(v.getId())
 		{
-		case R.id.dismissButton:
-			warningLayout.setVisibility(View.GONE);
+		case R.id.warningText:
+			warningText.setVisibility(View.GONE);
 			break;
 		}
 		
