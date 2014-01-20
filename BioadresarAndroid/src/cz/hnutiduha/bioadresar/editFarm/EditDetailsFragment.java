@@ -5,16 +5,16 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
+import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -37,24 +37,25 @@ class SomethingHolder<T extends StringifiedFromDb> implements OnClickListener {
 	List<T> list;
 	T[] options;
 	FlowLayout layout;
-	Builder addDialog = null;
+	Dialog addDialog;
 	
 	
-	class AddListener implements DialogInterface.OnClickListener {
+	class AddListener implements OnClickListener {
 		SomethingHolder<T> holder;
-		T[] values;
+		Dialog dialog;
 		
-		AddListener(SomethingHolder<T> holder, T[] values)
+		AddListener(SomethingHolder<T> holder, Dialog dialog)
 		{
 			this.holder = holder;
-			this.values = values;
+			this.dialog = dialog;
 		}
 		
 
 		@Override
-	    public void onClick(DialogInterface dialog, int which) {
-			holder.addSomething(values[which]);
+	    public void onClick(View v) {
+			holder.addSomething((T)v.getTag(R.id.listContentTag));
 			dialog.dismiss();
+			Log.d("gui", "dialog hidden");
 		}
 	}
 	
@@ -74,12 +75,26 @@ class SomethingHolder<T extends StringifiedFromDb> implements OnClickListener {
 	
 	protected void buildDialog(int titleResId)
 	{
-		ArrayAdapter<T> adapter = new ArrayAdapter<T>(context,
-				android.R.layout.simple_spinner_dropdown_item, options);
+		LayoutInflater inflater = LayoutInflater.from(context);
+		addDialog = new Dialog(context, R.style.Dialog);
 		
-		addDialog = new AlertDialog.Builder(context)
-			.setTitle(titleResId)
-			.setAdapter(adapter, this.new AddListener(this, options));
+		// your layout file
+		View dialogView = inflater.inflate(R.layout.list_with_header, null);
+		addDialog.setContentView(dialogView);
+		((TextView)addDialog.findViewById(R.id.headerText)).setText(titleResId); // TODO: to uppercase
+		
+		AddListener addListener = new AddListener(this, addDialog);
+		LinearLayout list = (LinearLayout) addDialog.findViewById(R.id.itemsLayout);
+		
+		for (T option : options)
+		{
+			LinearLayout item = (LinearLayout) inflater.inflate(R.layout.list_with_header_item, null);
+			((TextView)item.findViewById(R.id.text)).setText(option.toString()); // TODO: to uppercase
+			item.setOnClickListener(addListener);
+			item.setTag(R.id.listContentTag, option);
+			list.addView(item);
+		}
+
 	}
 
 	public void showAddDialog(int titleResId)
@@ -87,6 +102,7 @@ class SomethingHolder<T extends StringifiedFromDb> implements OnClickListener {
 		if (addDialog == null)
 			buildDialog(titleResId);
     	addDialog.show();
+    	Log.d("gui", "dialog shown");
     }
 	
 	private void addButton(StringifiedFromDb something)
@@ -209,7 +225,7 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
     	if (deliveryOpts.placesWithTime != null && deliveryOpts.placesWithTime.length > 0)
     	{
     		for (String placeAndTime : deliveryOpts.placesWithTime)
-    			if (!placeAndTime.isEmpty())
+    			if (!TextUtils.isEmpty(placeAndTime))
     				addPickupPlace().setText(placeAndTime);
     	}
     	else
@@ -237,7 +253,7 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
 	    	for (int i = 0; i < childCount; i++)
 	    	{
 	    		String placeWithTime = StringOperations.getStringFromEditBox((EditText)pickupPlacesList.getChildAt(i).findViewById(R.id.placeAndTime));
-	    		if (!placeWithTime.isEmpty())
+	    		if (!TextUtils.isEmpty(placeWithTime))
 	    			deliveryOpts.placesWithTime[j++] = placeWithTime;
 	    	}
 	    	

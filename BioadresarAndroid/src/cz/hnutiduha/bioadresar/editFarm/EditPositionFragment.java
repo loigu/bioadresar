@@ -19,6 +19,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -28,6 +29,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.TextView.OnEditorActionListener;
 import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.FarmContact;
@@ -79,11 +81,13 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
 		
 		if (smf != null && map == null) {
 			map = smf.getMap();
+		}
+		
+		if (map != null)
+		{
 			map.setOnMapLongClickListener(this);
-			centerMap();
-			
-		} else
-			Log.d("map", "can't get map fragment");
+			centerMap();	
+		}
 	}
 	
     @Override
@@ -135,15 +139,16 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
     
     private boolean validate()
     {
-    	if (StringOperations.getStringFromEditBox(farmName).isEmpty())
+    	if (TextUtils.isEmpty(StringOperations.getStringFromEditBox(farmName)))
     	{
-    		fragmentNavigator.fragmentWarning(R.string.fillInName);
+    		fragmentNavigator.fragmentNotification(R.string.fillInName);
+    		//fragmentNavigator.fragmentWarning(R.string.fillInName);
     		return false;
     	}
     	
     	if (!validateCoordinates())
     	{
-    		fragmentNavigator.fragmentWarning(R.string.invalidCoordinates);
+    		fragmentNavigator.fragmentNotification(R.string.invalidCoordinates);
     		return false;
     	}
     	
@@ -221,6 +226,9 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
     
     private void setMarker(LatLng arg, boolean animateTo)
     {
+    	if (map == null)
+    		return;
+    	
 		if (mark != null)
 		{
 			mark.setPosition(arg);

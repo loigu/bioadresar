@@ -5,6 +5,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -86,14 +87,14 @@ public class EditAppendixFragment extends SherlockFragment implements OnClickLis
     	if (!android.util.Patterns.EMAIL_ADDRESS.matcher(StringOperations.getStringFromEditBox(mail)).matches())
     	{
     		if (alerts)
-    			fragmentNavigator.fragmentWarning(R.string.emailNonValid);
+    			fragmentNavigator.fragmentNotification(R.string.emailNonValid);
     		return false;
     	}
     	
-    	if (StringOperations.getStringFromEditBox(person).isEmpty())
+    	if (TextUtils.isEmpty(StringOperations.getStringFromEditBox(person)))
     	{
     		if (alerts)
-    			fragmentNavigator.fragmentWarning(R.string.fillInName);
+    			fragmentNavigator.fragmentNotification(R.string.fillInName);
     		return false;
     	}
     	

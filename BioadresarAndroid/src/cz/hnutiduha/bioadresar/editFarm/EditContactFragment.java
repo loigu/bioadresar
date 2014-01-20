@@ -7,6 +7,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -99,30 +100,30 @@ public class EditContactFragment extends SherlockFragment implements OnClickList
     	String webString = web.getText().toString().trim(); 
     	String eshopString = eshop.getText().toString().trim();
     	
-    	if (city.getText().toString().isEmpty() &&
-    			street.getText().toString().isEmpty() &&
-    			phone.getText().toString().isEmpty() &&
-    			mailString.isEmpty())
+    	if (TextUtils.isEmpty(city.getText().toString()) &&
+    			TextUtils.isEmpty(street.getText().toString()) &&
+    			TextUtils.isEmpty(phone.getText().toString()) &&
+    			TextUtils.isEmpty(mailString))
     	{
-    		fragmentNavigator.fragmentWarning(R.string.fillAtLeastOneContact);
+    		fragmentNavigator.fragmentNotification(R.string.fillAtLeastOneContact);
     		return false;
     	}
     	
-    	if (!mailString.isEmpty() && !android.util.Patterns.EMAIL_ADDRESS.matcher(mailString).matches())
+    	if (!TextUtils.isEmpty(mailString) && !android.util.Patterns.EMAIL_ADDRESS.matcher(mailString).matches())
     	{
-    		fragmentNavigator.fragmentWarning(R.string.emailNonValid);
+    		fragmentNavigator.fragmentNotification(R.string.emailNonValid);
     		return false;
     	}
     	
-    	if (!webString.isEmpty() && !android.util.Patterns.WEB_URL.matcher(webString).matches())
+    	if (!TextUtils.isEmpty(webString) && !android.util.Patterns.WEB_URL.matcher(webString).matches())
     	{
-    		fragmentNavigator.fragmentWarning(R.string.webNonValid);
+    		fragmentNavigator.fragmentNotification(R.string.webNonValid);
     		return false;    		
     	}
     	
-    	if (!eshopString.isEmpty() && !android.util.Patterns.WEB_URL.matcher(eshopString).matches())
+    	if (!TextUtils.isEmpty(eshopString) && !android.util.Patterns.WEB_URL.matcher(eshopString).matches())
     	{
-    		fragmentNavigator.fragmentWarning(R.string.eshopNonValid);
+    		fragmentNavigator.fragmentNotification(R.string.eshopNonValid);
     		return false;
     	}
     	

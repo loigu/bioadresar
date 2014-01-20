@@ -43,6 +43,7 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
@@ -596,7 +597,7 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 		farm.delivery.placesWithTime = new String[1];
 		farm.delivery.placesWithTime[0] = c.getString(0);
 		String time = c.getString(1);
-		if (time != null && !time.isEmpty())
+		if (TextUtils.isEmpty(time))
 			farm.delivery.placesWithTime[0] += " " + time;
 		farm.delivery.customDistribution = c.getInt(2) == 1;
 	

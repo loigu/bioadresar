@@ -1,16 +1,11 @@
 package cz.hnutiduha.bioadresar.editFarm;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,6 +26,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -49,7 +45,7 @@ import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
 import cz.hnutiduha.bioadresar.data.ProductWithComment;
 import cz.hnutiduha.bioadresar.net.CoexConnector;
 
-public class AddFarmActivity extends SherlockFragmentActivity implements FragmentNavigator, OnClickListener{
+public class AddFarmActivity extends SherlockFragmentActivity implements FragmentNavigator{
 	protected FarmInfo farm = null;
 	protected FarmInfo originalFarm = null;
 	private TextView warningText;
@@ -73,9 +69,6 @@ public class AddFarmActivity extends SherlockFragmentActivity implements Fragmen
         setContentView(R.layout.edit_farm);
         
     	MenuHandler.installDropDown(getSupportActionBar(), this);
-    	
-    	warningText = (TextView)findViewById(R.id.warningText);
-    	warningText.setOnClickListener(this);
 
         // Check that the activity is using the layout version with
         // the fragment_container FrameLayout
@@ -161,7 +154,7 @@ public class AddFarmActivity extends SherlockFragmentActivity implements Fragmen
 			message.append("Aktualizace lokality ID ").append(farm.id).append("\n");
 		}
 		
-		if (comment != null && !comment.isEmpty())
+		if (TextUtils.isEmpty(comment))
 		{
 			message.append("Vzkaz od uživatele:\n").append(comment).append("\n");
 		}
@@ -293,17 +286,13 @@ response:
 			Log.e("net", "json wtf", e);
 			response = res.getString(R.string.invalidResponse);
 		}
-		
-		// FIXME: this is not warning
+				
+		fragmentNotification(response);
 		if (success)
-			warningText.setOnClickListener(new OnClickListener(){
-
-				@Override
-				public void onClick(View v) {
-					MenuHandler.idActivated(getBaseContext(),  R.id.homeLink);
-				}});
+		{
+			MenuHandler.idActivated(getBaseContext(),  R.id.homeLink);
+		}
 		
-		fragmentWarning(response);
     }
     
 	@Override
@@ -359,14 +348,6 @@ response:
 		this.onBackPressed();
 	}
 	
-	public void fragmentWarning(String warning) {
-		warningText.setText(warning);
-		warningText.setVisibility(View.VISIBLE);
-	}
-	public void fragmentWarning(int resid) {
-		fragmentWarning(getResources().getString(resid));
-	}
-	
     static final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 1001;
 
     @Override
@@ -393,15 +374,15 @@ response:
     		GooglePlayServicesUtil.getErrorDialog(googlePlayInstalled, this, REQUEST_CODE_RECOVER_PLAY_SERVICES).show();
     }
 
+	public void fragmentNotification(String text)
+	{
+		Toast.makeText(this, text,
+                Toast.LENGTH_SHORT).show();
+	}
 	@Override
-	public void onClick(View v) {
-		switch(v.getId())
-		{
-		case R.id.warningText:
-			warningText.setVisibility(View.GONE);
-			break;
-		}
-		
+	public void fragmentNotification(int stringId) {
+		Toast.makeText(this, stringId,
+                Toast.LENGTH_SHORT).show();
 	}
     
     
