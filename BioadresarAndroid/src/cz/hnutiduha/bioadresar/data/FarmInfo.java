@@ -94,7 +94,7 @@ public class FarmInfo implements OnClickListener{
 		}
 		
 		if (origin.categories != null)
-			categories = (LinkedList<Long>)categories.clone(); 
+			categories = (LinkedList<Long>)origin.categories.clone(); 
 		
 		delivery = new DeliveryOptions(origin.delivery);
 		

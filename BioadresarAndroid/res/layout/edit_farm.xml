@@ -15,41 +15,4 @@
         android:orientation="vertical" >
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/warningLayout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_margin="20dp"
-        android:background="@color/White"
-        android:orientation="vertical"
-        android:visibility="gone" >
-
-        <TextView
-            android:id="@+id/textView1"
-            style="@style/HnutiDuha.HeaderLargeWhite"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="10dp"
-            android:layout_weight="0.2"
-            android:background="@drawable/header_background"
-            android:gravity="center_horizontal"
-            android:text="@string/invalidForm" />
-
-        <TextView
-            android:id="@+id/warningText"
-            style="@style/HnutiDuha.TextMedium"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <ImageView
-            android:id="@+id/dismissButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:src="@drawable/ok_button" />
-    </LinearLayout>
-
 </RelativeLayout>

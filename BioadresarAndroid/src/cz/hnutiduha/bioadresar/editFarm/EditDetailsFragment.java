@@ -10,10 +10,13 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
@@ -82,6 +85,10 @@ class SomethingHolder<T extends StringifiedFromDb> implements OnClickListener {
 		View dialogView = inflater.inflate(R.layout.list_with_header, null);
 		addDialog.setContentView(dialogView);
 		((TextView)addDialog.findViewById(R.id.headerText)).setText(titleResId); // TODO: to uppercase
+		
+		Window window = addDialog.getWindow();
+		window.setLayout(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		window.setGravity(Gravity.CENTER);
 		
 		AddListener addListener = new AddListener(this, addDialog);
 		LinearLayout list = (LinearLayout) addDialog.findViewById(R.id.itemsLayout);
@@ -271,8 +278,12 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
     }
     
     private TextView addPickupPlace()
-    {
+    {	
     	View p = LayoutInflater.from(context).inflate(R.layout.edit_pickup_place, null);
+    	LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.FILL_PARENT);
+    	params.bottomMargin = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, context.getResources().getDisplayMetrics());
+    	p.setLayoutParams(params);
+    	
     	View minus = p.findViewById(R.id.removeButton);
     	minus.setOnClickListener(this);
     	pickupPlacesList.addView(p);
@@ -351,11 +362,11 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
 			break;
 			
 			case R.id.activities:
-				activitiesHolder.showAddDialog(R.string.select_activities);
+				activitiesHolder.showAddDialog(R.string.activities);
 			break;
 			
 			case R.id.production:
-				productionHolder.showAddDialog(R.string.select_products);
+				productionHolder.showAddDialog(R.string.production);
 			break;
 		}
 					

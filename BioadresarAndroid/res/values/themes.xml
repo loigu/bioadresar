@@ -48,7 +48,15 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <style name="HnutiDuha.TextLarge" parent="@style/HnutiDuha.TextMedium">
+        <item name="android:textSize">20sp</item>
+    </style>
+
     <style name="HnutiDuha.HeaderLargeWhite" parent="@style/HnutiDuha.HeaderMediumWhite">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="HnutiDuha.HeaderLarge" parent="@style/HnutiDuha.HeaderMedium">
         <item name="android:textSize">20sp</item>
     </style>
 
@@ -77,5 +85,11 @@
     <declare-styleable name="FlowLayout">
         <attr name="maxRowHeight" format="dimension" />
     </declare-styleable>
+
+    <style name="Dialog" parent="@style/Theme.HnutiDuhaTheme">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
 
 </resources>
