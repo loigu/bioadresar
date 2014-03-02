@@ -1,10 +1,11 @@
 package cz.hnutiduha.bioadresar.util;
 
-import android.widget.TextView;
+import android.widget.EditText;
+
 
 public class StringOperations {
 
-    public static String getStringFromEditBox(TextView text)
+    public static String getStringFromEditBox(EditText text)
     {
     	if (text == null) return null;
     	

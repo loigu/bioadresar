@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
@@ -204,10 +205,20 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
     	pickupPlacesList = (LinearLayout)me.findViewById(R.id.pickupPlacesList);
     	
     	me.findViewById(R.id.addButton).setOnClickListener(this);
-    	
-    	loadFromFarm(me);
         
         return me;
+    }
+    
+    public void onDestroyView()
+    {
+    	super.onDestroyView();
+    	pickupPlacesList.removeAllViewsInLayout();
+    }
+    
+    public void onResume()
+    {
+    	super.onResume();
+    	loadFromFarm(getView());
     }
     
     private boolean validate()
@@ -228,16 +239,18 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
     	activitiesHolder = new SomethingHolder<ActivityWithComment>(context, farm.getActivities(),
     			db.getActivitiesSortedByName(), activitiesLayout);
     	
-    	pickupPlacesList.removeAllViews();
     	if (deliveryOpts.placesWithTime != null && deliveryOpts.placesWithTime.length > 0)
     	{
     		for (String placeAndTime : deliveryOpts.placesWithTime)
     			if (!TextUtils.isEmpty(placeAndTime))
-    				addPickupPlace().setText(placeAndTime);
+    			{
+    				Log.d("ui", "adding place and time " + placeAndTime);
+    				addPickupPlace(placeAndTime);
+    			}
     	}
     	else
     	{
-    		addPickupPlace();
+    		addPickupPlace("");
     	}
     }
     
@@ -261,7 +274,10 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
 	    	{
 	    		String placeWithTime = StringOperations.getStringFromEditBox((EditText)pickupPlacesList.getChildAt(i).findViewById(R.id.placeAndTime));
 	    		if (!TextUtils.isEmpty(placeWithTime))
+	    		{
+	    			Log.d("data", "storing place " + placeWithTime + " as " + j);
 	    			deliveryOpts.placesWithTime[j++] = placeWithTime;
+	    		}
 	    	}
 	    	
 	    	if (j == 0)
@@ -269,7 +285,7 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
 	    	else if (j < childCount)
 	    	{
 	    		String[] tmp = new String[j];
-	    		for (j--; j >= 0; j++)
+	    		for (j--; j >= 0; j--)
 	    			tmp[j] = deliveryOpts.placesWithTime[j];
 	    		deliveryOpts.placesWithTime = tmp;
 	    	}
@@ -277,18 +293,17 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
     	farm.setDelieryInfo(deliveryOpts);
     }
     
-    private TextView addPickupPlace()
+    private void addPickupPlace(String text)
     {	
-    	View p = LayoutInflater.from(context).inflate(R.layout.edit_pickup_place, null);
+    	View p = RelativeLayout.inflate(context, R.layout.edit_pickup_place, null);
     	LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.FILL_PARENT);
     	params.bottomMargin = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, context.getResources().getDisplayMetrics());
     	p.setLayoutParams(params);
     	
-    	View minus = p.findViewById(R.id.removeButton);
-    	minus.setOnClickListener(this);
-    	pickupPlacesList.addView(p);
+    	p.findViewById(R.id.removeButton).setOnClickListener(this);
     	
-    	return (TextView)p.findViewById(R.id.placeAndTime);
+    	pickupPlacesList.addView(p);
+    	((EditText)((ViewGroup)p).findViewById(R.id.placeAndTime)).setText(text);
     }
     
     private void removePickupPlace(View minusButton)
@@ -329,7 +344,7 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
 			break;
 				
 			case R.id.addButton:
-				addPickupPlace();
+				addPickupPlace("");
 			break;
 				
 			case R.id.customDeliveryYes:

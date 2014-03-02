@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -86,6 +87,7 @@ public class EditAppendixFragment extends SherlockFragment implements OnClickLis
     	
     	if (!android.util.Patterns.EMAIL_ADDRESS.matcher(StringOperations.getStringFromEditBox(mail)).matches())
     	{
+    		Log.d("ui", "mail is " + StringOperations.getStringFromEditBox(mail));
     		if (alerts)
     			fragmentNavigator.fragmentNotification(R.string.emailNonValid);
     		return false;
