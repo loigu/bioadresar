@@ -104,5 +104,7 @@
     <string name="farmDetails">detail</string>
     <string name="farmSend">odeslat</string>
     <string name="somethingIsWrong">Něco se změnilo?</string>
+    <string name="ughDeadEnd">Ugh, nečekaná chyba, zkuste to znovu</string>
+    <string name="positionByClick">GPS koordináty lze zadat i dlouhým stiskem v mapě</string>
 
 </resources>

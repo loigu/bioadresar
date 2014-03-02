@@ -21,6 +21,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,6 +47,7 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
 	Marker mark = null;
 	FarmInfo farm;
 	Activity parent;
+	boolean tapHintShown = false;
 	
 	public EditPositionFragment(FarmInfo farm, Activity parent)
 	{
@@ -75,9 +77,9 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
 	}
 	
 	@Override
-	public void onStart()
+	public void onResume()
 	{
-		super.onStart();
+		super.onResume();
 		
 		if (smf != null && map == null) {
 			map = smf.getMap();
@@ -87,6 +89,14 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
 		{
 			map.setOnMapLongClickListener(this);
 			centerMap();	
+		}
+		
+		if (!tapHintShown)
+		{
+			Toast hint = Toast.makeText(parent, R.string.positionByClick, Toast.LENGTH_SHORT);
+			hint.setGravity(Gravity.CENTER, 0, 0);
+			hint.show();
+			tapHintShown = true;
 		}
 	}
 	
@@ -172,7 +182,7 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
     /// only call when validate returns true
     private void updateFarm()
     {
-    	
+    	fragmentNavigator.showProgress();
     	farm.name = StringOperations.getStringFromEditBox(farmName);
     			
     	double latValue = Double.valueOf(lat.getText().toString());
@@ -198,6 +208,8 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
 	            }
 	        } catch(IOException e) {}
     	}
+    	
+    	fragmentNavigator.hideProgress();
     }
 
 	@Override

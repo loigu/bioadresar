@@ -29,28 +29,21 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.ActivityWithComment;
-import cz.hnutiduha.bioadresar.data.ConfigDb;
 import cz.hnutiduha.bioadresar.data.DeliveryOptions;
 import cz.hnutiduha.bioadresar.data.FarmContact;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
-import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
 import cz.hnutiduha.bioadresar.data.ProductWithComment;
 import cz.hnutiduha.bioadresar.net.CoexConnector;
 
-public class AddFarmActivity extends SherlockFragmentActivity implements FragmentNavigator{
+public class AddFarmActivity extends SherlockFragmentActivity implements FragmentNavigator, CoexConnector.JSONReceiver{
 	protected FarmInfo farm = null;
 	protected FarmInfo originalFarm = null;
-	private TextView warningText;
-	
-	
+	ProgressBar progress;
 	
 	void updateTitle(NamedFragment fr)
 	{
@@ -96,6 +89,8 @@ public class AddFarmActivity extends SherlockFragmentActivity implements Fragmen
             
             updateTitle((NamedFragment)firstFragment);
         }
+        
+        progress = (ProgressBar) findViewById(R.id.marker_progress);
     }
     
     @Override
@@ -250,6 +245,18 @@ response:
 		 * 
 
 		*/
+	
+	public void showProgress()
+	{
+		// NOTE: this doesn't work on map, youtube and other crappy fragments
+		progress.bringToFront();
+		progress.setVisibility(View.VISIBLE);
+	}
+	
+	public void hideProgress()
+	{
+		progress.setVisibility(View.GONE);
+	}
     
     protected void commitFarm()
     {
@@ -262,38 +269,49 @@ response:
 		EditAppendixFragment.Cache cache = EditAppendixFragment.getCache();
 		List<NameValuePair> nameValuePairs = formatMessage(cache);
 		
-		
-		boolean success = false;
-		String response = "ok, hotovo";
+		showProgress();
+		new CoexConnector(this, nameValuePairs).execute();		
+    }
+    
+	@Override
+	public void postFailed(Exception reason)
+	{
 		Resources res = getResources();
+		String errorMessage = res.getString(R.string.ughDeadEnd);
+		if (reason instanceof IOException)
+		{
+			Log.e("net", "ioexception when sending", reason);
+			errorMessage = res.getString(R.string.networkError);
+		} else if (reason instanceof JSONException)
+		{
+			Log.e("net", "json wtf", reason);
+			errorMessage = res.getString(R.string.invalidResponse);
+		}
+		
+		hideProgress();
+		fragmentNotification(errorMessage);
+	}
+
+	@Override
+	public void readJSONResponse(JSONObject result) {
 		try
 		{
-			JSONObject result = CoexConnector.post(nameValuePairs);
-			
 			if (result.has("ok"))
 			{
-				response = result.getString("ok");
-				success = true;
+				fragmentNotification(result.getString("ok"));
+				MenuHandler.idActivated(getBaseContext(),  R.id.homeLink);
 			}
 			else if (result.has("error"))
-				response = result.getString("error");
-			
-		} catch (IOException e)
-		{
-			Log.e("net", "ioexception when sending", e);
-			response = res.getString(R.string.networkError);
-		} catch (JSONException e) {
-			Log.e("net", "json wtf", e);
-			response = res.getString(R.string.invalidResponse);
+			{
+				fragmentNotification(result.getString("error"));
+			}
 		}
-				
-		fragmentNotification(response);
-		if (success)
+		catch (JSONException ex)
 		{
-			MenuHandler.idActivated(getBaseContext(),  R.id.homeLink);
+			postFailed(ex);
 		}
-		
-    }
+		hideProgress();
+	}
     
 	@Override
 	public void nextFragment(Fragment origin) {
@@ -321,18 +339,19 @@ response:
 			Log.e("EditFarm", "unknown fragment requests advance");
 			return;
 		}
+		showProgress();
 
 		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
 		// Replace whatever is in the fragment_container view with this fragment,
 		// and add the transaction to the back stack so the user can navigate back
 		transaction.replace(R.id.fragmentContainer, next);
 		transaction.addToBackStack(null);
-
 		// Commit the transaction
 		transaction.commit();
 		
 		updateTitle((NamedFragment)next);
+		
+		hideProgress();
 	}
 	
 	@Override
@@ -384,6 +403,4 @@ response:
 		Toast.makeText(this, stringId,
                 Toast.LENGTH_SHORT).show();
 	}
-    
-    
 }

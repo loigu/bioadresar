@@ -7,4 +7,7 @@ public interface FragmentNavigator {
 	public void previousFragment(Fragment originatingFragment);
 	public void fragmentNotification(int stringId);
 	public void fragmentNotification(String text);
+	
+	public void showProgress();
+	public void hideProgress();
 }
