@@ -56,7 +56,7 @@ public class SearchView extends LinearLayout implements View.OnClickListener, Te
         Log.d("List", "got query " + query);
         if (query != null)
         {
-        	searchText.setHint(query);
+        	searchText.setText(query);
         }
         HnutiduhaFarmDb db = HnutiduhaFarmDb.getDefaultDb(activity);
 

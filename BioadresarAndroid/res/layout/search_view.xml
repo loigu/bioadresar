@@ -6,6 +6,7 @@
 
     <EditText
         android:id="@+id/searchText"
+        style="@style/HnutiDuha.ActionBar.SearchTextStyle"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:layout_gravity="left|center_horizontal"
@@ -17,7 +18,7 @@
         android:maxLines="1"
         android:scrollHorizontally="true"
         android:selectAllOnFocus="true"
-        android:textAppearance="@style/HnutiDuha.ActionBar.SearchTextStyle"
+        android:textCursorDrawable="@null"
         android:textSize="20sp" />
 
     <ImageView
