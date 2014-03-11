@@ -63,7 +63,7 @@ public class FarmOverlayView extends FrameLayout {
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View v = inflater.inflate(R.layout.balloon_layout, parent);
 		
-		data.fillInfoToView(v, R.id.balloon_item_title, R.id.balloon_item_icons, null, -1);
+		data.fillInfoToView(v, R.id.balloon_item_title, null, -1);
 	}
 	
 	private class LimitLinearLayout extends LinearLayout {

@@ -42,7 +42,7 @@ public class FarmLinearLayout extends LinearLayout {
 		LinearLayout toMap = (LinearLayout)v.findViewById(R.id.toMapArea);
 		farm.setToMapListener(toMap);
 		
-		farm.fillInfoToView(v, R.id.farmName, R.id.productionIcons, centerOfOurUniverse, R.id.distance);
+		farm.fillInfoToView(v, R.id.farmName, centerOfOurUniverse, R.id.distance);
     }
 
 }

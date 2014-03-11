@@ -85,7 +85,7 @@
     <string name="containerDistributionTime">Výdejní čas</string>
     <string name="containers">Bedýnky</string>
     <string name="containerDistributionPlaces">Výdejní místa</string>
-    <string name="commentHint">poznámky, co se jinam nevešlo...</string>
+    <string name="commentHint">poznámky, co se jinam nevešlo&#8230;</string>
     <string name="contactPerson">Kontaktní osoba</string>
     <string name="editorContact">Kontakt na Vás</string>
     <string name="placeAndTime">Místo a čas</string>

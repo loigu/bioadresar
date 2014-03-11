@@ -336,28 +336,12 @@ public class FarmInfo implements OnClickListener{
 		}
 	}
 	
-	public void fillInfoToView(View parent, int nameTextId, int categoriesLayoutId, Location distanceFrom, int distanceTextId)
+	public void fillInfoToView(View parent, int nameTextId, Location distanceFrom, int distanceTextId)
 	{	
 		// name
 		TextView nameView = (TextView) parent.findViewById(nameTextId);
 		nameView.setText(this.name);
-		
-		// icons
-		LinearLayout categoryIcons = (LinearLayout) parent.findViewById(categoriesLayoutId);
-		Iterator<Long> it = getCategories().iterator();
-		ImageView icon;
-	    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(20, 20, 1);
-	    params.gravity = Gravity.LEFT;
-	    Context context = parent.getContext();
-	    Resources resources = parent.getResources();
-		while (it.hasNext())
-		{	
-			icon = new ImageView(context);
-			icon.setImageResource(resources.getIdentifier("drawable/category_" + it.next(), null, context.getPackageName()));
-		    icon.setLayoutParams(params);
-		    categoryIcons.addView(icon);
-		}
-		
+				
 		// distance, if required
 		if (distanceFrom != null)
 		{

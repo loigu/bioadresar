@@ -93,7 +93,7 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
 		
 		if (!tapHintShown)
 		{
-			Toast hint = Toast.makeText(parent, R.string.positionByClick, Toast.LENGTH_SHORT);
+			Toast hint = Toast.makeText(parent, R.string.positionByClick, Toast.LENGTH_LONG);
 			hint.setGravity(Gravity.CENTER, 0, 0);
 			hint.show();
 			tapHintShown = true;

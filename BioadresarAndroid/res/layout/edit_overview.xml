@@ -1,49 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:background="@drawable/background"
     android:orientation="vertical" >
 
     <LinearLayout
-        android:id="@+id/detailHolder"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="0.9"
-        android:gravity="top"
-        android:orientation="vertical" >
-
-        <!-- <include layout="@layout/detail_view" /> -->
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/navigationButtons"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.1"
-        android:gravity="bottom"
+        android:id="@+id/wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="10dp"
         android:orientation="vertical" >
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:id="@+id/detailHolder"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="top"
+            android:layout_weight="0.9"
+            android:orientation="vertical" >
+
+            <!-- <include layout="@layout/detail_view" /> that has it's own scroll view, no need to have one here -->
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/navigationButtons"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:orientation="horizontal" >
+            android:layout_weight="0.1"
+            android:gravity="bottom"
+            android:orientation="vertical" >
 
             <ImageView
-                android:id="@+id/backButton"
-                android:layout_width="wrap_content"
+                android:id="@+id/spacer"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:src="@drawable/back_button" />
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="0dp"
+                android:src="@drawable/list_spacer" />
 
-            <ImageView
-                android:id="@+id/okButton"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="10dp"
-                android:src="@drawable/ok_button" />
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:id="@+id/backButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:src="@drawable/back_button" />
+
+                <ImageView
+                    android:id="@+id/okButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="10dp"
+                    android:src="@drawable/ok_button" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 

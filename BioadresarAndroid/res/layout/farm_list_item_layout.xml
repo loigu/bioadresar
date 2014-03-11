@@ -52,23 +52,9 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_weight="0.1" >
-
-                <LinearLayout
-                    android:id="@+id/productionIcons"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:minHeight="20dip"
-                    android:orientation="horizontal" >
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" >
-                </LinearLayout>
+                android:layout_gravity="bottom|right"
+                android:layout_weight="0.1"
+                android:gravity="right" >
 
                 <TextView
                     android:id="@+id/distance"
