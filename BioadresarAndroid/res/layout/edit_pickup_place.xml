@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="5dp" >
+    android:layout_height="wrap_content" >
 
     <EditText
         android:id="@+id/placeAndTime"
         style="@style/HnutiDuha.InputMedium"
         android:layout_width="fill_parent"
+        android:layout_height="@dimen/btn_in_row_height"
         android:layout_alignParentLeft="true"
-        android:layout_marginRight="50dp"
+        android:layout_marginRight="15dp"
         android:hint="@string/placeAndTime"
         android:inputType="textPostalAddress"
-        android:maxLines="1" >
+        android:maxLines="1"
+        android:paddingRight="@dimen/btn_in_row_height" >
     </EditText>
 
     <ImageView
@@ -22,7 +23,6 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_gravity="center"
-        android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:scaleType="fitXY"
         android:src="@drawable/btn_minus" />

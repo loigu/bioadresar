@@ -35,64 +35,67 @@
                     android:maxLines="4"
                     android:minLines="4" />
 
+                <ImageView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:src="@drawable/list_spacer" />
+
                 <LinearLayout
                     android:id="@+id/addProductLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp" >
+                    android:orientation="vertical" >
 
                     <Button
                         android:id="@+id/production"
                         style="@style/HnutiDuha.SpinnerMedium"
                         android:layout_width="140dp"
-                        android:layout_marginRight="10dp"
                         android:text="@string/product" />
 
-                    <EditText
-                        android:id="@+id/productionOther"
-                        style="@style/HnutiDuha.InputMedium"
-                        android:layout_width="140dp"
-                        android:layout_weight="1"
-                        android:hint="@string/other_he_form"
-                        android:visibility="gone" >
-                    </EditText>
-                </LinearLayout>
+                    <cz.hnutiduha.bioadresar.layout.FlowLayout
+                        android:id="@+id/productListLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        bioadresar:maxRowHeight="32dp" />
 
-                <cz.hnutiduha.bioadresar.layout.FlowLayout
-                    android:id="@+id/productListLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    bioadresar:maxRowHeight="32dp" />
+                    <ImageView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:src="@drawable/list_spacer" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/addActivityLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp" >
+                    android:orientation="vertical" >
 
                     <Button
                         android:id="@+id/activities"
                         style="@style/HnutiDuha.SpinnerMedium"
                         android:layout_width="140dp"
-                        android:layout_marginRight="10dp"
                         android:text="@string/activity" />
 
-                    <EditText
-                        android:id="@+id/activitiesOther"
-                        style="@style/HnutiDuha.InputMedium"
-                        android:layout_width="140dp"
-                        android:layout_weight="1"
-                        android:hint="@string/other_she_form"
-                        android:visibility="gone" />
-                </LinearLayout>
+                    <cz.hnutiduha.bioadresar.layout.FlowLayout
+                        android:id="@+id/activityListLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        bioadresar:maxRowHeight="40dp" >
+                    </cz.hnutiduha.bioadresar.layout.FlowLayout>
 
-                <cz.hnutiduha.bioadresar.layout.FlowLayout
-                    android:id="@+id/activityListLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    bioadresar:maxRowHeight="32dp" >
-                </cz.hnutiduha.bioadresar.layout.FlowLayout>
+                    <ImageView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:src="@drawable/list_spacer" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/containersLayout"
@@ -143,6 +146,14 @@
                         </LinearLayout>
                     </LinearLayout>
 
+                    <ImageView
+                        android:id="@+id/spacer"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="0dp"
+                        android:src="@drawable/list_spacer" />
+
                     <LinearLayout
                         android:id="@+id/containerPickupPlaces"
                         android:layout_width="match_parent"
@@ -176,7 +187,8 @@
                                 android:layout_width="@dimen/btn_in_row_height"
                                 android:layout_height="@dimen/btn_in_row_height"
                                 android:layout_gravity="right"
-                                android:layout_margin="10dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_marginTop="10dp"
                                 android:scaleType="fitXY"
                                 android:src="@drawable/btn_plus" />
                         </LinearLayout>
@@ -198,7 +210,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:layout_marginTop="0dp"
+                android:layout_marginTop="10dp"
                 android:src="@drawable/list_spacer" />
 
             <LinearLayout

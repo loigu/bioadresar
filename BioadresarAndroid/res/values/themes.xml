@@ -2,7 +2,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <dimen name="row_height">35dp</dimen>
-    <dimen name="btn_in_row_height">30dp</dimen>
+    <dimen name="btn_in_row_height">35dp</dimen>
 
     <style name="Theme.HnutiDuhaTheme" parent="Theme.Sherlock">
         <item name="actionBarStyle">@style/Widget.HnutiDuha.ActionBar</item>
