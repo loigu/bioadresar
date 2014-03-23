@@ -42,7 +42,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="10dp"
                 android:layout_weight="0.1"
                 android:text="Large Text"
                 android:textAppearance="@style/HnutiDuha.HeaderMedium"
@@ -86,11 +86,8 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:scaleType="fitXY"
-        android:src="@drawable/list_spacer" />
+        style="@style/HnutiDuha.ListSpacer"
+        android:layout_marginBottom="0dp"
+        android:layout_marginTop="0dp" />
 
 </LinearLayout>

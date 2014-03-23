@@ -150,5 +150,6 @@
     <color name="DuhaTextGreen">#669900</color>
     <color name="DuhaSearchTextGray">#777777</color>
     <color name="DuhaListSpacerGray">#EAEAEA</color>
+    <color name="DuhaListSpacerDarkGray">#3B3B39</color>
 
 </resources>

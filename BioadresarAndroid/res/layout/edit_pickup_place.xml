@@ -9,7 +9,7 @@
         android:layout_width="fill_parent"
         android:layout_height="@dimen/btn_in_row_height"
         android:layout_alignParentLeft="true"
-        android:layout_marginRight="15dp"
+        android:layout_marginRight="25dp"
         android:hint="@string/placeAndTime"
         android:inputType="textPostalAddress"
         android:maxLines="1"
@@ -23,7 +23,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_gravity="center"
-        android:layout_marginRight="10dp"
+        android:layout_marginRight="20dp"
         android:scaleType="fitXY"
         android:src="@drawable/btn_minus" />
 
