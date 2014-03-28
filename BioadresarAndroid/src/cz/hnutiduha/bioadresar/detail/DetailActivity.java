@@ -22,6 +22,8 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.widget.LinearLayout;
 
 import com.actionbarsherlock.view.Menu;
@@ -29,12 +31,15 @@ import com.actionbarsherlock.view.MenuItem;
 
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
-import cz.hnutiduha.bioadresar.data.FarmInfo;
-import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
+import cz.hnutiduha.bioadresar.data.DataSource;
+import cz.hnutiduha.bioadresar.data.DataSourceFactory;
+import cz.hnutiduha.bioadresar.data.LocationInfo;
 
 public class DetailActivity extends SherlockFragmentActivity{
 	
-	private FarmInfo currentFarm = null;	
+	public static final String EXTRA_ID = "locationId";
+	public static final String EXTRA_SOURCE = "locationSource";
+	private LocationInfo currentLocation = null;	
 	
     /** Called when the activity is first created. */
     @Override
@@ -42,18 +47,30 @@ public class DetailActivity extends SherlockFragmentActivity{
         super.onCreate(savedInstanceState);
         
         Intent myIntent= getIntent();
-        long farmId = myIntent.getLongExtra("farmId", FarmInfo.INVALID_FARM_ID);
+        int sourceId = myIntent.getIntExtra(EXTRA_SOURCE, DataSourceFactory.SOURCE_INVALID);
+        long locationId = myIntent.getLongExtra(EXTRA_ID, LocationInfo.INVALID_LOCATION_ID);
         
-        HnutiduhaFarmDb db = HnutiduhaFarmDb.getDefaultDb(this);
-        currentFarm = db.getFarm(farmId);
+        DataSource source = DataSourceFactory.getDataSource(sourceId, this);
+        if (source == null)
+        {
+        	Log.e("view", "unknown source for location");
+        	return;
+        }
+        
+        currentLocation = source.getLocation(locationId);
+        if (currentLocation == null)
+        {
+        	Log.e("view", "unknown location");
+        	return;
+        }
         
         LinearLayout me = new LinearLayout(this);
         me.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT));
         me.setId(R.id.fragmentContainer);
         
-        DetailFragment content = new DetailFragment(currentFarm, this);
+        Fragment content = currentLocation.getDetailFragment(this);
         
-        getSupportFragmentManager().beginTransaction() 
+        getSupportFragmentManager().beginTransaction()
         	.add(R.id.fragmentContainer, content).commit();
         
         this.setContentView(me);

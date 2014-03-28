@@ -37,13 +37,14 @@ import com.readystatesoftware.maps.OnSingleTapListener;
 import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.LocationCache;
+import cz.hnutiduha.bioadresar.data.LocationInfo;
 
 public class FarmsOverlay extends ItemizedOverlay<OverlayItem> implements OnSingleTapListener{
 	private ArrayList<OverlayItem> overlays = new ArrayList<OverlayItem>();
 	private FarmOverlayItem lastSelected = null;
 	private FarmMapView map;
 	private boolean isPinch = false;
-	private long firstBalloon = FarmInfo.INVALID_FARM_ID;
+	private long firstBalloon = LocationInfo.INVALID_LOCATION_ID;
 	public static int markerWidth = 21;
 	public static int balloonYOffset = - 25;
 	
@@ -126,7 +127,7 @@ public class FarmsOverlay extends ItemizedOverlay<OverlayItem> implements OnSing
 	/* TODO: maybe remove the old ones?
 	 * TODO: maybe faster join?
 	 */
-	protected void setVisiblePoints(Hashtable<Long, FarmInfo> farms)
+	protected void setVisiblePoints(Hashtable<Long, LocationInfo> locations)
 	{
 		Iterator<OverlayItem> overlaysIterator = overlays.iterator();
 		OverlayItem last;
@@ -138,31 +139,31 @@ public class FarmsOverlay extends ItemizedOverlay<OverlayItem> implements OnSing
 			if (!(last instanceof FarmOverlayItem))
 					continue;
 			FarmOverlayItem lastFarm = (FarmOverlayItem)last;
-			if (firstBalloon == lastFarm.data.id)
+			if (firstBalloon == lastFarm.data.getId())
 			{
 				hideBalloon();
 				lastSelected = lastFarm;
 				lastSelected.showBalloon();
-				firstBalloon = FarmInfo.INVALID_FARM_ID;
+				firstBalloon = LocationInfo.INVALID_LOCATION_ID;
 			}
-			farms.remove(Long.valueOf(lastFarm.data.id));
+			locations.remove(Long.valueOf(lastFarm.data.getId()));
 		}
 		
-		Collection<FarmInfo> newFarms= farms.values();
-		Iterator<FarmInfo> farmIterator = newFarms.iterator();
+		Collection<LocationInfo> newFarms= locations.values();
+		Iterator<LocationInfo> farmIterator = newFarms.iterator();
 		FarmOverlayItem toAdd;
-		FarmInfo nextFarm;
+		LocationInfo nextFarm;
 		while (farmIterator.hasNext())
 		{
 			nextFarm = farmIterator.next();
-			toAdd = new FarmOverlayItem(FarmInfo.getGeoPoint(nextFarm), nextFarm, map);
+			toAdd = new FarmOverlayItem(nextFarm.getGeoPoint(), nextFarm, map);
 			overlays.add(toAdd);
-			if (firstBalloon == nextFarm.id)
+			if (firstBalloon == nextFarm.getId())
 			{
 				hideBalloon();
 				lastSelected = toAdd;
 				lastSelected.showBalloon();
-				firstBalloon = FarmInfo.INVALID_FARM_ID;
+				firstBalloon = LocationInfo.INVALID_LOCATION_ID;
 			}
 		}
 		

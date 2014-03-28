@@ -26,19 +26,20 @@ import android.widget.TextView;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
-import cz.hnutiduha.bioadresar.R;
 
+import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
+import cz.hnutiduha.bioadresar.data.LocationInfo;
 
 public class FarmOverlayItem extends OverlayItem implements OnClickListener{
-	protected FarmInfo data;
+	protected LocationInfo data;
 	FarmMapView map;
-	FarmOverlayView balloon = null;
+	View balloon = null;
 	
-	public FarmOverlayItem(GeoPoint point, FarmInfo farm, FarmMapView map)
+	public FarmOverlayItem(GeoPoint point, LocationInfo nextFarm, FarmMapView map)
 	{
-		super(point, farm.name, farm.name);
-		this.data = farm;
+		super(point, nextFarm.getName(), nextFarm.getName());
+		this.data = nextFarm;
 		this.map = map;
 	}
 	
@@ -55,7 +56,7 @@ public class FarmOverlayItem extends OverlayItem implements OnClickListener{
 	
 	private void createBalloon(Context context)
 	{
-		balloon = new FarmOverlayView(context, data);
+		balloon = data.getBaloonView(context);
 		
 		balloon.setOnClickListener(this);
 		View closeRegion = (View) balloon.findViewById(R.id.balloon_close);

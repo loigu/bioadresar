@@ -30,21 +30,23 @@ import cz.hnutiduha.bioadresar.data.DataFilter;
 import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.LocationCache;
+import cz.hnutiduha.bioadresar.data.LocationInfo;
 import android.content.Context;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import cz.hnutiduha.bioadresar.view.SearchView;
 
+import cz.hnutiduha.bioadresar.view.SearchView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-class AddAllFarms extends AsyncTask<Void, FarmInfo, Boolean> {
+class AddAllFarms extends AsyncTask<Void, LocationInfo, Boolean> {
 	ListActivity activity;
 	Location loc;
 	DataFilter filter;
@@ -92,14 +94,14 @@ class AddAllFarms extends AsyncTask<Void, FarmInfo, Boolean> {
 		return Boolean.TRUE;
 	}
 	
-	protected void pushFarm(FarmInfo farm)
+	protected void pushFarm(LocationInfo farm)
 	{
 		if (filter != null && !filter.match(farm)) { return; }
 		
 		farmsLoaded++;
 		publishProgress(farm);
 	}
-	protected void onProgressUpdate(FarmInfo... farms)
+	protected void onProgressUpdate(LocationInfo... farms)
 	{
 		activity.insertFarm(farms[0], loc);
 	}
@@ -200,10 +202,10 @@ class AddFarmsInRectangle extends AddAllFarms
         double latOffset = -190520 / 1E6;
         double lonOffset = +219726 / 1E6;
         
-        Hashtable<Long, FarmInfo> nearestFarms = defaultDb.getFarmsInRectangle(loc.getLatitude() - latOffset, loc.getLongitude() - lonOffset,
+        Hashtable<Long, LocationInfo> nearestFarms = defaultDb.getLocationsInRectangle(loc.getLatitude() - latOffset, loc.getLongitude() - lonOffset,
         		loc.getLatitude() + latOffset, loc.getLongitude() + lonOffset);
         
-        for (FarmInfo farm : nearestFarms.values())
+        for (LocationInfo farm : nearestFarms.values())
         {
         	if (isCancelled())
         		return Boolean.FALSE;
@@ -223,7 +225,7 @@ class AddFarmsInRectangle extends AddAllFarms
 public class ListActivity extends SherlockActivity implements View.OnClickListener{
 	LinearLayout view;
 	Button next25Button;
-	AsyncTask<Void, FarmInfo, Boolean> farmsLoader = null;
+	AsyncTask<Void, LocationInfo, Boolean> farmsLoader = null;
 	DataFilter filter = null;
 	ProgressBar progress = null;
 	SearchView searchView = null;
@@ -336,16 +338,16 @@ public class ListActivity extends SherlockActivity implements View.OnClickListen
     }
     
     // backward search - hope new items will go with greater distance
-    private int getFarmPos(long farmId, float distance)
+    private int getFarmPos(long sourceId, long locationId, float distance)
     {
     	int childCount = view.getChildCount();
     	
-    	FarmLinearLayout childAtPos;
+    	LocationListItem childAtPos;
     	
     	while(childCount > 0)
     	{
-    		childAtPos = (FarmLinearLayout)view.getChildAt(--childCount);
-    		if (childAtPos.farmId == farmId)
+    		childAtPos = (LocationListItem)view.getChildAt(--childCount);
+    		if (childAtPos.locationId == locationId && childAtPos.sourceId == sourceId)
     			return -1;
     		
     		if (childAtPos.distance < distance)
@@ -355,22 +357,22 @@ public class ListActivity extends SherlockActivity implements View.OnClickListen
     	return 0;
     }
     
-    protected void insertFarm(FarmInfo farm, Location centerOfOurUniverse)
+    protected void insertFarm(LocationInfo farm, Location centerOfOurUniverse)
     {
-    	int desiredPos = getFarmPos(farm.id, farm.getDistance(centerOfOurUniverse));
+    	int desiredPos = getFarmPos(farm.getSource().getSourceId(), farm.getId(), farm.getDistance(centerOfOurUniverse));
     	if (desiredPos == -1)
     		return;
     	
-    	LinearLayout newFarm = new FarmLinearLayout(this, farm, centerOfOurUniverse);
+    	LinearLayout newFarm = new LocationListItem(this, farm, centerOfOurUniverse);
     	
     	view.addView(newFarm, desiredPos);
     	
     }
     
-    protected void appendFarm(FarmInfo farm, Location centerOfOurUniverse)
+    protected void appendFarm(LocationInfo location, Location centerOfOurUniverse)
     {
-		FarmLinearLayout newFarm = new FarmLinearLayout(this, farm, centerOfOurUniverse);
-		view.addView(newFarm, view.getChildCount());
+		LocationListItem newLocation = new LocationListItem(this, location, centerOfOurUniverse);
+		view.addView(newLocation, view.getChildCount());
     }
     
 	public synchronized void onClick(View v) {

@@ -18,9 +18,12 @@ import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
+import cz.hnutiduha.bioadresar.data.LocationInfo;
 import cz.hnutiduha.bioadresar.net.CoexConnector;
 
 public class EditFarmActivity extends AddFarmActivity {
+	
+	public static final String EXTRA_ID = "locationId";
 	
 	void updateTitle(NamedFragment fr)
 	{
@@ -52,7 +55,7 @@ user-name	jirka
 
 		nameValuePairs.add(new BasicNameValuePair("user-email", cache.mail));
 		nameValuePairs.add(new BasicNameValuePair("user-name", cache.name));
-		nameValuePairs.add(new BasicNameValuePair("place-id", String.valueOf(farm.id)));
+		nameValuePairs.add(new BasicNameValuePair("place-id", String.valueOf(farm.getId())));
 		
 		nameValuePairs.add(new BasicNameValuePair("place-feedback", formatFarmInfo(farm, cache.comment)));
 		
@@ -61,10 +64,10 @@ user-name	jirka
 	
 	FarmInfo getFarm() {
         Intent myIntent= getIntent();
-        long farmId = myIntent.getLongExtra("farmId", FarmInfo.INVALID_FARM_ID);
+        long farmId = myIntent.getLongExtra(EXTRA_ID, LocationInfo.INVALID_LOCATION_ID);
         
         HnutiduhaFarmDb db = HnutiduhaFarmDb.getDefaultDb(this);
-        return db.getFarm(farmId);
+        return db.getLocation(farmId);
 	}
 
 }

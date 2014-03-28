@@ -17,39 +17,39 @@
 
 package cz.hnutiduha.bioadresar.data;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.location.Location;
+import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ImageView;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.maps.GeoPoint;
 
+import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.detail.DetailActivity;
 import cz.hnutiduha.bioadresar.editFarm.EditFarmActivity;
+import cz.hnutiduha.bioadresar.map.FarmOverlayView;
 import cz.hnutiduha.bioadresar.map.MapActivity;
 
-public class FarmInfo implements OnClickListener{
+public class FarmInfo implements OnClickListener, LocationInfo{
 	
 	// NOTE: we ignore location type 
-	public static long INVALID_FARM_ID = -1;
 	// these are always present
-	public long id = INVALID_FARM_ID;
-	public String name = null;
-	public double lat = Double.NEGATIVE_INFINITY, lon = Double.NEGATIVE_INFINITY;
+	protected long id = INVALID_LOCATION_ID;
+	protected String name = null;
+	protected double lat = Double.NEGATIVE_INFINITY, lon = Double.NEGATIVE_INFINITY;
 	
-	HnutiduhaFarmDb source = null;
+	protected HnutiduhaFarmDb source = null;
 	
 	protected String description = null;
 	protected FarmContact contact = null;
@@ -71,8 +71,7 @@ public class FarmInfo implements OnClickListener{
 		
 		id = origin.id;
 		name = origin.name;
-		lat = origin.lat;
-		lon = origin.lon;
+		setLocation(lat, lon);
 		source = origin.source;
 		description = origin.description;
 
@@ -96,9 +95,12 @@ public class FarmInfo implements OnClickListener{
 		if (origin.categories != null)
 			categories = (LinkedList<Long>)origin.categories.clone(); 
 		
-		delivery = new DeliveryOptions(origin.delivery);
-		
-		
+		delivery = new DeliveryOptions(origin.delivery);	
+	}
+	
+	public DataSource getSource()
+	{
+		return source;
 	}
 	
 	/// crate new (empty) farm
@@ -116,8 +118,26 @@ public class FarmInfo implements OnClickListener{
 		this.lon = lon;
 	}
 	
-	public static GeoPoint getGeoPoint(FarmInfo farm) {
-		return new GeoPoint((int)(farm.lat * 1E6), (int)(farm.lon * 1E6));
+	public String getName()
+	{
+		return name;
+	}
+	
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+	
+	public long getId()
+	{
+		return id;
+	}
+	
+	@Override
+	public GeoPoint getGeoPoint() {
+		if (location == null) { return null; }
+		
+		return new GeoPoint((int)(lat * 1E6), (int)(lon * 1E6));
 	}
 	
 	public float getDistance(Location targetLocation) {
@@ -230,6 +250,16 @@ public class FarmInfo implements OnClickListener{
 		return categories;
 	}
 	
+	public double getLatitude()
+	{
+		return lat;
+	}
+	
+	public double getLongitude()
+	{
+		return lon;
+	}
+	
 	public Location getLocation() {
 		if (lat < -90 || lat > 90 || lon < -180 || lon > 180)
 			return null;
@@ -259,15 +289,17 @@ public class FarmInfo implements OnClickListener{
 		map.putExtra(MainTabbedActivity.defaultActivityPropertyName, MainTabbedActivity.mapActivityTag);
 		*/
 		Intent map = new Intent(context, MapActivity.class);
-		map.putExtra(MapActivity.mapNodePropertyName, Long.valueOf(id));
+		map.putExtra(MapActivity.EXTRA_LOCATION_ID, id);
+		map.putExtra(MapActivity.EXTRA_SOURCE, source.getSourceId());
+		
 		context.startActivity(map);
 	}
 	
-	public void editFarm(View parent)
+	@Override
+	public void editLocation(Context context)
 	{
-		Context context = parent.getContext();
 		Intent detail = new Intent(context, EditFarmActivity.class);
-		detail.putExtra("farmId", this.id);
+		detail.putExtra(EditFarmActivity.EXTRA_ID, this.id);
 		context.startActivity(detail);
 	}
 	
@@ -275,7 +307,8 @@ public class FarmInfo implements OnClickListener{
 	{
 		Context context = parent.getContext();
 		Intent detail = new Intent(context, DetailActivity.class);
-		detail.putExtra("farmId", this.id);
+		detail.putExtra(DetailActivity.EXTRA_ID, this.id);
+		detail.putExtra(DetailActivity.EXTRA_SOURCE, source.getSourceId());
 		context.startActivity(detail);
 	}
 
@@ -335,35 +368,7 @@ public class FarmInfo implements OnClickListener{
 			((TextView)parent.findViewById(customTextId)).setText("ne");
 		}
 	}
-	
-	public void fillInfoToView(View parent, int nameTextId, Location distanceFrom, int distanceTextId)
-	{	
-		// name
-		TextView nameView = (TextView) parent.findViewById(nameTextId);
-		nameView.setText(this.name);
-				
-		// distance, if required
-		if (distanceFrom != null)
-		{
-			TextView distanceText = (TextView)parent.findViewById(distanceTextId);
-			if (distanceText == null)
-			{
-				Log.e("gui", "requesting distance label but TextView id " + distanceTextId + " is invalid");
-				return;
-			}
-			
-			long distance = (long)getDistance(distanceFrom);
-			long km = distance / 1000;
-			long m = distance % 1000;
-			if (km > 0)
-				distanceText.setText(String.valueOf(km) + "." + String.valueOf(m / 10) + " km");
-			else
-				distanceText.setText(String.valueOf(m) + " m");
-		}
 		
-		//FIXME: container distribution
-	}
-	
 	public void setToMapListener(View view)
 	{
     	view.setTag(viewTagTarget, viewTargetMap);
@@ -390,6 +395,67 @@ public class FarmInfo implements OnClickListener{
 		}
 		
 		return bookmarked.booleanValue();
+	}
+	
+	private void fillListView(View parent, int nameTextId, Location centerOfOurUniverse, int distanceTextId)
+	{	
+		// name
+		TextView nameView = (TextView) parent.findViewById(nameTextId);
+		nameView.setText(this.name);
+				
+		// distance, if required
+		if (centerOfOurUniverse != null)
+		{
+			TextView distanceText = (TextView)parent.findViewById(distanceTextId);
+			if (distanceText == null)
+			{
+				Log.e("gui", "requesting distance label but TextView id " + distanceTextId + " is invalid");
+				return;
+			}
+			
+			float distanceMeters = getDistance(centerOfOurUniverse);
+			long km = (long) (distanceMeters / 1000);
+			long m = (long) (distanceMeters % 1000);
+			if (km > 0)
+				distanceText.setText(String.valueOf(km) + "." + String.valueOf(m / 10) + " km");
+			else
+				distanceText.setText(String.valueOf(m) + " m");
+		}
+	}
+
+
+	@Override
+	public View inflateListView(ViewGroup parent, Location centerOfOurUniverse) {
+    	LayoutInflater inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    	View v = inflater.inflate(R.layout.farm_list_item_layout, null);
+		
+		LinearLayout toDetail = (LinearLayout)v.findViewById(R.id.toDetailArea);
+		setToDetailListener(toDetail);
+		LinearLayout toMap = (LinearLayout)v.findViewById(R.id.toMapArea);
+		setToMapListener(toMap);
+		
+		fillListView(v, R.id.farmName, centerOfOurUniverse, R.id.distance);
+		
+		return v;
+	}
+
+	@Override
+	public Fragment getDetailFragment(Activity parent) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public View getBaloonView(Context context) {
+		View baloon = new FarmOverlayView(context, this);
+		
+		if (baloon != null)
+		{
+			TextView nameView = (TextView) baloon.findViewById(R.id.balloon_item_title);
+			nameView.setText(name);
+		}
+		
+		return baloon;
 	}
 
 }

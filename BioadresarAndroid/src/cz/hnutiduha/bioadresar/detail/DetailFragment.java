@@ -21,8 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.util.Linkify;
 import android.util.Log;
@@ -42,7 +40,6 @@ import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
 import cz.hnutiduha.bioadresar.data.FarmContact;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.ProductWithComment;
-import cz.hnutiduha.bioadresar.data.StringifiedFromDb;
 
 public class DetailFragment extends SherlockFragment implements OnClickListener{
 	
@@ -147,7 +144,7 @@ public class DetailFragment extends SherlockFragment implements OnClickListener{
     		updateBookmarked();
     	
     	TextView field = (TextView) view.findViewById(R.id.farmName);
-    	field.setText(farm.name);
+    	field.setText(farm.getName());
     	
     	setFieldTextOrHideEmpty(farm.getDescription(), NO_LINKIFY, R.id.descriptionLayout, R.id.descriptionText);
         
@@ -230,7 +227,7 @@ public class DetailFragment extends SherlockFragment implements OnClickListener{
 			break;
 			
 			case R.id.feedback_button:
-				farm.editFarm(view);
+				farm.editLocation(this.context);
 			break;
 		}
 	}

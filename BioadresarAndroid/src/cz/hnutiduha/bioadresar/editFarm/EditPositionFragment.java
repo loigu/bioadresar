@@ -42,7 +42,7 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
 	private FragmentNavigator fragmentNavigator;
 	View me = null;
 	SupportMapFragment smf = null;
-	EditText lat = null, lon = null, farmName = null;
+	EditText latView = null, lonView = null, farmNameView = null;
 	GoogleMap map = null;
 	Marker mark = null;
 	FarmInfo farm;
@@ -61,7 +61,7 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
         // expect this to be loaded in loadFarm()
         if (validateCoordinates())
         {
-        	LatLng point = new LatLng(Double.valueOf(lat.getText().toString()), Double.valueOf(lon.getText().toString()));
+        	LatLng point = new LatLng(Double.valueOf(latView.getText().toString()), Double.valueOf(lonView.getText().toString()));
         	map.moveCamera(CameraUpdateFactory.zoomTo(11));
         	setMarker(point, true);
         }
@@ -109,12 +109,12 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
 		View item = me.findViewById(R.id.nextButton);
 		item.setOnClickListener(this);
 
-		lat = (EditText) me.findViewById(R.id.latitude);
-		lat.setOnEditorActionListener(this);
-		lon = (EditText) me.findViewById(R.id.longitude);
-		lon.setOnEditorActionListener(this);
+		latView = (EditText) me.findViewById(R.id.latitude);
+		latView.setOnEditorActionListener(this);
+		lonView = (EditText) me.findViewById(R.id.longitude);
+		lonView.setOnEditorActionListener(this);
 		
-		farmName = (EditText) me.findViewById(R.id.farmName);
+		farmNameView = (EditText) me.findViewById(R.id.farmName);
 
 		if (smf == null)
 		{
@@ -135,8 +135,8 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
     {
     	try
     	{
-        	double latValue = Double.valueOf(lat.getText().toString());
-        	double lonValue = Double.valueOf(this.lon.getText().toString());
+        	double latValue = Double.valueOf(latView.getText().toString());
+        	double lonValue = Double.valueOf(lonView.getText().toString());
         	
         	if ((latValue > -90 && latValue < 90) &&
         			(lonValue > -180 && lonValue < 180))
@@ -149,7 +149,7 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
     
     private boolean validate()
     {
-    	if (TextUtils.isEmpty(StringOperations.getStringFromEditBox(farmName)))
+    	if (TextUtils.isEmpty(StringOperations.getStringFromEditBox(farmNameView)))
     	{
     		fragmentNavigator.fragmentNotification(R.string.fillInName);
     		//fragmentNavigator.fragmentWarning(R.string.fillInName);
@@ -167,15 +167,17 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
     
     private void loadFromFarm()
     {
-    	farmName.setText(farm.name);
+    	farmNameView.setText(farm.getName());
+    	double lat = farm.getLatitude();
+    	double lon = farm.getLongitude();
     	
-    	if (farm.lat > -90 && farm.lat < 90)
+    	if (lat > -90 && lat < 90)
     	{
-    		lat.setText(String.valueOf(farm.lat));
+    		latView.setText(String.valueOf(lat));
     	}
-    	if (farm.lon > -180 && farm.lon < 180)
+    	if (lon > -180 && lon < 180)
     	{
-    		lon.setText(String.valueOf(farm.lon));
+    		lonView.setText(String.valueOf(lon));
     	}
     }
     
@@ -183,10 +185,10 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
     private void updateFarm()
     {
     	fragmentNavigator.showProgress();
-    	farm.name = StringOperations.getStringFromEditBox(farmName);
+    	farm.setName(StringOperations.getStringFromEditBox(farmNameView));
     			
-    	double latValue = Double.valueOf(lat.getText().toString());
-    	double lonValue = Double.valueOf(this.lon.getText().toString());
+    	double latValue = Double.valueOf(latView.getText().toString());
+    	double lonValue = Double.valueOf(lonView.getText().toString());
     	farm.setLocation(latValue, lonValue);
     	
     	// if there is no address, try to get it from location
@@ -261,8 +263,8 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
 	@Override
 	public void onMapLongClick(LatLng arg) {
 		Log.d("map", String.format("lat %s, lon %f touched", arg.latitude, arg.longitude));
-		lat.setText(String.valueOf(arg.latitude));
-		lon.setText(String.valueOf(arg.longitude));
+		latView.setText(String.valueOf(arg.latitude));
+		lonView.setText(String.valueOf(arg.longitude));
 		setMarker(arg, false);
 	}
 
@@ -273,7 +275,7 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
 		{
 			if (validateCoordinates())
 			{
-				LatLng point = new LatLng(Double.valueOf(lat.getText().toString()), Double.valueOf(lon.getText().toString()));
+				LatLng point = new LatLng(Double.valueOf(latView.getText().toString()), Double.valueOf(lonView.getText().toString()));
 				setMarker(point, true);
 			}
 		}

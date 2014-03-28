@@ -36,6 +36,7 @@ import cz.hnutiduha.bioadresar.data.DataFilter;
 import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.LocationCache;
+import cz.hnutiduha.bioadresar.data.LocationInfo;
 
 public class FarmMapView extends TapControlledMapView {
 	FarmsOverlay farmOverlay;
@@ -172,16 +173,16 @@ public class FarmMapView extends TapControlledMapView {
 		
 		Log.d("gui", "visible area is " + currentVisibleRectangle[0].toString() + " x " + currentVisibleRectangle[1].toString());
 		
-		Hashtable <Long, FarmInfo> farms = db.getFarmsInRectangle(
+		Hashtable <Long, LocationInfo> locations = db.getLocationsInRectangle(
 				currentVisibleRectangle[0].getLatitudeE6() / 1E6, currentVisibleRectangle[0].getLongitudeE6() / 1E6,
 				currentVisibleRectangle[1].getLatitudeE6() / 1E6, currentVisibleRectangle[1].getLongitudeE6() / 1E6);
 		
 		if (filter != null)
 		{
-			farms = filter.prune(farms);
+			locations = filter.prune(locations);
 		}
 		
-		farmOverlay.setVisiblePoints(farms);
+		farmOverlay.setVisiblePoints(locations);
 	}
 
 

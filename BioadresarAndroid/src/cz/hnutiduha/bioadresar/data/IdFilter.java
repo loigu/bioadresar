@@ -19,19 +19,19 @@ public class IdFilter implements DataFilter {
 		}
 	}
 	@Override
-	public boolean match(FarmInfo info) {
-		return matchingIds.contains(info.id);
+	public boolean match(LocationInfo info) {
+		return matchingIds.contains(info.getId());
 	}
 	
-	public Hashtable<Long, FarmInfo> prune(Hashtable<Long, FarmInfo> farms)
+	public Hashtable<Long, LocationInfo> prune(Hashtable<Long, LocationInfo> farms)
 	{
-		Hashtable<Long, FarmInfo> ret = new Hashtable<Long, FarmInfo>();
+		Hashtable<Long, LocationInfo> ret = new Hashtable<Long, LocationInfo>();
 		if (matchingIds.isEmpty())
 		{
 			return ret;
 		}
 		
-		for (Map.Entry<Long, FarmInfo> entry : farms.entrySet())
+		for (Map.Entry<Long, LocationInfo> entry : farms.entrySet())
 		{
 			if (!matchingIds.contains(entry.getKey()))
 			{

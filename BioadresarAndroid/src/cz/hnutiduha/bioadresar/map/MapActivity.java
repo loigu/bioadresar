@@ -24,14 +24,18 @@ import android.app.Activity;
 import android.os.Bundle;
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
+import cz.hnutiduha.bioadresar.data.DataSource;
+import cz.hnutiduha.bioadresar.data.DataSourceFactory;
 import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.LocationCache;
+import cz.hnutiduha.bioadresar.data.LocationInfo;
 import cz.hnutiduha.bioadresar.view.SearchView;
 
 public class MapActivity extends com.actionbarsherlock.app.SherlockMapActivity {
 	
-	public static final String mapNodePropertyName = "farmIdToShow";
+	public static final String EXTRA_LOCATION_ID = "farmIdToShow";
+	public static final String EXTRA_SOURCE = "locationSource";
 	
 	private FarmMapView mapView;
 	private SearchView searchView;
@@ -71,20 +75,25 @@ public class MapActivity extends com.actionbarsherlock.app.SherlockMapActivity {
 		searchView = (SearchView)findViewById(R.id.searchView);
 
 		mapView.setFilter(searchView.handleQuery(this));
-
+		
+        int sourceId = getIntent().getIntExtra(EXTRA_SOURCE, DataSourceFactory.SOURCE_INVALID);
+        DataSource source = DataSourceFactory.getDataSource(sourceId, this);
         
-        Long targetFarmId = getIntent().getLongExtra(mapNodePropertyName, FarmInfo.INVALID_FARM_ID);
-        FarmInfo farm = null;
-        if (targetFarmId != FarmInfo.INVALID_FARM_ID)
-        	farm = HnutiduhaFarmDb.getDefaultDb(this).getFarm(targetFarmId);
+        long targetLocationId = getIntent().getLongExtra(EXTRA_LOCATION_ID, LocationInfo.INVALID_LOCATION_ID);
+        LocationInfo location = null;
+        
+        if (targetLocationId != LocationInfo.INVALID_LOCATION_ID && source != null)
+        {
+        	location = source.getLocation(targetLocationId);
+        }
 
-        if (centerMap || farm != null)
+        if (centerMap || location != null)
         {
 	        int zoomLevel = 11;
-	       	if (farm != null)
+	       	if (location != null)
 	       	{
-	       		mapView.centerOnGeoPoint(FarmInfo.getGeoPoint(farm));
-	       		mapView.showFarmBalloonOnStart(targetFarmId.longValue());
+	       		mapView.centerOnGeoPoint(location.getGeoPoint());
+	       		mapView.showFarmBalloonOnStart(targetLocationId);
 	        }
 	        else
 	        {

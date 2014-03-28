@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ import cz.hnutiduha.bioadresar.data.ActivityWithComment;
 import cz.hnutiduha.bioadresar.data.DeliveryOptions;
 import cz.hnutiduha.bioadresar.data.FarmContact;
 import cz.hnutiduha.bioadresar.data.FarmInfo;
+import cz.hnutiduha.bioadresar.data.LocationInfo;
 import cz.hnutiduha.bioadresar.data.ProductWithComment;
 import cz.hnutiduha.bioadresar.net.CoexConnector;
 
@@ -139,14 +141,15 @@ public class AddFarmActivity extends SherlockFragmentActivity implements Fragmen
 	{
 		
 		StringBuilder message = new StringBuilder();
+		long id = farm.getId();
 		
-		if (farm.id == FarmInfo.INVALID_FARM_ID)
+		if (id == LocationInfo.INVALID_LOCATION_ID)
 		{
 			message.append("Není potřeba založit nový producent?\n\n");
 		}
 		else
 		{
-			message.append("Aktualizace lokality ID ").append(farm.id).append("\n");
+			message.append("Aktualizace lokality ID ").append(id).append("\n");
 		}
 		
 		if (TextUtils.isEmpty(comment))
@@ -156,9 +159,9 @@ public class AddFarmActivity extends SherlockFragmentActivity implements Fragmen
 		
 		// FIXME: use copy to put diff only
 		
-		message.append("Název lokality: ").append(farm.name).append("\n");
+		message.append("Název lokality: ").append(farm.getName()).append("\n");
 		message.append("Popis lokality:\n").append(farm.getDescription()).append("\n\n");
-		message.append("GPS: latitude ").append(farm.lat).append(", longitude ").append(farm.lon).append('\n');
+		message.append("GPS: latitude ").append(farm.getLatitude()).append(", longitude ").append(farm.getLongitude()).append('\n');
 		
 		FarmContact contact = farm.getFarmContact();
 		message.append("Kontaktní osoba: ").append(contact.person).append(", e-mail: ").append(contact.email).append("\n");

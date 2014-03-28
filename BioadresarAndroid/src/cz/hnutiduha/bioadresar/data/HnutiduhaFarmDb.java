@@ -50,7 +50,7 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 
 	private static String DB_PATH = "/data/data/cz.hnutiduha.bioadresar/databases/";
 	
-	private static int SOURCE_ID = 1; 
+	private static int SOURCE_ID = DataSourceFactory.SOURCE_DUHA_OFFLINE; 
 
 	private static String DB_NAME = "bioadr";
 	
@@ -85,6 +85,11 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 			}
 		}
 		return defaultDb; 
+	}
+	
+	public int getSourceId()
+	{
+		return SOURCE_ID;
 	}
 	
 	public static void closeDefaultDb()
@@ -294,7 +299,7 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 		return new FarmInfo(this, c.getLong(0), c.getString(1), c.getDouble(2), c.getDouble(3));
 	}
 	
-	public Hashtable<Long, FarmInfo> getFarmsInRectangle(double lat1, double lon1, double lat2, double lon2) {
+	public Hashtable<Long, LocationInfo> getLocationsInRectangle(double lat1, double lon1, double lat2, double lon2) {
 		
 		String selection = "gpsLatitude >= " + Math.min(lat1, lat2) +
 				" AND gpsLongtitude >= " + Math.min(lon1, lon2) +
@@ -307,7 +312,7 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 		};
 		*/
 		Cursor c = db.query("locations", farmInfoColumns, selection, null, null, null, "gpsLatitude, gpsLongtitude");
-		Hashtable<Long, FarmInfo> result = new Hashtable<Long, FarmInfo>();
+		Hashtable<Long, LocationInfo> result = new Hashtable<Long, LocationInfo>();
 		
 		c.moveToNext();
 		FarmInfo farmInfo;
@@ -425,7 +430,7 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 		return this.configDb;
 	}
 	
-	public FarmInfo getFarm(long id) {
+	public FarmInfo getLocation(long id) {
 		FarmInfo ret = null;
 		
 		if (allFarmsHash != null)
@@ -767,7 +772,7 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 	public void onCreate(SQLiteDatabase db){}
 	
 	@Override
-	public Hashtable<Long, FarmInfo> getFilteredFarmsInRectangle(double lat1,
+	public Hashtable<Long, LocationInfo> getFilteredLocationsInRectangle(double lat1,
 			double lon1, double lat2, double lon2, DataFilter filter) {
 		// TODO Auto-generated method stub
 		return null;
@@ -778,13 +783,4 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-
-
-	@Override
-	public void detach() {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

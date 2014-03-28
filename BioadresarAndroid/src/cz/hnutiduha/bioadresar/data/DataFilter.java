@@ -20,6 +20,6 @@ package cz.hnutiduha.bioadresar.data;
 import java.util.Hashtable;
 
 public interface DataFilter {
-	public boolean match(FarmInfo info);
-	public Hashtable<Long, FarmInfo> prune(Hashtable<Long, FarmInfo> farms);
+	public boolean match(LocationInfo location);
+	public Hashtable<Long, LocationInfo> prune(Hashtable<Long, LocationInfo> locations);
 }
