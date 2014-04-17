@@ -1,4 +1,4 @@
-package cz.hnutiduha.bioadresar.editFarm;
+package cz.hnutiduha.bioadresar.duhaOnline.editLocation;
 
 import android.support.v4.app.Fragment;
 

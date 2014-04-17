@@ -1,4 +1,4 @@
-package cz.hnutiduha.bioadresar.editFarm;
+package cz.hnutiduha.bioadresar.duhaOnline.editLocation;
 
 
 import java.util.List;
@@ -27,16 +27,16 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragment;
 
 import cz.hnutiduha.bioadresar.R;
-import cz.hnutiduha.bioadresar.data.ActivityWithComment;
-import cz.hnutiduha.bioadresar.data.DeliveryOptions;
-import cz.hnutiduha.bioadresar.data.FarmInfo;
+import cz.hnutiduha.bioadresar.data.DataSourceFactory;
 import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
-import cz.hnutiduha.bioadresar.data.ProductWithComment;
-import cz.hnutiduha.bioadresar.data.StringifiedFromDb;
+import cz.hnutiduha.bioadresar.duhaOnline.data.CoexDatabase;
+import cz.hnutiduha.bioadresar.duhaOnline.data.DeliveryOptions;
+import cz.hnutiduha.bioadresar.duhaOnline.data.CoexLocation;
+import cz.hnutiduha.bioadresar.duhaOnline.data.EntityWithComment;
 import cz.hnutiduha.bioadresar.layout.FlowLayout;
 import cz.hnutiduha.bioadresar.util.StringOperations;
 
-class SomethingHolder<T extends StringifiedFromDb> implements OnClickListener {
+class SomethingHolder<T extends EntityWithComment> implements OnClickListener {
 	Context context;
 	List<T> list;
 	T[] options;
@@ -66,7 +66,7 @@ class SomethingHolder<T extends StringifiedFromDb> implements OnClickListener {
 	private void putListToLayout()
 	{
 		layout.removeAllViews();
-		for (StringifiedFromDb something : list)
+		for (EntityWithComment something : list)
 		{
 			addButton(something);
 		}
@@ -113,7 +113,7 @@ class SomethingHolder<T extends StringifiedFromDb> implements OnClickListener {
     	Log.d("gui", "dialog shown");
     }
 	
-	private void addButton(StringifiedFromDb something)
+	private void addButton(EntityWithComment something)
 	{
 		Button b = (Button) LayoutInflater.from(context).inflate(R.layout.item_button, null);
 		b.setText(something.toString());
@@ -161,19 +161,19 @@ class SomethingHolder<T extends StringifiedFromDb> implements OnClickListener {
 
 public class EditDetailsFragment extends SherlockFragment implements OnClickListener, NamedFragment{
 	private FragmentNavigator fragmentNavigator;
-	private FarmInfo farm;
+	private CoexLocation location;
 	private Context context;
-	SomethingHolder<ProductWithComment> productionHolder;
-	SomethingHolder<ActivityWithComment> activitiesHolder;
+	SomethingHolder<EntityWithComment> productionHolder;
+	SomethingHolder<EntityWithComment> activitiesHolder;
 	private EditText description;
 	private LinearLayout pickupPlacesList;
 	private TextView customDeliveryYes, customDeliveryNo;
 	DeliveryOptions deliveryOpts;
     
-	public EditDetailsFragment(FarmInfo farm, Context context) {
+	public EditDetailsFragment(CoexLocation farm, Context context) {
 		super();
 		
-		this.farm = farm;
+		this.location = farm;
 		deliveryOpts = farm.getDeliveryInfo();
 		if (deliveryOpts == null)
 		{
@@ -228,15 +228,15 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
     
     private void loadFromFarm(View me)
     {
-    	description.setText(farm.getDescription());
+    	description.setText(location.getDescription());
     	
-        HnutiduhaFarmDb db = HnutiduhaFarmDb.getDefaultDb(context);
+    	CoexDatabase db = (CoexDatabase)DataSourceFactory.getDataSource(CoexDatabase.SOURCE_ID, context);
         
     	FlowLayout productsLayout = (FlowLayout) me.findViewById(R.id.productListLayout);
-    	productionHolder = new SomethingHolder<ProductWithComment>(context, farm.getProducts(),
+    	productionHolder = new SomethingHolder<EntityWithComment>(context, location.getProducts(),
     			db.getProductsSortedByName(), productsLayout);
     	FlowLayout activitiesLayout = (FlowLayout) me.findViewById(R.id.activityListLayout);
-    	activitiesHolder = new SomethingHolder<ActivityWithComment>(context, farm.getActivities(),
+    	activitiesHolder = new SomethingHolder<EntityWithComment>(context, location.getActivities(),
     			db.getActivitiesSortedByName(), activitiesLayout);
     	
     	if (deliveryOpts.placesWithTime != null && deliveryOpts.placesWithTime.length > 0)
@@ -256,10 +256,10 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
     
     private void updateFarm()
     {
-    	farm.setDescription(StringOperations.getStringFromEditBox(description));
+    	location.setDescription(StringOperations.getStringFromEditBox(description));
     	
-    	farm.setProducts(productionHolder.getList());
-    	farm.setActivities(activitiesHolder.getList());
+    	location.setProducts(productionHolder.getList());
+    	location.setActivities(activitiesHolder.getList());
     	
     	int childCount = pickupPlacesList.getChildCount();
     	if (childCount == 0)
@@ -290,7 +290,7 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
 	    		deliveryOpts.placesWithTime = tmp;
 	    	}
     	}
-    	farm.setDelieryInfo(deliveryOpts);
+    	location.setDelieryInfo(deliveryOpts);
     }
     
     private void addPickupPlace(String text)

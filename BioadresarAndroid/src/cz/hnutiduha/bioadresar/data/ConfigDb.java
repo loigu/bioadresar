@@ -1,9 +1,11 @@
 package cz.hnutiduha.bioadresar.data;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
-
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -11,16 +13,36 @@ import android.database.sqlite.SQLiteException;
 public class ConfigDb {
 	
 	private SQLiteDatabase db = null;
+	// backward compatibility, move on update
+	@SuppressLint("SdCardPath")
+	private final static String OLD_DB_PATH = "/data/data/cz.hnutiduha.bioadresar/databases/";
 
-	public ConfigDb(String storageDir) {
-		String dbPath = storageDir + "config";
+	private void moveIfExists(String oldPath, String newPath)
+	{
+		// move on upgrade
+		// if there is old one and no new one (and path is not the same)
+		File to = new File(newPath);
+		if (to.exists()) { return; }
 		
+		File from = new File(oldPath);
+		if (!from.exists()) { return; }
+		
+		if (to.compareTo(from) == 0) { return; }
+		
+		from.renameTo(to);
+	}
+	
+	public ConfigDb(Context context) {
+		String newPath = context.getFilesDir().getPath() + "/config";
+		String oldPath = OLD_DB_PATH + "config";
+		
+		moveIfExists(oldPath, newPath);
 		try
 		{
-			db = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.OPEN_READWRITE);
+			db = SQLiteDatabase.openDatabase(newPath, null, SQLiteDatabase.OPEN_READWRITE);
 		} catch (SQLiteException e)
 		{
-			db = SQLiteDatabase.openOrCreateDatabase(dbPath, null);
+			db = SQLiteDatabase.openOrCreateDatabase(newPath, null);
 			onCreate(db);
 		}
 		

@@ -34,7 +34,6 @@ import com.readystatesoftware.maps.TapControlledMapView;
 
 import cz.hnutiduha.bioadresar.data.DataFilter;
 import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
-import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.LocationCache;
 import cz.hnutiduha.bioadresar.data.LocationInfo;
 

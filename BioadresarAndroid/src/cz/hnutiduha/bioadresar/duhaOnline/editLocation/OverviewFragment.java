@@ -1,17 +1,16 @@
-package cz.hnutiduha.bioadresar.editFarm;
+package cz.hnutiduha.bioadresar.duhaOnline.editLocation;
 
 
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import cz.hnutiduha.bioadresar.data.FarmInfo;
-import cz.hnutiduha.bioadresar.detail.DetailFragment;
+import cz.hnutiduha.bioadresar.duhaOnline.data.CoexLocation;
+import cz.hnutiduha.bioadresar.duhaOnline.forms.DetailFragment;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
@@ -19,14 +18,14 @@ import cz.hnutiduha.bioadresar.R;
 
 public class OverviewFragment extends SherlockFragment implements OnClickListener, NamedFragment{
 	private FragmentNavigator fragmentNavigator;
-	private FarmInfo farm;
+	private CoexLocation location;
 	private Context context;
 	DetailFragment detail = null;
     
-	public OverviewFragment(FarmInfo farm, Context context) {
+	public OverviewFragment(CoexLocation location, Context context) {
 		super();
 		
-		this.farm = farm;
+		this.location = location;
 		this.context = context;
 	}
 	
@@ -39,7 +38,7 @@ public class OverviewFragment extends SherlockFragment implements OnClickListene
         me.findViewById(R.id.okButton).setOnClickListener(this);
         me.findViewById(R.id.backButton).setOnClickListener(this);
         
-        detail = new DetailFragment(farm, context, false);
+        detail = new DetailFragment(location, context, false);
         getChildFragmentManager().beginTransaction().add(R.id.detailHolder, detail).commit();
         
         return me;

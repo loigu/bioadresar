@@ -1,4 +1,4 @@
-package cz.hnutiduha.bioadresar.data;
+package cz.hnutiduha.bioadresar.duhaOnline.data;
 
 public class DeliveryOptions {
 	public String [] placesWithTime = null;

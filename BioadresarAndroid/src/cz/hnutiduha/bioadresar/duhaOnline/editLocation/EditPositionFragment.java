@@ -1,4 +1,4 @@
-package cz.hnutiduha.bioadresar.editFarm;
+package cz.hnutiduha.bioadresar.duhaOnline.editLocation;
 
 import java.io.IOException;
 import java.util.List;
@@ -33,26 +33,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.TextView.OnEditorActionListener;
 import cz.hnutiduha.bioadresar.R;
-import cz.hnutiduha.bioadresar.data.FarmContact;
-import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.LocationCache;
+import cz.hnutiduha.bioadresar.duhaOnline.data.LocationContact;
+import cz.hnutiduha.bioadresar.duhaOnline.data.CoexLocation;
 import cz.hnutiduha.bioadresar.util.StringOperations;
 
 public class EditPositionFragment extends SherlockFragment implements OnClickListener, OnMapLongClickListener, OnEditorActionListener, NamedFragment{
 	private FragmentNavigator fragmentNavigator;
 	View me = null;
 	SupportMapFragment smf = null;
-	EditText latView = null, lonView = null, farmNameView = null;
+	EditText latView = null, lonView = null, locationNameView = null;
 	GoogleMap map = null;
 	Marker mark = null;
-	FarmInfo farm;
+	CoexLocation location;
 	Activity parent;
 	boolean tapHintShown = false;
 	
-	public EditPositionFragment(FarmInfo farm, Activity parent)
+	public EditPositionFragment(CoexLocation location, Activity parent)
 	{
 		super();
-		this.farm = farm;
+		this.location = location;
 		this.parent = parent;
 	}
 	
@@ -114,7 +114,7 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
 		lonView = (EditText) me.findViewById(R.id.longitude);
 		lonView.setOnEditorActionListener(this);
 		
-		farmNameView = (EditText) me.findViewById(R.id.farmName);
+		locationNameView = (EditText) me.findViewById(R.id.farmName);
 
 		if (smf == null)
 		{
@@ -149,7 +149,7 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
     
     private boolean validate()
     {
-    	if (TextUtils.isEmpty(StringOperations.getStringFromEditBox(farmNameView)))
+    	if (TextUtils.isEmpty(StringOperations.getStringFromEditBox(locationNameView)))
     	{
     		fragmentNavigator.fragmentNotification(R.string.fillInName);
     		//fragmentNavigator.fragmentWarning(R.string.fillInName);
@@ -167,9 +167,9 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
     
     private void loadFromFarm()
     {
-    	farmNameView.setText(farm.getName());
-    	double lat = farm.getLatitude();
-    	double lon = farm.getLongitude();
+    	locationNameView.setText(location.getName());
+    	double lat = location.getLatitude();
+    	double lon = location.getLongitude();
     	
     	if (lat > -90 && lat < 90)
     	{
@@ -185,14 +185,14 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
     private void updateFarm()
     {
     	fragmentNavigator.showProgress();
-    	farm.setName(StringOperations.getStringFromEditBox(farmNameView));
+    	location.setName(StringOperations.getStringFromEditBox(locationNameView));
     			
     	double latValue = Double.valueOf(latView.getText().toString());
     	double lonValue = Double.valueOf(lonView.getText().toString());
-    	farm.setLocation(latValue, lonValue);
+    	location.setLocation(latValue, lonValue);
     	
     	// if there is no address, try to get it from location
-    	if (farm.getFarmContact() == null)
+    	if (location.getContact() == null)
     	{
 	        Geocoder geocoder = new Geocoder(parent);
 	        try {
@@ -202,10 +202,10 @@ public class EditPositionFragment extends SherlockFragment implements OnClickLis
 		            Address address = addresses.get(0);
 		            if (address != null)
 		            {
-		            	FarmContact contact = new FarmContact();
+		            	LocationContact contact = new LocationContact();
 		            	contact.street = address.getAddressLine(0);
 		            	contact.city = address.getAddressLine(1);
-		            	farm.setFarmContact(contact);
+		            	location.setContact(contact);
 		            }
 	            }
 	        } catch(IOException e) {}

@@ -28,7 +28,6 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 
 import cz.hnutiduha.bioadresar.R;
-import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.LocationInfo;
 
 public class FarmOverlayItem extends OverlayItem implements OnClickListener{

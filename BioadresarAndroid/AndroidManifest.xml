@@ -121,7 +121,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".editFarm.AddFarmActivity"
+            android:name="cz.hnutiduha.bioadresar.duhaOnline.editLocation.AddLocationActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/add_farm"
             android:windowSoftInputMode="adjustPan" >
@@ -130,7 +130,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".editFarm.EditFarmActivity"
+            android:name="cz.hnutiduha.bioadresar.duhaOnline.editLocation.EditLocationActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/add_farm"
             android:windowSoftInputMode="adjustPan" >

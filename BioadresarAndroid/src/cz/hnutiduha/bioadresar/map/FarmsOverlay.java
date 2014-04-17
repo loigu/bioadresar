@@ -35,10 +35,8 @@ import com.google.android.maps.OverlayItem;
 import com.readystatesoftware.maps.OnSingleTapListener;
 
 import cz.hnutiduha.bioadresar.R;
-import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.LocationCache;
 import cz.hnutiduha.bioadresar.data.LocationInfo;
-
 public class FarmsOverlay extends ItemizedOverlay<OverlayItem> implements OnSingleTapListener{
 	private ArrayList<OverlayItem> overlays = new ArrayList<OverlayItem>();
 	private FarmOverlayItem lastSelected = null;

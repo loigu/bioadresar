@@ -1,9 +1,12 @@
 package cz.hnutiduha.bioadresar.data;
 
 import java.util.Hashtable;
+import java.util.TreeSet;
+
+import android.location.Location;
 
 public interface DataSource {	
-	public FarmInfo getLocation(long id);
+	public LocationInfo getLocation(long id);
 	
 	public int getSourceId();
 	
@@ -11,5 +14,6 @@ public interface DataSource {
 	
 	public Hashtable<Long, LocationInfo> getFilteredLocationsInRectangle(double lat1, double lon1, double lat2, double lon2, DataFilter filter);
 	
-	public SearchDictionary getDict(); // or getFarms(String keyword, Filter filter);
+	public TreeSet<LocationInfo> getAllLocationsSortedByDistance(Location location);
+	public TreeSet<LocationInfo> getBookmarkedLocationsSortedByDistance(Location location);
 }

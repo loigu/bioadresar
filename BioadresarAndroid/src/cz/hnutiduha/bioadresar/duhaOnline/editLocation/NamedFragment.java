@@ -1,4 +1,4 @@
-package cz.hnutiduha.bioadresar.editFarm;
+package cz.hnutiduha.bioadresar.duhaOnline.editLocation;
 
 public interface NamedFragment {
 	/// return resource id of name

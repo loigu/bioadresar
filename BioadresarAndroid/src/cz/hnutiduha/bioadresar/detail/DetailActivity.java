@@ -78,6 +78,8 @@ public class DetailActivity extends SherlockFragmentActivity{
         MenuHandler.installDropDown(getSupportActionBar(), this);
     }
     
+    
+    
     @Override
     public boolean onCreateOptionsMenu(final Menu menu)
     {

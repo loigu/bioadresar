@@ -15,15 +15,15 @@
     along with BioAdresar.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package cz.hnutiduha.bioadresar.data;
+package cz.hnutiduha.bioadresar.duhaOnline.data;
 
-import java.util.LinkedList;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class FarmContact {
-	public LinkedList <String> phoneNumbers;
-	public String email, web, eshop, street, city, person;
+public class LocationContact {
+	public String email, web, eshop, street, city, person, phone, zip;
 	
-	public FarmContact(FarmContact origin)
+	public LocationContact(LocationContact origin)
 	{
 		if (origin == null) return;
 		
@@ -33,12 +33,23 @@ public class FarmContact {
 		street = origin.street;
 		city = origin.city;
 		person = origin.person;
-		
-		if (origin.phoneNumbers != null)
-			phoneNumbers = (LinkedList<String>) origin.phoneNumbers.clone();
+		phone = origin.phone;
+		zip = origin.zip;
 	}
 
-	public FarmContact() {
+	public LocationContact() {
 		
+	}
+	
+	public LocationContact(JSONObject details) throws JSONException
+	{
+		this.phone = details.getString("phone");
+		this.web = details.getString("web");
+		this.eshop = details.getString("eshop");
+		this.person = details.getString("person");
+		this.email = details.getString("email");
+		this.street = details.getString("street");
+		this.city = details.getString("city");
+		this.zip = details.getString("zip");
 	}
 }

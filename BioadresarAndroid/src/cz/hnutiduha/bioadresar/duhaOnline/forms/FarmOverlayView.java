@@ -15,7 +15,7 @@
     along with BioAdresar.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package cz.hnutiduha.bioadresar.map;
+package cz.hnutiduha.bioadresar.duhaOnline.forms;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -26,18 +26,16 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import cz.hnutiduha.bioadresar.R;
-
-
-import cz.hnutiduha.bioadresar.data.FarmInfo;
+import cz.hnutiduha.bioadresar.duhaOnline.data.CoexLocation;
 
 
 // NOTE: mostly copy-paste from BalloonOverlayView
 public class FarmOverlayView extends FrameLayout {
 
 	private LinearLayout layout;
-	private FarmInfo data;
+	private CoexLocation data;
 	
-	public FarmOverlayView(Context context, FarmInfo data) {
+	public FarmOverlayView(Context context, CoexLocation data) {
 		super(context);
 		this.data = data;
 

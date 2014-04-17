@@ -34,6 +34,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import cz.hnutiduha.bioadresar.duhaOnline.data.ActivityWithComment;
+import cz.hnutiduha.bioadresar.duhaOnline.data.DeliveryOptions;
+import cz.hnutiduha.bioadresar.duhaOnline.data.LocationContact;
+import cz.hnutiduha.bioadresar.duhaOnline.data.FarmInfo;
+import cz.hnutiduha.bioadresar.duhaOnline.data.ProductWithComment;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -59,6 +64,7 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 	private static Context appContext = null;
 	
 	protected SQLiteDatabase db;
+	
 	private ConfigDb configDb = null;
 	
 	private HashMap<Long, String> categories = null;
@@ -394,7 +400,7 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 		if (bookmarkedFarmsCache == null)
 			loadBookmarkedFarms();
 		
-		FarmInfoDistanceComparator comparator = new FarmInfoDistanceComparator(location);
+		LocationInfoDistanceComparator comparator = new LocationInfoDistanceComparator(location);
 		Collections.sort(bookmarkedFarmsCache, comparator);
 		
 		return bookmarkedFarmsCache;
@@ -458,7 +464,7 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 		if (location.equals(lastLocation) && farmsSortedFromLastLocation != null)
 			return farmsSortedFromLastLocation;
 		
-		FarmInfoDistanceComparator comparator = new FarmInfoDistanceComparator(location);
+		LocationInfoDistanceComparator comparator = new LocationInfoDistanceComparator(location);
 		TreeSet<FarmInfo> result = new TreeSet<FarmInfo>(comparator);
 		
 		List<FarmInfo> allFarms = getAllFarms();
@@ -528,7 +534,7 @@ public class HnutiduhaFarmDb extends SQLiteOpenHelper  implements DataSource{
 	private static final int LOC_ESHOP = 5;
 	
 	protected void fillContact(FarmInfo info) {
-		FarmContact farmContact = new FarmContact();
+		LocationContact farmContact = new LocationContact();
 		farmContact.phoneNumbers = new LinkedList<String>();
 		String[] columns = new String[] { "type", "contact" };
 		Cursor c = db.query("contacts", columns, "locationId = " + info.id, null, null, null, null);

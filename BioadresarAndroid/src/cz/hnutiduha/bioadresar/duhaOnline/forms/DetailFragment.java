@@ -15,7 +15,7 @@
     along with BioAdresar.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package cz.hnutiduha.bioadresar.detail;
+package cz.hnutiduha.bioadresar.duhaOnline.forms;
 
 import java.util.Iterator;
 import java.util.List;
@@ -35,31 +35,56 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import cz.hnutiduha.bioadresar.R;
-import cz.hnutiduha.bioadresar.data.ActivityWithComment;
 import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
-import cz.hnutiduha.bioadresar.data.FarmContact;
-import cz.hnutiduha.bioadresar.data.FarmInfo;
-import cz.hnutiduha.bioadresar.data.ProductWithComment;
+import cz.hnutiduha.bioadresar.data.LocationInfo;
+import cz.hnutiduha.bioadresar.data.LocationUpdateReceiver;
+import cz.hnutiduha.bioadresar.duhaOnline.data.CoexLocation;
+import cz.hnutiduha.bioadresar.duhaOnline.data.EntityWithComment;
+import cz.hnutiduha.bioadresar.duhaOnline.data.LocationContact;
 
-public class DetailFragment extends SherlockFragment implements OnClickListener{
+public class DetailFragment extends SherlockFragment implements OnClickListener, LocationUpdateReceiver{
 	
 	// we expect only one detail activity to be shown at a time
-	private FarmInfo farm = null;
+	private CoexLocation location = null;
 	View view = null;
 	ImageView bookmarkView = null;
+	ImageView mapView = null;
 	Context context;
 	boolean isInteractive = true;
     
-	public DetailFragment(FarmInfo farm, Context context, boolean interactive) {
+	public DetailFragment(CoexLocation farm, Context context, boolean interactive) {
 		super();
 		
-		this.farm = farm;
+		this.location = farm;
 		this.context = context;
 		this.isInteractive = interactive;
 	}
 	
-    public DetailFragment(FarmInfo farm, Context context) {
+    public DetailFragment(CoexLocation farm, Context context) {
     	this(farm, context, true);
+    }
+    
+    private void updateLinks()
+    {
+        if (view != null && location != null && isInteractive)
+        {
+        	view.findViewById(R.id.feedback_button).setOnClickListener(this);
+        	bookmarkView.setOnClickListener(this);
+        	location.setToMapListener(mapView);
+        }
+        else
+        {
+        	view.findViewById(R.id.feedbackView).setVisibility(View.GONE);
+        	bookmarkView.setVisibility(View.GONE);
+        	mapView.setVisibility(View.GONE);
+        }
+    }
+    
+    public void locationUpdated(LocationInfo location)
+    {
+    	this.location = (CoexLocation)location;
+    	fillFarmInfo();
+    	updateLinks();
     }
 	
     /** Called when the activity is first created. */
@@ -69,20 +94,9 @@ public class DetailFragment extends SherlockFragment implements OnClickListener{
     	view = inflater.inflate(R.layout.detail_view, container, false);
         
         bookmarkView = (ImageView)view.findViewById(R.id.bookmarkIcon);
-        ImageView map = (ImageView)view.findViewById(R.id.mapIcon);
+        mapView = (ImageView)view.findViewById(R.id.mapIcon);
         
-        if (isInteractive)
-        {
-        	view.findViewById(R.id.feedback_button).setOnClickListener(this);
-        	bookmarkView.setOnClickListener(this);
-        	farm.setToMapListener(map);
-        }
-        else
-        {
-        	view.findViewById(R.id.feedbackView).setVisibility(View.GONE);
-        	bookmarkView.setVisibility(View.GONE);
-        	map.setVisibility(View.GONE);
-        }
+        updateLinks();
         
         return view;
     }
@@ -90,13 +104,9 @@ public class DetailFragment extends SherlockFragment implements OnClickListener{
 	public void onResume()
     {
     	super.onResume();
-    	if (farm != null)
+    	
+    	if (location != null)
     		fillFarmInfo();
-    	else
-    	{
-    		Log.e("system", "wtf: someone accessed DetailActivity without assiging farm");
-    		// or exception, or stacktrace...
-    	}
     	
     }
         
@@ -132,7 +142,7 @@ public class DetailFragment extends SherlockFragment implements OnClickListener{
     
     private void updateBookmarked()
     {	
-    	if (farm.isBookmarked())
+    	if (location.isBookmarked())
     		bookmarkView.setImageResource(R.drawable.bookmarked_icon);
     	else
     		bookmarkView.setImageResource(R.drawable.bookmark_icon);
@@ -144,66 +154,33 @@ public class DetailFragment extends SherlockFragment implements OnClickListener{
     		updateBookmarked();
     	
     	TextView field = (TextView) view.findViewById(R.id.farmName);
-    	field.setText(farm.getName());
+    	field.setText(location.getName());
     	
-    	setFieldTextOrHideEmpty(farm.getDescription(), NO_LINKIFY, R.id.descriptionLayout, R.id.descriptionText);
+    	setFieldTextOrHideEmpty(location.getDescription(), NO_LINKIFY, R.id.descriptionLayout, R.id.descriptionText);
         
 		HnutiduhaFarmDb db = HnutiduhaFarmDb.getDefaultDb(context);
 		
         StringBuilder products = new StringBuilder();
-        
-        List<ProductWithComment> productList = farm.getProducts();
+        List<EntityWithComment> productList = location.getProducts();
         if (productList != null)
-        	fillListFromIterator(products, db, farm.getProducts().iterator());
+        	fillListFromIterator(products, db, productList.iterator());
 		
-		
-		// if there is no products, try to use categories
-		List<Long> categories = farm.getCategories();
-		if (categories != null)
-		{
-			Iterator<Long> it = categories.iterator();
-			if (products.length() == 0)	{
-				while (it.hasNext()) {
-					products.append(db.getCategoryName(it.next()));
-					if (it.hasNext())
-						products.append(", ");
-				}
-			}
-		}
-
         StringBuilder activities = new StringBuilder();
-        List<ActivityWithComment> activityList = farm.getActivities();
+        List<EntityWithComment> activityList = location.getActivities();
         if (activityList != null)
-        	fillListFromIterator(activities, db, farm.getActivities().iterator());
+        	fillListFromIterator(activities, db, activityList.iterator());
 		
     	setFieldTextOrHideEmpty(products.toString(), NO_LINKIFY, R.id.productionLayout, R.id.productionText);
     	setFieldTextOrHideEmpty(activities.toString(), NO_LINKIFY, R.id.activitiesLayout, R.id.activitiesText);
     	
-    	FarmContact contact = farm.getFarmContact();
+    	LocationContact contact = location.getContact();
     	setFieldTextOrHideEmpty(contact.email, Linkify.EMAIL_ADDRESSES, R.id.emailLayout, R.id.emailText);
     	setFieldTextOrHideEmpty(contact.web, Linkify.WEB_URLS, R.id.webLayout, R.id.webText);
     	setFieldTextOrHideEmpty(contact.eshop, Linkify.WEB_URLS, R.id.eshopLayout, R.id.eshopText);
-        
-        LinearLayout phones = (LinearLayout) view.findViewById(R.id.phoneListLayout);
-        if (contact.phoneNumbers != null && contact.phoneNumbers.size() > 0)
-        {
-	        Iterator<String> phoneIterator = contact.phoneNumbers.iterator();
-	        while(phoneIterator.hasNext())
-	        {
-	        	TextView phone = new TextView(phones.getContext());
-	        	phone.setText(phoneIterator.next());
-	        	phone.setTextColor(getResources().getColor(R.color.DuhaTextGray));
-	            Linkify.addLinks(phone, Linkify.PHONE_NUMBERS);
-	            phones.addView(phone);
-	        }
-        }
-        else
-        {
-            View phonesLayout = view.findViewById(R.id.phonesLayout);
-            phonesLayout.setVisibility(TextView.GONE);
-        }
-        
-        String address = "";
+    	setFieldTextOrHideEmpty(contact.phone, Linkify.PHONE_NUMBERS, R.id.phoneLayout, R.id.phoneText);
+
+    	// TODO: format by fields
+    	String address = "";
         if (contact.street != null && contact.street.length() != 0)
         	address += contact.street;
         if (contact.city != null && contact.city.length() != 0)
@@ -214,7 +191,7 @@ public class DetailFragment extends SherlockFragment implements OnClickListener{
         }
     	setFieldTextOrHideEmpty(address, Linkify.MAP_ADDRESSES, R.id.addressLabel, R.id.addressText);
     	
-    	farm.fillDeliveryOptions(view, R.id.containerLayout, R.id.containerDistributionPlacesLayout,  R.id.containerDistributionPlacesText, R.id.customConteinerDistributionText);
+    	location.fillDeliveryOptions(view, R.id.containerLayout, R.id.containerDistributionPlacesLayout,  R.id.containerDistributionPlacesText, R.id.customConteinerDistributionText);
     }
 
 	@Override
@@ -222,12 +199,12 @@ public class DetailFragment extends SherlockFragment implements OnClickListener{
 		switch(v.getId())
 		{
 			case R.id.bookmarkIcon:
-				farm.setBookmarked(!farm.isBookmarked());
+				location.setBookmarked(!location.isBookmarked());
 				this.updateBookmarked();
 			break;
 			
 			case R.id.feedback_button:
-				farm.editLocation(this.context);
+				location.editLocation(this.context);
 			break;
 		}
 	}

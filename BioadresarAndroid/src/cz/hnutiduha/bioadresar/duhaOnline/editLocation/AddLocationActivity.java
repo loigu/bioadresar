@@ -1,4 +1,4 @@
-package cz.hnutiduha.bioadresar.editFarm;
+package cz.hnutiduha.bioadresar.duhaOnline.editLocation;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,17 +34,16 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
-import cz.hnutiduha.bioadresar.data.ActivityWithComment;
-import cz.hnutiduha.bioadresar.data.DeliveryOptions;
-import cz.hnutiduha.bioadresar.data.FarmContact;
-import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.LocationInfo;
-import cz.hnutiduha.bioadresar.data.ProductWithComment;
-import cz.hnutiduha.bioadresar.net.CoexConnector;
+import cz.hnutiduha.bioadresar.duhaOnline.data.CoexLocation;
+import cz.hnutiduha.bioadresar.duhaOnline.data.DeliveryOptions;
+import cz.hnutiduha.bioadresar.duhaOnline.data.EntityWithComment;
+import cz.hnutiduha.bioadresar.duhaOnline.data.LocationContact;
+import cz.hnutiduha.bioadresar.duhaOnline.net.CoexConnector;
 
-public class AddFarmActivity extends SherlockFragmentActivity implements FragmentNavigator, CoexConnector.JSONReceiver{
-	protected FarmInfo farm = null;
-	protected FarmInfo originalFarm = null;
+public class AddLocationActivity extends SherlockFragmentActivity implements FragmentNavigator, CoexConnector.JSONReceiver{
+	protected CoexLocation location = null;
+	protected CoexLocation originalLocation = null;
 	ProgressBar progress;
 	
 	void updateTitle(NamedFragment fr)
@@ -53,9 +52,9 @@ public class AddFarmActivity extends SherlockFragmentActivity implements Fragmen
         setTitle(res.getString(R.string.add_farm) + ": " + res.getString(fr.getName()));
 	}
 	
-	FarmInfo getFarm()
+	CoexLocation getLocation()
 	{
-		return new FarmInfo();
+		return new CoexLocation();
 	}
 	
     @Override
@@ -76,10 +75,10 @@ public class AddFarmActivity extends SherlockFragmentActivity implements Fragmen
                 return;
             }
             
-            originalFarm = getFarm();
-            farm = new FarmInfo(originalFarm);
+            originalLocation = getLocation();
+            location = new CoexLocation(originalLocation);
             
-            Fragment firstFragment = new EditPositionFragment(farm, this);
+            Fragment firstFragment = new EditPositionFragment(location, this);
             
             // In case this activity was started with special instructions from an
             // Intent, pass the Intent's extras to the fragment as arguments
@@ -137,7 +136,7 @@ public class AddFarmActivity extends SherlockFragmentActivity implements Fragmen
 			dialog.show();
 	}
 	
-	protected static String formatFarmInfo(FarmInfo farm, String comment) 
+	protected static String formatCoexLocation(CoexLocation farm, String comment) 
 	{
 		
 		StringBuilder message = new StringBuilder();
@@ -163,20 +162,11 @@ public class AddFarmActivity extends SherlockFragmentActivity implements Fragmen
 		message.append("Popis lokality:\n").append(farm.getDescription()).append("\n\n");
 		message.append("GPS: latitude ").append(farm.getLatitude()).append(", longitude ").append(farm.getLongitude()).append('\n');
 		
-		FarmContact contact = farm.getFarmContact();
+		LocationContact contact = farm.getContact();
 		message.append("Kontaktní osoba: ").append(contact.person).append(", e-mail: ").append(contact.email).append("\n");
 		message.append("Adresa: \n\tulice: ").append(contact.street).append("\n\tměsto: ").append(contact.city).append("\n");
-		
-		message.append("Telefon(y): ");
-		boolean first = true;
-		for (String phone : contact.phoneNumbers)
-		{
-			if (!first) message.append(", ");
-			message.append(phone);
-			first = false;
-		}
-		message.append("\n");
-		
+
+		message.append("Telefon: ").append(contact.phone).append("\n");		
 		message.append("Web: ").append(contact.web).append("\n");
 		message.append("E-shop: ").append(contact.eshop).append("\n");
 		
@@ -194,14 +184,14 @@ public class AddFarmActivity extends SherlockFragmentActivity implements Fragmen
 		}
 		
 		message.append("Produkce:\n");
-		for (ProductWithComment product : farm.getProducts())
+		for (EntityWithComment product : farm.getProducts())
 		{
 			message.append("\t").append(product.toString()).append("\n");
 		}
 		message.append("\n");
 		
 		message.append("Činnosti:\n");
-		for (ActivityWithComment activity : farm.getActivities())
+		for (EntityWithComment activity : farm.getActivities())
 		{
 			message.append("\t").append(activity.toString()).append("\n");
 		}
@@ -213,17 +203,15 @@ public class AddFarmActivity extends SherlockFragmentActivity implements Fragmen
 	protected List<NameValuePair> formatMessage(EditAppendixFragment.Cache cache)
 	{
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-		nameValuePairs.add(new BasicNameValuePair("client", "android"));
 		nameValuePairs.add(new BasicNameValuePair("cmd", "add"));
-		nameValuePairs.add(new BasicNameValuePair("lang", "cs"));
 
 		nameValuePairs.add(new BasicNameValuePair("author", cache.mail));
 		nameValuePairs.add(new BasicNameValuePair("author_name", cache.name));
 		
-		String message = formatFarmInfo(farm, cache.comment);
+		String message = formatCoexLocation(location, cache.comment);
 		Log.d("net", "with message " + message);
 		nameValuePairs.add(new BasicNameValuePair("message", message));
-		nameValuePairs.add(new BasicNameValuePair("place-message", formatFarmInfo(farm, cache.comment)));
+		nameValuePairs.add(new BasicNameValuePair("place-message", formatCoexLocation(location, cache.comment)));
 		
 		return nameValuePairs;
 	}
@@ -321,12 +309,12 @@ response:
 		Fragment next;
 		
 		if (origin instanceof EditPositionFragment)
-			next = new EditContactFragment(farm);
+			next = new EditContactFragment(location);
 		else if (origin instanceof EditContactFragment)
-			next = new EditDetailsFragment(farm, this);
+			next = new EditDetailsFragment(location, this);
 		else if (origin instanceof EditDetailsFragment)
 		{
-			next = new OverviewFragment(farm, this);
+			next = new OverviewFragment(location, this);
 		}
 		else if (origin instanceof OverviewFragment)
 		{

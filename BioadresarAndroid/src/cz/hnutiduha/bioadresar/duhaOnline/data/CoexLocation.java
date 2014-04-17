@@ -1,24 +1,10 @@
-/*  This file is part of BioAdresar.
-	Copyright 2012 Jiri Zouhar (zouhar@trilobajt.cz), Jiri Prokop
-
-    BioAdresar is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    BioAdresar is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with BioAdresar.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-package cz.hnutiduha.bioadresar.data;
+package cz.hnutiduha.bioadresar.duhaOnline.data;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Context;
@@ -36,86 +22,49 @@ import android.widget.TextView;
 import com.google.android.maps.GeoPoint;
 
 import cz.hnutiduha.bioadresar.R;
+import cz.hnutiduha.bioadresar.data.DataSource;
+import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
+import cz.hnutiduha.bioadresar.data.LocationInfo;
 import cz.hnutiduha.bioadresar.detail.DetailActivity;
-import cz.hnutiduha.bioadresar.editFarm.EditFarmActivity;
-import cz.hnutiduha.bioadresar.map.FarmOverlayView;
+import cz.hnutiduha.bioadresar.duhaOnline.editLocation.EditLocationActivity;
+import cz.hnutiduha.bioadresar.duhaOnline.forms.FarmOverlayView;
 import cz.hnutiduha.bioadresar.map.MapActivity;
 
-public class FarmInfo implements OnClickListener, LocationInfo{
+public class CoexLocation implements LocationInfo, OnClickListener {
 	
-	// NOTE: we ignore location type 
-	// these are always present
+	public static final int INVALID_OBJECT_TYPE = -1;
+	
 	protected long id = INVALID_LOCATION_ID;
+	protected int rating = -1;
 	protected String name = null;
 	protected double lat = Double.NEGATIVE_INFINITY, lon = Double.NEGATIVE_INFINITY;
-	
-	protected HnutiduhaFarmDb source = null;
-	
 	protected String description = null;
-	protected FarmContact contact = null;
-	protected List<ProductWithComment> products = null;
-	protected List<ActivityWithComment> activities = null;
-	protected LinkedList<Long> categories = null;
+	protected int type = INVALID_OBJECT_TYPE;
+	/// null ~ not yet loaded, status otherwise
 	protected Boolean bookmarked = null;
+	
+	protected LocationContact contactInfo;
+	protected List<EntityWithComment> products, activities;
+	
+	// TODO: coex does not provide this through api
 	protected DeliveryOptions delivery = null;
-	
-	private static final int viewTagTarget = 0xdeadbeef;
-	private static final String viewTargetMap = "map";
-	private static final String viewTargetDetail = "detail";
-	
-	private Location location = null;
-	
-	public FarmInfo(FarmInfo origin)
-	{
-		if (origin == null) return;
-		
-		id = origin.id;
-		name = origin.name;
-		setLocation(lat, lon);
-		source = origin.source;
-		description = origin.description;
 
-		if (origin.contact != null)
-			contact = new FarmContact(origin.contact);
-		
-		if (origin.products != null)
-		{
-			products = new LinkedList<ProductWithComment>();
-			for (ProductWithComment product : origin.products)
-				products.add(new ProductWithComment(product));
-		}
-		
-		if (origin.activities != null)
-		{
-			activities = new LinkedList<ActivityWithComment>();
-			for (ActivityWithComment activity : origin.activities)
-				activities.add(new ActivityWithComment(activity));
-		}
-		
-		if (origin.categories != null)
-			categories = (LinkedList<Long>)origin.categories.clone(); 
-		
-		delivery = new DeliveryOptions(origin.delivery);	
-	}
 	
-	public DataSource getSource()
-	{
-		return source;
-	}
+	protected CoexDatabase source = null;
 	
-	/// crate new (empty) farm
-	public FarmInfo()
-	{
-		
-	}
-	
-	public FarmInfo(HnutiduhaFarmDb source, long id, String name, double lat, double lon)
+	public CoexLocation(CoexDatabase source, long id, String name, double lat, double lon, int type)
 	{
 		this.source = source;
 		this.id = id;
 		this.name = name;
 		this.lat = lat;
 		this.lon = lon;
+		this.type = type;
+	}
+	
+	public CoexLocation()
+	{
+		
 	}
 	
 	public String getName()
@@ -131,6 +80,49 @@ public class FarmInfo implements OnClickListener, LocationInfo{
 	public long getId()
 	{
 		return id;
+	}
+
+	private static final int viewTagTarget = 0xdeadbeef;
+	private static final String viewTargetMap = "map";
+	private static final String viewTargetDetail = "detail";
+	
+	private Location location = null;
+	
+	public CoexLocation(CoexLocation origin)
+	{
+		if (origin == null) return;
+		
+		id = origin.id;
+		name = origin.name;
+		setLocation(lat, lon);
+		source = origin.source;
+		description = origin.description;
+
+		if (origin.contactInfo != null)
+			contactInfo = new LocationContact(origin.contactInfo);
+		
+		if (origin.products != null)
+		{
+			products = new LinkedList<EntityWithComment>();
+			for (EntityWithComment product : origin.products)
+				products.add(new EntityWithComment(product));
+		}
+		
+		if (origin.activities != null)
+		{
+			activities = new LinkedList<EntityWithComment>();
+			for (EntityWithComment activity : origin.activities)
+				activities.add(new EntityWithComment(activity));
+		}
+		
+		this.rating = origin.rating;
+		
+		delivery = new DeliveryOptions(origin.delivery);	
+	}
+	
+	public DataSource getSource()
+	{
+		return source;
 	}
 	
 	@Override
@@ -148,47 +140,48 @@ public class FarmInfo implements OnClickListener, LocationInfo{
 	public String getDescription()
 	{
 		if (description == null && source != null)
-			source.fillDescription(this);
+			source.fillDetails(this);
 		
 		return description;
 	}
 	
-	public void setDescription(String description)
+	public void setDescription(String descr)
 	{
-		this.description = description;
+		this.description = descr;
 	}
+
 	
-	public void setFarmContact(FarmContact contact)
+	public LocationContact getContact()
 	{
-		this.contact = contact;
-	}
-	
-	public FarmContact getFarmContact()
-	{
-		if (contact == null && source != null)
-			source.fillContact(this);
+		if (contactInfo == null && source != null)
+			source.fillDetails(this);
 		
-		return contact;
+		return contactInfo;
 	}
 	
-	public List<ProductWithComment> getProducts()
+	public void setContact(LocationContact contact)
+	{
+		this.contactInfo = contact;
+	}
+	
+	public List<EntityWithComment> getProducts()
 	{
 		if (products == null)
 		{
 			if (source != null)
 			{
-				source.fillProducts(this);
+				source.fillDetails(this);
 			}
 			else
 			{
-				this.products = new LinkedList<ProductWithComment>();
+				this.products = new LinkedList<EntityWithComment>();
 			}
 		}
 		
 		return products;
 	}
 	
-	public void setProducts(List<ProductWithComment> products)
+	public void setProducts(List<EntityWithComment> products)
 	{
 		this.products = products;
 	}
@@ -204,7 +197,9 @@ public class FarmInfo implements OnClickListener, LocationInfo{
 		if (hasContainerDistribution == false)
 			return null;
 		
-		return source.fillDeliveryOptions(this);
+		source.fillDetails(this);
+		
+		return delivery;
 	}
 	
 	public void setDelieryInfo(DeliveryOptions opts)
@@ -212,17 +207,17 @@ public class FarmInfo implements OnClickListener, LocationInfo{
 		this.delivery = opts;
 	}
 	
-	public List<ActivityWithComment> getActivities()
+	public List<EntityWithComment> getActivities()
 	{
 		if (activities == null)
 		{
 			if (source != null)
 			{
-				source.fillActivities(this);
+				source.fillDetails(this);
 				// FIXME: move this to db
-				for (ActivityWithComment activity : activities)
+				for (EntityWithComment activity : activities)
 				{
-					if (activity.getName(source).equals("bedýnkový prodej"))
+					if (activity.getName().equals("bedýnkový prodej"))
 					{
 						hasContainerDistribution = true;
 					}
@@ -230,26 +225,18 @@ public class FarmInfo implements OnClickListener, LocationInfo{
 			}
 			else
 			{
-				activities = new LinkedList<ActivityWithComment>();
+				activities = new LinkedList<EntityWithComment>();
 			}
 		}
 		
 		return activities;
 	}
 	
-	public void setActivities(List<ActivityWithComment> activities)
+	public void setActivities(List<EntityWithComment> activities)
 	{
 		this.activities = activities;
 	}
-	
-	public List<Long> getCategories()
-	{
-		if (categories == null && source != null)
-			source.fillCategories(this);
 		
-		return categories;
-	}
-	
 	public double getLatitude()
 	{
 		return lat;
@@ -298,8 +285,8 @@ public class FarmInfo implements OnClickListener, LocationInfo{
 	@Override
 	public void editLocation(Context context)
 	{
-		Intent detail = new Intent(context, EditFarmActivity.class);
-		detail.putExtra(EditFarmActivity.EXTRA_ID, this.id);
+		Intent detail = new Intent(context, EditLocationActivity.class);
+		detail.putExtra(EditLocationActivity.EXTRA_ID, this.id);
 		context.startActivity(detail);
 	}
 	
@@ -457,5 +444,4 @@ public class FarmInfo implements OnClickListener, LocationInfo{
 		
 		return baloon;
 	}
-
 }

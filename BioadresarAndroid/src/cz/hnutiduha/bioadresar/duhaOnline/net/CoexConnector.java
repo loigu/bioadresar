@@ -1,4 +1,4 @@
-package cz.hnutiduha.bioadresar.net;
+package cz.hnutiduha.bioadresar.duhaOnline.net;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,6 +15,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,6 +36,8 @@ public class CoexConnector extends AsyncTask<Void, Void, JSONObject>
 	public CoexConnector(JSONReceiver responseReceiver, List<NameValuePair> params) {
 		this.responseReceiver = responseReceiver;
 		this.params = params;
+		params.add(new BasicNameValuePair("client", "android"));
+		params.add(new BasicNameValuePair("lang", "cs"));
 	}
 
 	private static JSONObject readResponse(HttpResponse response)

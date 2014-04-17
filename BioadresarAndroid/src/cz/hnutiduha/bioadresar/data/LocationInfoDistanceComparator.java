@@ -21,15 +21,15 @@ import java.util.Comparator;
 
 import android.location.Location;
 
-public class FarmInfoDistanceComparator implements Comparator<FarmInfo> {
+public class LocationInfoDistanceComparator implements Comparator<LocationInfo> {
 
 	private Location targetLocation;
 	
-	public FarmInfoDistanceComparator(Location targetLocation) {
+	public LocationInfoDistanceComparator(Location targetLocation) {
 		this.targetLocation = targetLocation;
 	}
 	
-	public int compare(FarmInfo fi1, FarmInfo fi2) {
+	public int compare(LocationInfo fi1, LocationInfo fi2) {
 		float dist1 = fi1.getDistance(targetLocation);
 		float dist2 = fi2.getDistance(targetLocation);
 		

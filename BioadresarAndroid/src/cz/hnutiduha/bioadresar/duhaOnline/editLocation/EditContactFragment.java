@@ -1,4 +1,4 @@
-package cz.hnutiduha.bioadresar.editFarm;
+package cz.hnutiduha.bioadresar.duhaOnline.editLocation;
 
 import java.util.LinkedList;
 
@@ -15,18 +15,18 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import cz.hnutiduha.bioadresar.R;
-import cz.hnutiduha.bioadresar.data.FarmContact;
-import cz.hnutiduha.bioadresar.data.FarmInfo;
+import cz.hnutiduha.bioadresar.duhaOnline.data.LocationContact;
+import cz.hnutiduha.bioadresar.duhaOnline.data.CoexLocation;
 import cz.hnutiduha.bioadresar.util.StringOperations;
 
 public class EditContactFragment extends SherlockFragment implements OnClickListener, NamedFragment{
 	FragmentNavigator fragmentNavigator;
-	FarmInfo farm = null;
+	CoexLocation location = null;
 	EditText city, street, mail, web, eshop, phone, person;
 	
-	public EditContactFragment(FarmInfo farm) {
+	public EditContactFragment(CoexLocation farm) {
 		super();
-		this.farm = farm;
+		this.location = farm;
 	}
 	
     @Override
@@ -53,7 +53,7 @@ public class EditContactFragment extends SherlockFragment implements OnClickList
     
     private void fillFarmContact()
     {
-        FarmContact contact = farm.getFarmContact();
+        LocationContact contact = location.getContact();
         
         if (contact == null)
         {
@@ -66,32 +66,20 @@ public class EditContactFragment extends SherlockFragment implements OnClickList
         web.setText(contact.web);
         eshop.setText(contact.eshop);
         person.setText(contact.person);
-        
-        String phoneText = "";
-        if (contact.phoneNumbers != null)
-        	for (String number : contact.phoneNumbers)
-        	{
-        		if (phoneText.length() != 0)
-        			phoneText += " ";
-        		phoneText += number;
-        	}
-       phone.setText(phoneText);
-       
+        phone.setText(contact.phone);
     }
         
     private void updateFarm() {
-    	FarmContact contact = new FarmContact();
+    	LocationContact contact = new LocationContact();
     	contact.city = StringOperations.getStringFromEditBox(city);
     	contact.street = StringOperations.getStringFromEditBox(street);
     	contact.email = StringOperations.getStringFromEditBox(mail);
     	contact.web = StringOperations.getStringFromEditBox(web);
     	contact.eshop = StringOperations.getStringFromEditBox(eshop);
     	contact.person = StringOperations.getStringFromEditBox(person);
+    	contact.phone = StringOperations.getStringFromEditBox(phone);
     	
-    	contact.phoneNumbers = new LinkedList<String>();
-    	contact.phoneNumbers.add(phone.getText().toString());
-    	
-    	farm.setFarmContact(contact);
+    	location.setContact(contact);
     }
     
     private boolean validate()

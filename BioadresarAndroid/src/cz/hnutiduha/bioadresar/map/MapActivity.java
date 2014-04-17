@@ -26,8 +26,6 @@ import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.DataSource;
 import cz.hnutiduha.bioadresar.data.DataSourceFactory;
-import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
-import cz.hnutiduha.bioadresar.data.FarmInfo;
 import cz.hnutiduha.bioadresar.data.LocationCache;
 import cz.hnutiduha.bioadresar.data.LocationInfo;
 import cz.hnutiduha.bioadresar.view.SearchView;

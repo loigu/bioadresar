@@ -261,7 +261,7 @@
                             android:textSize="16sp" />
 
                         <LinearLayout
-                            android:id="@+id/phonesLayout"
+                            android:id="@+id/phoneLayout"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content" >
 
@@ -275,15 +275,14 @@
                                 android:textColor="@color/Black"
                                 android:textSize="14sp" />
 
-                            <LinearLayout
-                                android:id="@+id/phoneListLayout"
+                            <TextView
+                                android:id="@+id/phoneText"
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center_vertical"
                                 android:gravity="center_vertical"
-                                android:orientation="vertical"
+                                android:textColor="@color/DuhaTextGray"
                                 android:textSize="14sp" >
-                            </LinearLayout>
+                            </TextView>
                         </LinearLayout>
 
                         <LinearLayout

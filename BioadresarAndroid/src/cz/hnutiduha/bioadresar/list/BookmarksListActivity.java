@@ -1,6 +1,6 @@
 package cz.hnutiduha.bioadresar.list;
 
-import java.util.List;
+import java.util.TreeSet;
 
 import com.actionbarsherlock.view.Menu;
 
@@ -13,11 +13,11 @@ import android.widget.LinearLayout;
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.DataFilter;
-import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
-import cz.hnutiduha.bioadresar.data.FarmInfo;
+import cz.hnutiduha.bioadresar.data.DataSourceFactory;
 import cz.hnutiduha.bioadresar.data.LocationCache;
+import cz.hnutiduha.bioadresar.data.LocationInfo;
 
-class AddBookmarkedFarms extends AddAllFarms
+class AddBookmarkedFarms extends AddAllLocations
 {
 	public AddBookmarkedFarms(ListActivity activity, DataFilter filter)
 	{
@@ -26,7 +26,6 @@ class AddBookmarkedFarms extends AddAllFarms
 	@Override
 	protected Boolean doInBackground(Void... params) {
 		Log.d("list", "starting background task");
-        HnutiduhaFarmDb defaultDb = HnutiduhaFarmDb.getDefaultDb(activity);
 		
         // TODO: get location from map
         loc = LocationCache.getCenter();
@@ -36,13 +35,13 @@ class AddBookmarkedFarms extends AddAllFarms
         	return Boolean.FALSE;
         }
         
-        List<FarmInfo> bookmarked = defaultDb.getBookmarkedFarmsSortedByDistance(loc);
+        TreeSet<LocationInfo> bookmarked = DataSourceFactory.getGlobalDataSource(activity).getBookmarkedLocationsSortedByDistance(loc);
         
-        for (FarmInfo farm : bookmarked)
+        for (LocationInfo location : bookmarked)
         {
         	if (isCancelled())
         		return Boolean.FALSE;
-        	publishProgress(farm);
+        	publishProgress(location);
 	    }
         
 		return Boolean.TRUE;
@@ -86,8 +85,8 @@ public class BookmarksListActivity extends ListActivity {
     	
     	// fire first loader
     	showNextButton(false);
-    	farmsLoader = new AddBookmarkedFarms(this, null);
-    	farmsLoader.execute();
+    	locationsLoader = new AddBookmarkedFarms(this, null);
+    	locationsLoader.execute();
     }
 
 }
