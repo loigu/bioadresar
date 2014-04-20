@@ -2,7 +2,9 @@ package cz.hnutiduha.bioadresar.view;
 
 import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.DataFilter;
-import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
+import cz.hnutiduha.bioadresar.data.DataSource;
+import cz.hnutiduha.bioadresar.data.DataSourceFactory;
+import cz.hnutiduha.bioadresar.data.LocationInfo;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
@@ -57,7 +59,7 @@ public class SearchView extends LinearLayout implements View.OnClickListener, Te
         {
         	searchText.setText(query);
         }
-        HnutiduhaFarmDb db = HnutiduhaFarmDb.getDefaultDb(activity);
+        DataSource<LocationInfo> db = DataSourceFactory.getGlobalDataSource(activity);
 
         return db.getFilter(query);
 	}

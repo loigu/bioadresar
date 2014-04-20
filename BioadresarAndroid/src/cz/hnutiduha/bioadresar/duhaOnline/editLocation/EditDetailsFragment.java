@@ -28,7 +28,6 @@ import com.actionbarsherlock.app.SherlockFragment;
 
 import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.DataSourceFactory;
-import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
 import cz.hnutiduha.bioadresar.duhaOnline.data.CoexDatabase;
 import cz.hnutiduha.bioadresar.duhaOnline.data.DeliveryOptions;
 import cz.hnutiduha.bioadresar.duhaOnline.data.CoexLocation;

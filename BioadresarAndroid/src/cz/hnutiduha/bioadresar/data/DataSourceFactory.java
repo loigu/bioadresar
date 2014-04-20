@@ -10,7 +10,8 @@ public class DataSourceFactory {
 	
 	public static DataSource getGlobalDataSource(Context context)
 	{
-		return new CoexDatabase(context);
+		// NOTE: we will need merger with any new db
+		return CoexDatabase.getDefaultDb(context);
 	}
 	
 	
@@ -27,8 +28,8 @@ public class DataSourceFactory {
 	{
 		switch(id)
 		{
-		case SOURCE_DUHA_OFFLINE:
-			return HnutiduhaFarmDb.getDefaultDb(context);
+		case SOURCE_DUHA_ONLINE:
+			return CoexDatabase.getDefaultDb(context);
 		}
 		
 		return null;

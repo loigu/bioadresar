@@ -23,7 +23,6 @@ import java.util.List;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.util.Linkify;
-import android.util.Log;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
@@ -32,17 +31,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import cz.hnutiduha.bioadresar.R;
-import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
 import cz.hnutiduha.bioadresar.data.LocationInfo;
-import cz.hnutiduha.bioadresar.data.LocationUpdateReceiver;
 import cz.hnutiduha.bioadresar.duhaOnline.data.CoexLocation;
 import cz.hnutiduha.bioadresar.duhaOnline.data.EntityWithComment;
 import cz.hnutiduha.bioadresar.duhaOnline.data.LocationContact;
 
-public class DetailFragment extends SherlockFragment implements OnClickListener, LocationUpdateReceiver{
+public class DetailFragment extends SherlockFragment implements OnClickListener{
 	
 	// we expect only one detail activity to be shown at a time
 	private CoexLocation location = null;
@@ -127,18 +123,7 @@ public class DetailFragment extends SherlockFragment implements OnClickListener,
     		View container = view.findViewById(containerId);
     		container.setVisibility(TextView.GONE);
     	}
-    }
-    
-    private void fillListFromIterator(StringBuilder out, HnutiduhaFarmDb db, Iterator it)
-    {
-    	while(it.hasNext())
-    	{
-			out.append(it.next().toString());
-			if (it.hasNext())
-				out.append(", ");
-    	}
-    }
-    
+    }    
     
     private void updateBookmarked()
     {	
@@ -157,18 +142,20 @@ public class DetailFragment extends SherlockFragment implements OnClickListener,
     	field.setText(location.getName());
     	
     	setFieldTextOrHideEmpty(location.getDescription(), NO_LINKIFY, R.id.descriptionLayout, R.id.descriptionText);
-        
-		HnutiduhaFarmDb db = HnutiduhaFarmDb.getDefaultDb(context);
 		
         StringBuilder products = new StringBuilder();
-        List<EntityWithComment> productList = location.getProducts();
-        if (productList != null)
-        	fillListFromIterator(products, db, productList.iterator());
+        for(EntityWithComment product : location.getProducts())
+        {
+        	if (products.length() > 0) products.append(" ,");
+         	products.append(product.toString());
+        }
 		
         StringBuilder activities = new StringBuilder();
-        List<EntityWithComment> activityList = location.getActivities();
-        if (activityList != null)
-        	fillListFromIterator(activities, db, activityList.iterator());
+        for(EntityWithComment activity : location.getActivities())
+        {
+        	if (activities.length() > 0) activities.append(" ,");
+         	activities.append(activity.toString());
+        }
 		
     	setFieldTextOrHideEmpty(products.toString(), NO_LINKIFY, R.id.productionLayout, R.id.productionText);
     	setFieldTextOrHideEmpty(activities.toString(), NO_LINKIFY, R.id.activitiesLayout, R.id.activitiesText);

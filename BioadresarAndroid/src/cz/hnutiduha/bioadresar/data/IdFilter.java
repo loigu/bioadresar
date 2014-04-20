@@ -6,7 +6,7 @@ import java.util.Map;
 
 import android.util.Log;
 
-public class IdFilter implements DataFilter {
+public class IdFilter<T extends LocationInfo> implements DataFilter<T> {
 
 	private HashSet<Long> matchingIds = null;
 	
@@ -23,15 +23,15 @@ public class IdFilter implements DataFilter {
 		return matchingIds.contains(info.getId());
 	}
 	
-	public Hashtable<Long, LocationInfo> prune(Hashtable<Long, LocationInfo> farms)
+	public Hashtable<Long, T> prune(Hashtable<Long, T> locations)
 	{
-		Hashtable<Long, LocationInfo> ret = new Hashtable<Long, LocationInfo>();
+		Hashtable<Long, T> ret = new Hashtable<Long, T>();
 		if (matchingIds.isEmpty())
 		{
 			return ret;
 		}
 		
-		for (Map.Entry<Long, LocationInfo> entry : farms.entrySet())
+		for (Map.Entry<Long, T> entry : locations.entrySet())
 		{
 			if (!matchingIds.contains(entry.getKey()))
 			{

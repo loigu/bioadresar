@@ -1,26 +1,17 @@
 package cz.hnutiduha.bioadresar.duhaOnline.editLocation;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.content.Intent;
 import android.content.res.Resources;
-import android.util.Log;
-import android.view.View;
-import android.view.View.OnClickListener;
-import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.DataSourceFactory;
-import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
 import cz.hnutiduha.bioadresar.data.LocationInfo;
 import cz.hnutiduha.bioadresar.duhaOnline.data.CoexLocation;
-import cz.hnutiduha.bioadresar.duhaOnline.net.CoexConnector;
 
 public class EditLocationActivity extends AddLocationActivity {
 	

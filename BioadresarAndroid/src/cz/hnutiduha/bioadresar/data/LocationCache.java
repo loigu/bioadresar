@@ -27,7 +27,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Log;
 
@@ -64,13 +63,8 @@ public class LocationCache implements LocationListener {
 	{
 	    Log.d("location", "using default location...");
 	    Location currentLocation = new Location(LocationManager.PASSIVE_PROVIDER);
-	    // TODO: don't hardcode default
-	    if (regionName == null)
-	    	regionName = PreferenceManager.getDefaultSharedPreferences(context).getString("defaultLocation", "Středočeský");
-	    Log.d("gps", "using default location " + regionName);
-	    double [] coordinates = HnutiduhaFarmDb.getDefaultDb(context).getRegionCoordinates(regionName);
-	    if (coordinates == null)
-	    	coordinates = new double[] {49.8142789, 14.65985};
+	    
+	    double [] coordinates = {49.8142789, 14.65985};
 
 		currentLocation.setLatitude(coordinates[0]);
 		currentLocation.setLongitude(coordinates[1]);

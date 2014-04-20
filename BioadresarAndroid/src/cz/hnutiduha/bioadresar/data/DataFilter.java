@@ -19,7 +19,7 @@ package cz.hnutiduha.bioadresar.data;
 
 import java.util.Hashtable;
 
-public interface DataFilter {
+public interface DataFilter<T extends LocationInfo> {
 	public boolean match(LocationInfo location);
-	public Hashtable<Long, LocationInfo> prune(Hashtable<Long, LocationInfo> locations);
+	public Hashtable<Long, T> prune(Hashtable<Long, T> locations);
 }

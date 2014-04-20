@@ -3,9 +3,6 @@ package cz.hnutiduha.bioadresar.duhaOnline.data;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -23,7 +20,6 @@ import com.google.android.maps.GeoPoint;
 
 import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.DataSource;
-import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
 import cz.hnutiduha.bioadresar.data.LocationInfo;
 import cz.hnutiduha.bioadresar.detail.DetailActivity;
 import cz.hnutiduha.bioadresar.duhaOnline.editLocation.EditLocationActivity;
@@ -35,7 +31,6 @@ public class CoexLocation implements LocationInfo, OnClickListener {
 	public static final int INVALID_OBJECT_TYPE = -1;
 	
 	protected long id = INVALID_LOCATION_ID;
-	protected int rating = -1;
 	protected String name = null;
 	protected double lat = Double.NEGATIVE_INFINITY, lon = Double.NEGATIVE_INFINITY;
 	protected String description = null;
@@ -114,8 +109,6 @@ public class CoexLocation implements LocationInfo, OnClickListener {
 			for (EntityWithComment activity : origin.activities)
 				activities.add(new EntityWithComment(activity));
 		}
-		
-		this.rating = origin.rating;
 		
 		delivery = new DeliveryOptions(origin.delivery);	
 	}

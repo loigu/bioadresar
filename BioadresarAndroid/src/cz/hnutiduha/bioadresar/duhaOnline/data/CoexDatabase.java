@@ -1,6 +1,7 @@
 package cz.hnutiduha.bioadresar.duhaOnline.data;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -20,26 +21,43 @@ import cz.hnutiduha.bioadresar.data.DataFilter;
 import cz.hnutiduha.bioadresar.data.DataSource;
 import cz.hnutiduha.bioadresar.data.DataSourceFactory;
 import cz.hnutiduha.bioadresar.data.InvalidDataException;
-import cz.hnutiduha.bioadresar.data.LocationInfo;
+import cz.hnutiduha.bioadresar.data.LocationInfoDistanceComparator;
 
-public class CoexDatabase implements DataSource {
+public class CoexDatabase implements DataSource<CoexLocation> {
+	
+	public static int SOURCE_ID = DataSourceFactory.SOURCE_DUHA_ONLINE;
+	private CoexCache cache = null;
 	
 	// we share bookmarks with offline database
-	public static int SOURCE_ID = DataSourceFactory.SOURCE_DUHA_ONLINE;
 	private static int BOOKMARK_SOURCE_ID = DataSourceFactory.SOURCE_DUHA_OFFLINE;
 	private ConfigDb configDb = null;
-	private static String DB_PATH = "/data/data/cz.hnutiduha.bioadresar/databases/";
 	Set<Long> bookmarks = null;
 	
 
-	public CoexDatabase(Context context) {
+	private CoexDatabase(Context context) {
 		configDb = new ConfigDb(context);
-		bookmarks = configDb.getBookmarks(BOOKMARK_SOURCE_ID);
+		cache = CoexCache.getDefaultDb(context);
+		// bookmarks = configDb.getBookmarks(BOOKMARK_SOURCE_ID);
+	}
+	
+	private static CoexDatabase defaultDb = null;
+	
+	public static CoexDatabase getDefaultDb(Context context)
+	{
+		if (defaultDb == null)
+		{
+			defaultDb = new CoexDatabase(context);
+		}
+		
+		return defaultDb;
 	}
 	
 	protected void fillDetails(CoexLocation location)
 	{
-		
+		if (location.description == null) { cache.fillDescription(location); }
+		if (location.contactInfo == null) { cache.fillContact(location); }
+		if (location.activities == null) { cache.fillActivities(location); }
+		if (location.products == null) { cache.fillProducts(location); }
 	}
 	
 	private void fillDetails(CoexLocation location, JSONObject details) throws JSONException, InvalidDataException
@@ -53,7 +71,8 @@ public class CoexDatabase implements DataSource {
 		location.products = new LinkedList<EntityWithComment>();
 		
 		JSONObject products = details.getJSONObject("productList");
-		for (Iterator<String> keys = products.keys(); keys.hasNext();)
+		for (@SuppressWarnings("unchecked")
+		Iterator<String> keys = products.keys(); keys.hasNext();)
 		{
 			String key = keys.next();
 			JSONObject product = products.getJSONObject(key);
@@ -65,7 +84,8 @@ public class CoexDatabase implements DataSource {
 		
 		location.activities = new LinkedList<EntityWithComment>();
 		JSONObject activities = details.getJSONObject("activitiesList");
-		for (Iterator<String> keys = activities.keys(); keys.hasNext();)
+		for (@SuppressWarnings("unchecked")
+		Iterator<String> keys = activities.keys(); keys.hasNext();)
 		{
 			String key = keys.next();
 			JSONObject activity = activities.getJSONObject(key);
@@ -88,7 +108,6 @@ public class CoexDatabase implements DataSource {
 		try
 		{
 			location.description = basicInfo.getString("description");
-			location.rating = Integer.parseInt(basicInfo.getString("rating"));
 		} catch (JSONException ex) {}
 
 		return location;
@@ -105,82 +124,104 @@ public class CoexDatabase implements DataSource {
 	}
 
 	@Override
-	public CoexLocation getLocation(long id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public int getSourceId() {
-		// TODO Auto-generated method stub
-		return DataSourceFactory.SOURCE_DUHA_ONLINE;
+		return SOURCE_ID;
 	}
+	
+	// NOTE: we get everything from cache
 
 	@Override
-	public Hashtable<Long, LocationInfo> getLocationsInRectangle(double lat1,
+	public CoexLocation getLocation(long id) {
+		return cache.getLocation(id);
+	}
+	
+	@Override
+	public Hashtable<Long, CoexLocation> getLocationsInRectangle(double lat1,
 			double lon1, double lat2, double lon2) {
-		// TODO Auto-generated method stub
-		return null;
+		return cache.getLocationsInRectangle(lat1, lon1, lat2, lon2);
 	}
-
+	
 	@Override
-	public Hashtable<Long, LocationInfo> getFilteredLocationsInRectangle(
-			double lat1, double lon1, double lat2, double lon2,
-			DataFilter filter) {
-		// TODO Auto-generated method stub
-		return null;
+	public TreeSet<CoexLocation> getAllLocationsSortedByDistance(
+			Location location) {
+		return cache.getAllFarmsSortedByDistance(location);
 	}
-
-	// TODO: load
-	private List<CoexLocation> bookmarkedFarmsCache = null;
+	
+	@Override
+	public DataFilter<CoexLocation> getFilter(String query) {
+		return cache.getFilter(query);
+	}
+	
+	private TreeSet<CoexLocation> bookmarkedLocationsCache = null;
+	Location sortingLocation = null;
 	
 	// return state of the farm
 	protected void setBookmark(CoexLocation location, boolean bookmarked)
 	{
 		configDb.setBookmarked(BOOKMARK_SOURCE_ID, location.id, bookmarked);
 		
-		if (bookmarkedFarmsCache == null)
+		if (bookmarkedLocationsCache == null)
 			return;
 		
-		boolean inList = bookmarkedFarmsCache.contains(location);
+		boolean inList = bookmarkedLocationsCache.contains(location);
 			
 		if (!inList && bookmarked)
-			bookmarkedFarmsCache.add(location);
+			bookmarkedLocationsCache.add(location);
 		
 		if (inList && !bookmarked)
-			bookmarkedFarmsCache.remove(location);
+			bookmarkedLocationsCache.remove(location);
 	}
 	
 	protected boolean isBookmarked(CoexLocation location)
 	{
-		if (bookmarkedFarmsCache != null)
-			return bookmarkedFarmsCache.contains(location);
+		if (bookmarkedLocationsCache != null)
+			return bookmarkedLocationsCache.contains(location);
 		
 		return configDb.isBookmarked(BOOKMARK_SOURCE_ID, location.id);
 	}
-
-	@Override
-	public TreeSet<LocationInfo> getAllLocationsSortedByDistance(
-			Location location) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public TreeSet<LocationInfo> getBookmarkedLocationsSortedByDistance(
-			Location location) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
-	public EntityWithComment[] getProductsSortedByName()
-	{
-		return null;
+	
+	@Override
+	public TreeSet<CoexLocation> getBookmarkedLocationsSortedByDistance(
+			Location location) {
+		
+		if (bookmarkedLocationsCache == null)
+		{
+			List<CoexLocation> bookmarkedLocations = cache.getLocations(configDb.getBookmarks(BOOKMARK_SOURCE_ID));
+			LocationInfoDistanceComparator comparator = new LocationInfoDistanceComparator(location);
+			
+			bookmarkedLocationsCache = new TreeSet<CoexLocation>(comparator);
+			for (CoexLocation bookmarkedLocation : bookmarkedLocations)
+			{
+				bookmarkedLocationsCache.add(bookmarkedLocation);
+			}
+			
+			sortingLocation = location;
+		}
+		
+		if (location != sortingLocation)
+		{
+			LocationInfoDistanceComparator comparator = new LocationInfoDistanceComparator(location);
+			TreeSet<CoexLocation> newCache = new TreeSet<CoexLocation>(comparator);
+			for (CoexLocation bookmarkedLocation : bookmarkedLocationsCache)
+			{
+				newCache.add(bookmarkedLocation);
+			}
+			
+			sortingLocation = location;
+			bookmarkedLocationsCache = newCache;
+		}
+		
+		return bookmarkedLocationsCache;
 	}
 	
 	public EntityWithComment[] getActivitiesSortedByName()
 	{
-		return null;
+		return cache.getActivitiesSortedByName();
 	}
 	
+	public EntityWithComment[] getProductsSortedByName()
+	{
+		return cache.getProductsSortedByName();
+	}
 }

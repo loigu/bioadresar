@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.ConfigDb;
-import cz.hnutiduha.bioadresar.data.HnutiduhaFarmDb;
 import cz.hnutiduha.bioadresar.util.StringOperations;
 
 public class EditAppendixFragment extends SherlockFragment implements OnClickListener, NamedFragment{
@@ -27,7 +26,7 @@ public class EditAppendixFragment extends SherlockFragment implements OnClickLis
 		String name, mail, comment;
 		ConfigDb db;
 		public Cache(Context context) {
-			db = HnutiduhaFarmDb.getDefaultDb(context).getConfigDb();
+			db = new ConfigDb(context);
 			
 			name = db.getOwnerName();
 			mail = db.getOwnerMail();
