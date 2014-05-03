@@ -24,7 +24,7 @@ function createBaseLayout()
 	
 	
 	echo 'CREATE TABLE locationTypes (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT);' | callSqlite
-	echo 'CREATE TABLE locations (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, gpsLatitude REAL NOT NULL, gpsLongtitude REAL NOT NULL, description TEXT, typeId INTEGER NOT NULL, lastChange INTEGER NOT NULL);' | callSqlite
+	echo 'CREATE TABLE locations (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, gpsLatitude REAL NOT NULL, gpsLongitude REAL NOT NULL, description TEXT, typeId INTEGER NOT NULL, lastChange INTEGER NOT NULL);' | callSqlite
 
 	echo 'CREATE TABLE contacts (_id INTEGER PRIMARY KEY AUTOINCREMENT, locationId INTEGER, person TEXT, street TEXT, city TEXT, zip TEXT, phone TEXT, email TEXT, web TEXT, eshop TEXT);' | callSqlite
 

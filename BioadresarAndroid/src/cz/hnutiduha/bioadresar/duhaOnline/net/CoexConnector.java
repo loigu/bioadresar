@@ -22,7 +22,7 @@ import org.json.JSONObject;
 
 import android.os.AsyncTask;
 
-public class CoexConnector extends AsyncTask<Void, Void, JSONObject>
+public class CoexConnector extends AsyncTask<Void, Void, String>
 {
 	public interface JSONReceiver {
 		public void postFailed(Exception reason);
@@ -40,7 +40,7 @@ public class CoexConnector extends AsyncTask<Void, Void, JSONObject>
 		params.add(new BasicNameValuePair("lang", "cs"));
 	}
 
-	private static JSONObject readResponse(HttpResponse response)
+	private static String readResponse(HttpResponse response)
 			throws ClientProtocolException, IOException, JSONException {
 		
 		StringBuilder builder = new StringBuilder();
@@ -61,10 +61,10 @@ public class CoexConnector extends AsyncTask<Void, Void, JSONObject>
 					+ statusCode);
 		}
 		
-		return new JSONObject(builder.toString());
+		return builder.toString();
 	}
 
-	public static JSONObject post(List<NameValuePair> args) throws IOException, ClientProtocolException, JSONException{
+	public static String post(List<NameValuePair> args) throws IOException, ClientProtocolException, JSONException{
 		// Create a new HttpClient and Post Header
 		HttpClient httpClient = new DefaultHttpClient();
 		HttpPost httpPost = new HttpPost(CONNECTOR_URL);
@@ -79,7 +79,7 @@ public class CoexConnector extends AsyncTask<Void, Void, JSONObject>
 	protected Exception failure = null;
 
 	@Override
-	protected JSONObject doInBackground(Void ... unused) {
+	protected String doInBackground(Void ... unused) {
 		try
 		{
 			return post(params);

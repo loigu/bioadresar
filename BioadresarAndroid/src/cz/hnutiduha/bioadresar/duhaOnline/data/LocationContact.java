@@ -20,13 +20,13 @@ package cz.hnutiduha.bioadresar.duhaOnline.data;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class LocationContact {
+public class LocationContact implements Comparable<LocationContact> {
 	public String email, web, eshop, street, city, person, phone, zip;
-	
-	public LocationContact(LocationContact origin)
-	{
-		if (origin == null) return;
-		
+
+	public LocationContact(LocationContact origin) {
+		if (origin == null)
+			return;
+
 		email = origin.email;
 		web = origin.web;
 		eshop = origin.eshop;
@@ -38,18 +38,55 @@ public class LocationContact {
 	}
 
 	public LocationContact() {
-		
+
 	}
-	
-	public LocationContact(JSONObject details) throws JSONException
-	{
-		this.phone = details.getString("phone");
-		this.web = details.getString("web");
-		this.eshop = details.getString("eshop");
+
+	public LocationContact(JSONObject details) throws JSONException {
 		this.person = details.getString("person");
-		this.email = details.getString("email");
 		this.street = details.getString("street");
 		this.city = details.getString("city");
 		this.zip = details.getString("zip");
+		this.phone = details.getString("phone");
+		this.email = details.getString("email");
+		this.web = details.getString("web");
+		this.eshop = details.getString("eshop");
 	}
+
+	@Override
+	public int compareTo(LocationContact otherContact) {
+		int res = person.compareTo(otherContact.person);
+		if (res != 0)
+			return res;
+
+		res = street.compareTo(otherContact.street);
+		if (res != 0)
+			return res;
+
+		res = city.compareTo(otherContact.city);
+		if (res != 0)
+			return res;
+
+		res = zip.compareTo(otherContact.zip);
+		if (res != 0)
+			return res;
+
+		res = phone.compareTo(otherContact.phone);
+		if (res != 0)
+			return res;
+
+		res = email.compareTo(otherContact.email);
+		if (res != 0)
+			return res;
+
+		res = web.compareTo(otherContact.web);
+		if (res != 0)
+			return res;
+
+		res = eshop.compareTo(otherContact.eshop);
+		if (res != 0)
+			return res;
+
+		return 0;
+	}
+
 }

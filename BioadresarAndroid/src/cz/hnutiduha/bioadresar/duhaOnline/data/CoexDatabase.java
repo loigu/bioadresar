@@ -1,18 +1,10 @@
 package cz.hnutiduha.bioadresar.duhaOnline.data;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.content.Context;
 import android.location.Location;
@@ -20,7 +12,6 @@ import cz.hnutiduha.bioadresar.data.ConfigDb;
 import cz.hnutiduha.bioadresar.data.DataFilter;
 import cz.hnutiduha.bioadresar.data.DataSource;
 import cz.hnutiduha.bioadresar.data.DataSourceFactory;
-import cz.hnutiduha.bioadresar.data.InvalidDataException;
 import cz.hnutiduha.bioadresar.data.LocationInfoDistanceComparator;
 
 public class CoexDatabase implements DataSource<CoexLocation> {
@@ -36,8 +27,7 @@ public class CoexDatabase implements DataSource<CoexLocation> {
 
 	private CoexDatabase(Context context) {
 		configDb = new ConfigDb(context);
-		cache = CoexCache.getDefaultDb(context);
-		// bookmarks = configDb.getBookmarks(BOOKMARK_SOURCE_ID);
+		cache = CoexCache.getDefaultDb(context, this);
 	}
 	
 	private static CoexDatabase defaultDb = null;
@@ -58,69 +48,6 @@ public class CoexDatabase implements DataSource<CoexLocation> {
 		if (location.contactInfo == null) { cache.fillContact(location); }
 		if (location.activities == null) { cache.fillActivities(location); }
 		if (location.products == null) { cache.fillProducts(location); }
-	}
-	
-	private void fillDetails(CoexLocation location, JSONObject details) throws JSONException, InvalidDataException
-	{
-		long id = Long.parseLong(details.getString("id"));
-		if (id != location.id) { throw new InvalidDataException("data not for this object"); }
-		
-		location.description = details.getString("description");
-		location.contactInfo = new LocationContact(details);
-		
-		location.products = new LinkedList<EntityWithComment>();
-		
-		JSONObject products = details.getJSONObject("productList");
-		for (@SuppressWarnings("unchecked")
-		Iterator<String> keys = products.keys(); keys.hasNext();)
-		{
-			String key = keys.next();
-			JSONObject product = products.getJSONObject(key);
-			
-			location.products.add(new EntityWithComment(key,
-					product.getString("poznamka"), 
-					product.getString("predevsim").equals("ano")));
-		}
-		
-		location.activities = new LinkedList<EntityWithComment>();
-		JSONObject activities = details.getJSONObject("activitiesList");
-		for (@SuppressWarnings("unchecked")
-		Iterator<String> keys = activities.keys(); keys.hasNext();)
-		{
-			String key = keys.next();
-			JSONObject activity = activities.getJSONObject(key);
-			
-			location.activities.add(new EntityWithComment(key,
-					activity.getString("poznamka"), 
-					activity.getString("predevsim").equals("ano")));
-		}
-	}
-	
-	private CoexLocation parseBasicInfo(JSONObject basicInfo) throws JSONException
-	{
-		
-		CoexLocation location = new CoexLocation(this, basicInfo.getLong("id"),
-				basicInfo.getString("title"),
-				Double.parseDouble(basicInfo.getString("lat")),
-				Double.parseDouble(basicInfo.getString("lon")),
-				basicInfo.getInt("type_id"));
-		
-		try
-		{
-			location.description = basicInfo.getString("description");
-		} catch (JSONException ex) {}
-
-		return location;
-	}
-	
-	private CoexLocation downloadLocation(long id)
-	{
-		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-		nameValuePairs.add(new BasicNameValuePair("cmd", "detail"));
-		nameValuePairs.add(new BasicNameValuePair("locid", String.valueOf(id)));
-		
-		
-		return null;
 	}
 
 	@Override
@@ -217,11 +144,15 @@ public class CoexDatabase implements DataSource<CoexLocation> {
 	
 	public EntityWithComment[] getActivitiesSortedByName()
 	{
-		return cache.getActivitiesSortedByName();
+		TreeSet<EntityWithComment> activities = cache.getActivitiesSortedByName();
+		EntityWithComment array[] = new EntityWithComment[activities.size()];
+		return activities.toArray(array);
 	}
 	
 	public EntityWithComment[] getProductsSortedByName()
 	{
-		return cache.getProductsSortedByName();
+		TreeSet<EntityWithComment> products = cache.getActivitiesSortedByName();
+		EntityWithComment array[] = new EntityWithComment[products.size()];
+		return products.toArray(array);
 	}
 }

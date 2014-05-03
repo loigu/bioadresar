@@ -39,7 +39,8 @@ public class CoexLocation implements LocationInfo, OnClickListener {
 	protected Boolean bookmarked = null;
 	
 	protected LocationContact contactInfo;
-	protected List<EntityWithComment> products, activities;
+	protected List<EntityWithComment> activities = null;
+	protected List<EntityWithComment> products = null;
 	
 	// TODO: coex does not provide this through api
 	protected DeliveryOptions delivery = null;
