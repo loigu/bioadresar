@@ -1,14 +1,11 @@
 package cz.hnutiduha.bioadresar.duhaOnline.editLocation;
 
-import java.util.LinkedList;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;

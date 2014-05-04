@@ -19,7 +19,7 @@ public class CoexDatabase implements DataSource<CoexLocation> {
 	public static int SOURCE_ID = DataSourceFactory.SOURCE_DUHA_ONLINE;
 	private CoexCache cache = null;
 	
-	// we share bookmarks with offline database
+	// we share bookmarks with old offline database
 	private static int BOOKMARK_SOURCE_ID = DataSourceFactory.SOURCE_DUHA_OFFLINE;
 	private ConfigDb configDb = null;
 	Set<Long> bookmarks = null;

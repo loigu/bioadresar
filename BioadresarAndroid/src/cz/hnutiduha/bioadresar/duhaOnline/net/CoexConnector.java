@@ -17,7 +17,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.AsyncTask;
@@ -41,7 +40,7 @@ public class CoexConnector extends AsyncTask<Void, Void, String>
 	}
 
 	private static String readResponse(HttpResponse response)
-			throws ClientProtocolException, IOException, JSONException {
+			throws ClientProtocolException, IOException{
 		
 		StringBuilder builder = new StringBuilder();
 
@@ -64,7 +63,7 @@ public class CoexConnector extends AsyncTask<Void, Void, String>
 		return builder.toString();
 	}
 
-	public static String post(List<NameValuePair> args) throws IOException, ClientProtocolException, JSONException{
+	public static String post(List<NameValuePair> args) throws IOException, ClientProtocolException{
 		// Create a new HttpClient and Post Header
 		HttpClient httpClient = new DefaultHttpClient();
 		HttpPost httpPost = new HttpPost(CONNECTOR_URL);

@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
+@SuppressLint("SdCardPath")
 public class ConfigDb {
 	
 	private SQLiteDatabase db = null;

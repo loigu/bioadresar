@@ -48,7 +48,6 @@
                     android:layout_marginLeft="10dp"
                     android:layout_weight="0.8"
                     android:gravity="left"
-                    android:text="Farm name"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="@color/White"
                     android:textSize="18sp"

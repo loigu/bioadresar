@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -16,6 +15,7 @@ import java.util.TreeSet;
 import cz.hnutiduha.bioadresar.data.DataFilter;
 import cz.hnutiduha.bioadresar.data.IdFilter;
 import cz.hnutiduha.bioadresar.data.LocationInfoDistanceComparator;
+import cz.hnutiduha.bioadresar.duhaOnline.net.ConnectionHelper;
 import cz.hnutiduha.bioadresar.util.Alphabet;
 import android.content.ContentValues;
 import android.content.Context;
@@ -36,26 +36,34 @@ public class CoexCache extends SQLiteOpenHelper {
 
 	private static Context appContext = null;
 
-	protected SQLiteDatabase db;
+	protected SQLiteDatabase db = null;
 	private CoexDatabase parent = null;
 
-	private static final int databaseVersion = 1;
-
-	private CoexCache(Context context, CoexDatabase parent) {
+	private static final int databaseVersion = 2;
+	
+	private CoexCache(Context context, CoexDatabase parent) throws IOException {
 		super(context, context.getFilesDir().getPath() + File.separator
 				+ DB_NAME, null, databaseVersion);
 		this.parent = parent;
+		
+		String dbPath = context.getFilesDir().getPath()
+				+ File.separator + DB_NAME;
+		createDb(dbPath, context);
+		openDb(dbPath, SQLiteDatabase.OPEN_READWRITE);
+		
+		if (ConnectionHelper.isOnline(context))
+		{
+			new CoexCacheUpdater(this).execute();
+		}
 	}
 
 	protected static CoexCache getDefaultDb(Context context, CoexDatabase parent) {
 		if (defaultDb == null) {
 			try {
-				String dbPath = context.getFilesDir().getPath()
-						+ File.separator + DB_NAME;
+
 				appContext = context;
 				defaultDb = new CoexCache(context, parent);
-				defaultDb.createDb(dbPath, context);
-				defaultDb.openDb(dbPath, SQLiteDatabase.OPEN_READWRITE);
+
 			} catch (IOException e) {
 				Log.e("db", "error opening db " + e.toString());
 			}
@@ -79,9 +87,9 @@ public class CoexCache extends SQLiteOpenHelper {
 	private void createDb(String dbPath, Context context) throws IOException {
 		int dbVersion = checkDb(dbPath);
 		if (dbVersion == 0) {
-			File db = new File(dbPath);
-			if (db.exists()) {
-				db.delete();
+			File dbFile = new File(dbPath);
+			if (dbFile.exists()) {
+				dbFile.delete();
 				runFixtures(context, dbVersion);
 			}
 
@@ -209,7 +217,7 @@ public class CoexCache extends SQLiteOpenHelper {
 	}
 
 	private static final String[] locationBasicColumns = { "_id", "name",
-			"gpsLatitude", "gpsLongitude", "type" };
+			"gpsLatitude", "gpsLongitude", "typeId" };
 
 	// expects cursor with valid entry created with columns CoexLocationColumns
 	private CoexLocation fromCursor(Cursor c) {
@@ -517,7 +525,7 @@ public class CoexCache extends SQLiteOpenHelper {
 
 			sortedActivities = new TreeSet<EntityWithComment>(
 					EntityWithComment.stringComparator());
-			for (int i = 0; i < products.size(); i++) {
+			for (int i = 0; i < activities.size(); i++) {
 				sortedActivities.add(new EntityWithComment(activities.keyAt(i),
 						activities.valueAt(i), null, false));
 			}
@@ -536,9 +544,10 @@ public class CoexCache extends SQLiteOpenHelper {
 			SparseArray<String> entities,
 			TreeSet<EntityWithComment> sortedEntities, String tableName) {
 		// exists
-		EntityWithComment existing = sortedEntities.floor(entity);
-		if (existing != null && existing.name.equals(entity.name)) {
-			entity.id = existing.id;
+		int idx = entities.indexOfValue(entity.name);
+		if (idx >= 0)
+		{
+			entity.id = entities.keyAt(idx);
 			return;
 		}
 
@@ -722,7 +731,7 @@ public class CoexCache extends SQLiteOpenHelper {
 				return;
 			}
 
-			db.delete("location_products", "locationId = " + locationId, null);
+			db.delete("location_product", "locationId = " + locationId, null);
 		}
 
 		ContentValues values = new ContentValues();

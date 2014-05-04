@@ -146,7 +146,12 @@ class AddNext25 extends AddAllLocations
         }
         
         TreeSet<LocationInfo> currentLocations = DataSourceFactory.getGlobalDataSource(activity).getAllLocationsSortedByDistance(loc);
-          
+        if (currentLocations.size() == 0)
+        {
+        	Log.d("db", "no locations found");
+        	return Boolean.TRUE;
+        }
+        
     	SortedSet<LocationInfo> tail = null;
     	if (!currentLocations.equals(allLocations))
     	{
