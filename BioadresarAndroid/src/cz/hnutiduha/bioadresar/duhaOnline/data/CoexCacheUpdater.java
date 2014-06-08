@@ -50,9 +50,12 @@ public class CoexCacheUpdater extends AsyncTask<Void, CoexLocation, long[]>
 				String key = keys.next();
 				JSONObject product = products.getJSONObject(key);
 				
-				location.products.add(new EntityWithComment(key,
+				// TODO: reuse if without comment/predevsim
+				EntityWithComment prod = new EntityWithComment(key,
 						product.getString("poznamka"), 
-						product.getString("predevsim").equals("ano")));
+						product.getString("predevsim").equals("ano"));
+				cache.fillProductId(prod);
+				location.products.add(prod);
 			}
 		}
 		
@@ -66,9 +69,13 @@ public class CoexCacheUpdater extends AsyncTask<Void, CoexLocation, long[]>
 				String key = keys.next();
 				JSONObject activity = activities.getJSONObject(key);
 				
-				location.activities.add(new EntityWithComment(key,
+				// TODO: reuse if without comment/predevsim
+				EntityWithComment act = new EntityWithComment(key,
 						activity.getString("poznamka"), 
-						activity.getString("predevsim").equals("ano")));
+						activity.getString("predevsim").equals("ano"));
+				cache.fillActivityId(act);
+				location.activities.add(act);
+				
 			}
 		}
 	}
@@ -114,6 +121,7 @@ public class CoexCacheUpdater extends AsyncTask<Void, CoexLocation, long[]>
 			
 			JSONArray list = new JSONArray(CoexConnector.post(args));
 			idList = new long[list.length()];
+			Log.d("update", String.format("got %d locations", list.length()));
 			for(int i = 0; i < list.length(); i++)
 			{
 				CoexLocation location = parseBasicInfo(list.getJSONObject(i));
@@ -123,8 +131,10 @@ public class CoexCacheUpdater extends AsyncTask<Void, CoexLocation, long[]>
 				args.add(new BasicNameValuePair("cmd", "detail"));
 				args.add(new BasicNameValuePair("locid", String.valueOf(location.id)));
 				fillDetails(location, new JSONObject (CoexConnector.post(args)));
+				Log.d("update", String.format("updating location %d: %s", location.id, location.name));
 				
-				publishProgress(location);
+				//publishProgress(location);
+				cache.updateLocationCache(location, updateTime);
 			}
 			
 		} catch (Exception ex)

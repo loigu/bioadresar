@@ -5,8 +5,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -51,13 +53,15 @@ public class CoexCache extends SQLiteOpenHelper {
 		createDb(dbPath, context);
 		openDb(dbPath, SQLiteDatabase.OPEN_READWRITE);
 		
+		/* coex has broken filter, this will load all locations
 		if (ConnectionHelper.isOnline(context))
 		{
 			new CoexCacheUpdater(this).execute();
 		}
+		*/
 	}
 
-	protected static CoexCache getDefaultDb(Context context, CoexDatabase parent) {
+	public static CoexCache getDefaultDb(Context context, CoexDatabase parent) {
 		if (defaultDb == null) {
 			try {
 
@@ -400,11 +404,11 @@ public class CoexCache extends SQLiteOpenHelper {
 				"comment", "mainProduct" }, "locationId = " + locationId, null,
 				null, null, null, null);
 
-		c.moveToFirst();
-
+		c.moveToNext();
 		while (!c.isAfterLast()) {
-			ret.add(new EntityWithComment(products.get(c.getInt(0)),
+			ret.add(new EntityWithComment(c.getInt(0), products.get(c.getInt(0)),
 					getStringOrNull(c, 1), c.getInt(2) != 0));
+			c.moveToNext();
 		}
 		c.close();
 
@@ -422,11 +426,13 @@ public class CoexCache extends SQLiteOpenHelper {
 				"comment", "mainActivity" }, "locationId = " + locationId,
 				null, null, null, null, null);
 
-		c.moveToFirst();
-
+		c.moveToNext();
 		while (!c.isAfterLast()) {
-			ret.add(new EntityWithComment(activities.get(c.getInt(0)),
-					getStringOrNull(c, 1), c.getInt(2) != 0));
+			EntityWithComment ent = new EntityWithComment(c.getInt(0), activities.get(c.getInt(0)),
+					getStringOrNull(c, 1), c.getInt(2) != 0);
+			Log.d("cache", String.format("Loaded old entity %s (%d)", ent.name, ent.id));
+			ret.add(ent);
+			c.moveToNext();
 		}
 		c.close();
 
@@ -449,6 +455,7 @@ public class CoexCache extends SQLiteOpenHelper {
 		info.activities = getActivities(info.id);
 	}
 
+	// TODO: we don't really need products sparse array
 	private SparseArray<String> products = null;
 	TreeSet<EntityWithComment> sortedProducts = null;
 
@@ -463,6 +470,7 @@ public class CoexCache extends SQLiteOpenHelper {
 		products = new SparseArray<String>();
 		c.moveToNext();
 		while (!c.isAfterLast()) {
+			Log.d("cache", String.format("loaded product %s id %d",  c.getString(1), c.getInt(0)));
 			products.put(c.getInt(0), c.getString(1));
 			c.moveToNext();
 		}
@@ -488,9 +496,48 @@ public class CoexCache extends SQLiteOpenHelper {
 
 		return sortedProducts;
 	}
+	
+	/*
+	private Hashtable<String, Integer> activityIds = null;
+	
+	protected void createActivityHashtable()
+	{
+		
+		if (activityIds != null) return;
+		loadActivityNames();
+		
+		activityIds = new Hashtable<String, Integer>();
+		for (int i = 0; i < activities.size(); i++)
+			activityIds.put(activities.valueAt(i), Integer.valueOf(activities.keyAt(i)));
+	}
+	
+	protected void destroyActivityHashtable()
+	{
+		activityIds = null;
+		System.gc();
+	}
+	
+	private Hashtable<String, Integer> productIds = null;
+	
+	protected void createProductHashtable()
+	{
+		
+		if (productIds != null) return;
+		loadProductNames();
+		
+		productIds = new Hashtable<String, Integer>();
+		for (int i = 0; i < products.size(); i++)
+			productIds.put(products.valueAt(i), Integer.valueOf(products.keyAt(i)));
+	}
+	
+	protected void destroyProductHashtable()
+	{
+		productIds = null;
+		System.gc();
+	}
+	*/
 
 	public void fillProductId(EntityWithComment product) {
-		getProductsSortedByName();
 		fillIdOrCreateNewEntity(product, products, sortedProducts, "products");
 	}
 
@@ -533,25 +580,39 @@ public class CoexCache extends SQLiteOpenHelper {
 
 		return sortedActivities;
 	}
-
+	
 	public void fillActivityId(EntityWithComment activity) {
-		getActivitiesSortedByName();
 		fillIdOrCreateNewEntity(activity, activities, sortedActivities,
 				"activities");
+	}
+	
+	private int getEntityId(String tableName, String entityName)
+	{
+		int ret = -1;
+		Cursor c = db.query(tableName, new String[] { "_id" }, "name='"
+				+ entityName + "'", null, null, null, null);
+		c.moveToFirst();
+		if (!c.isAfterLast()) {
+			ret = c.getInt(0);
+		}
+		c.close();
+		
+		return ret;
 	}
 
 	private void fillIdOrCreateNewEntity(EntityWithComment entity,
 			SparseArray<String> entities,
 			TreeSet<EntityWithComment> sortedEntities, String tableName) {
 		// exists
-		int idx = entities.indexOfValue(entity.name);
-		if (idx >= 0)
+		entity.id = getEntityId(tableName, entity.name);
+		if (entity.id != -1)
 		{
-			entity.id = entities.keyAt(idx);
+			Log.d("db", String.format("entity %s exists with id %d", entity.name, entity.id));
 			return;
 		}
 
 		// insert to db
+		Log.d("db", String.format("registering %s to %s", entity.name, tableName));
 		ContentValues row = new ContentValues();
 		row.put("name", entity.name);
 		db.insert(tableName, null, row);
@@ -570,9 +631,11 @@ public class CoexCache extends SQLiteOpenHelper {
 		c.close();
 
 		// append to entities and sortedEntities
-		entities.put(entity.id, entity.name);
-		sortedEntities.add(new EntityWithComment(entity.id, entity.name, "",
-				false));
+		if (entities != null)
+			entities.put(entity.id, entity.name);
+		
+		if (sortedEntities != null)
+			sortedEntities.add(new EntityWithComment(entity.id, entity.name, "", false));
 	}
 
 	protected int getCacheLocationTypeId(String typeName, int coexTypeId) {
@@ -627,8 +690,10 @@ public class CoexCache extends SQLiteOpenHelper {
 		// actual
 		if (lastChangeTime <= dbChangeTime)
 		{
+			Log.d("cache", String.format("not updating location %s (actual)", location.name));
 			return;
 		}
+		Log.d("cache", String.format("updating location %s", location.name));
 		
 		ContentValues row = new ContentValues();
 		if (location.id != CoexLocation.INVALID_LOCATION_ID)
@@ -642,6 +707,7 @@ public class CoexCache extends SQLiteOpenHelper {
 		row.put("description", location.description);
 		row.put("lastChange", 0); // dirty - set to real update time at end
 		db.insertWithOnConflict("locations", "description", row, SQLiteDatabase.CONFLICT_REPLACE);
+		Log.d("cache", "Basic info updated");
 		
 		// get id of newly created location
 		if (location.id == CoexLocation.INVALID_LOCATION_ID)
@@ -670,6 +736,7 @@ public class CoexCache extends SQLiteOpenHelper {
 		if (locationId != CoexLocation.INVALID_LOCATION_ID) {
 			LocationContact oldContact = getContact(locationId);
 			if (oldContact != null && oldContact.compareTo(newContact) == 0) {
+				Log.d("cache", String.format("contact for location %d the same", locationId));
 				return;
 			}
 		}
@@ -686,70 +753,108 @@ public class CoexCache extends SQLiteOpenHelper {
 		values.put("eshop", newContact.eshop);
 		db.insertWithOnConflict("contacts", "eshop", values,
 				SQLiteDatabase.CONFLICT_REPLACE);
+		Log.d("cache", String.format("contact of location %d updated", locationId));
+	}
+	
+	private void updateEntityInDb(ContentValues values, EntityWithComment entity,
+			String tableName, String idColumnName, String mainEntityColumnName)
+	{
+		values.put(idColumnName, entity.id);
+		if (entity.comment != null) {
+			values.put("comment", entity.comment);
+		} else {
+			values.putNull("comment");
+		}
+		values.put(mainEntityColumnName, entity.mainEntity);
+		db.insertWithOnConflict(tableName, "comment", values, SQLiteDatabase.CONFLICT_REPLACE);
+	}
+	
+	private void deleteEntityFromDb(long locationId, int entityId, String idColumnName, String tableName)
+	{
+		db.delete(tableName, String.format("locationId = %d AND %s = %d", locationId, idColumnName, entityId), null);
+	}
+	
+
+	// NOTE: expected entitites to have valid id's
+	private void updateEntitiesInDb(long locationId, List<EntityWithComment> entities, List<EntityWithComment> oldEntities,
+			String tableName, String idColumnName, String mainEntityColumnName)
+	{	
+		ContentValues values = new ContentValues();
+		values.put("locationId", locationId);
+		
+		Collections.sort(entities, EntityWithComment.idComparator());
+		Collections.sort(oldEntities, EntityWithComment.idComparator());
+		Iterator<EntityWithComment> newIter = entities.iterator();
+		Iterator<EntityWithComment> oldIter = oldEntities.iterator();
+		
+		EntityWithComment old = null;
+		EntityWithComment actual = null;
+		
+		while (newIter.hasNext() || oldIter.hasNext())
+		{
+			if (old == null && oldIter.hasNext())
+			{
+				old = oldIter.next();
+			}
+			if (actual == null && newIter.hasNext())
+			{
+				actual = newIter.next();
+			}
+			
+			if (old == null)
+			{ // all old gone - add rest of new
+				Log.d("cache", "adding new " + actual.name);
+				updateEntityInDb(values, actual, tableName, idColumnName, mainEntityColumnName);
+				actual = null;
+			}else if (actual == null)
+			{ // all new gone, delete rest of old
+				Log.d("cache", String.format("removing old %s (%d)", old.name, old.id));
+				deleteEntityFromDb(locationId, old.id, idColumnName, tableName);
+				old = null;
+			}
+			else
+			{
+				if (actual.id > old.id)
+				{ // old was not present in actual - remove
+					Log.d("cache", String.format("removing old %s (%d) next actual is %d", old.name, old.id, actual.id));
+					deleteEntityFromDb(locationId, old.id, idColumnName, tableName);
+					old = null;
+				}
+				else if (actual.id < old.id)
+				{ // not present in old - add
+					Log.d("cache", "adding new " + actual.name);
+					updateEntityInDb(values, actual, tableName, idColumnName, mainEntityColumnName);
+					actual = null;
+				}
+				else
+				{ // same id
+					if (actual.compareTo(old) != 0)
+					{ // differs inside
+						Log.d("cache", "updating existing " + actual.name);
+						updateEntityInDb(values, actual, tableName, idColumnName, mainEntityColumnName);
+					}
+					else
+					{ // not changed
+						Log.d("cache", String.format("leaving not-changed %s (%d)", actual.name, actual.id));
+					}
+					
+					actual = null;
+					old = null;
+				}
+			}
+		}
+		
+		Log.d("cache", String.format("%s updated for location %d", tableName, locationId));
 	}
 
 	private void updateActivitiesInDb(long locationId,
 			List<EntityWithComment> newActivities) {
-		if (locationId != CoexLocation.INVALID_LOCATION_ID) {
-			List<EntityWithComment> oldActivities = getActivities(locationId);
-			if (oldActivities.size() == newActivities.size()
-					&& oldActivities.containsAll(newActivities)
-					&& newActivities.containsAll(oldActivities)) {
-				return;
-			}
-
-			db.delete("location_activity", "locationId = " + locationId, null);
-		}
-
-		ContentValues values = new ContentValues();
-		values.put("locationId", locationId);
-		for (EntityWithComment activity : newActivities) {
-			if (activity.id == EntityWithComment.INVALID_ID) {
-				fillActivityId(activity);
-			}
-
-			values.put("activityId", activity.id);
-			if (activity.comment != null) {
-				values.put("comment", activity.comment);
-			} else {
-				values.putNull("comment");
-			}
-			values.put("mainActivity", activity.mainEntity);
-
-			db.insert("location_activity", "comment", values);
-		}
+		updateEntitiesInDb(locationId, newActivities, getActivities(locationId), "location_activity", "activityId", "mainActivity");
 	}
-
+	
 	private void updateProductsInDb(long locationId,
 			List<EntityWithComment> newProducts) {
-		if (locationId != CoexLocation.INVALID_LOCATION_ID) {
-			List<EntityWithComment> oldProducts = getProducts(locationId);
-
-			if (newProducts.size() == oldProducts.size()
-					&& oldProducts.containsAll(newProducts)
-					&& newProducts.containsAll(oldProducts)) {
-				return;
-			}
-
-			db.delete("location_product", "locationId = " + locationId, null);
-		}
-
-		ContentValues values = new ContentValues();
-		values.put("locationId", locationId);
-		for (EntityWithComment product : newProducts) {
-			if (product.id == EntityWithComment.INVALID_ID) {
-				fillProductId(product);
-			}
-			values.put("productId", product.id);
-			if (product.comment != null) {
-				values.put("comment", product.comment);
-			} else {
-				values.putNull("comment");
-			}
-			values.put("mainProduct", product.mainEntity);
-
-			db.insert("location_product", "comment", values);
-		}
+		updateEntitiesInDb(locationId, newProducts, getProducts(locationId), "location_product", "productId", "mainProduct");
 	}
 
 	private void updateDeliveryOptionsInDb(long locationId, DeliveryOptions opts) {

@@ -47,10 +47,22 @@ public class EntityWithComment {
 	// NOTE: this is complete junk
 	public int compareTo(EntityWithComment other)
 	{
-		int stringCompare =  this.toString().compareTo(other.toString());
-		if (stringCompare != 0) return stringCompare;
+		// TODO: what about ids?
 		
-		if (this.id != other.id) return this.id - other.id;
+		int res = name.compareTo(other.name);
+		if (res != 0) { return res; }
+		
+		if (comment != null && other.comment == null)
+		{
+			return -1;
+		}
+		else if (comment == null && other.comment != null)
+		{
+			return 1;
+		}
+		
+		res = comment.compareTo(other.comment);
+		if (res != 0) { return res; }
 		
 		if (this.mainEntity != other.mainEntity) return -1;
 		
@@ -65,9 +77,21 @@ public class EntityWithComment {
 					@Override
 					public int compare(EntityWithComment lhs,
 							EntityWithComment rhs) {
-						return lhs.toString().compareTo(rhs.toString());
+						return lhs.compareTo(rhs);
 					}
 			
+				};
+	}
+	
+	static Comparator<EntityWithComment> idComparator()
+	{
+		return new Comparator<EntityWithComment> ()
+				{
+					@Override
+					public int compare(EntityWithComment lhs,
+							EntityWithComment rhs) {
+						return lhs.id - rhs.id;
+					}
 				};
 	}
 
