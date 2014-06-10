@@ -151,7 +151,7 @@ public class CoexDatabase implements DataSource<CoexLocation> {
 	
 	public EntityWithComment[] getProductsSortedByName()
 	{
-		TreeSet<EntityWithComment> products = cache.getActivitiesSortedByName();
+		TreeSet<EntityWithComment> products = cache.getProductsSortedByName();
 		EntityWithComment array[] = new EntityWithComment[products.size()];
 		return products.toArray(array);
 	}
