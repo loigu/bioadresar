@@ -468,7 +468,6 @@ public class CoexCache extends SQLiteOpenHelper {
 		products = new SparseArray<String>();
 		c.moveToNext();
 		while (!c.isAfterLast()) {
-			Log.d("cache", String.format("loaded product %s id %d",  c.getString(1), c.getInt(0)));
 			products.put(c.getInt(0), c.getString(1));
 			c.moveToNext();
 		}

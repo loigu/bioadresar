@@ -88,5 +88,10 @@ public class LocationContact implements Comparable<LocationContact> {
 
 		return 0;
 	}
+	
+	public String toString()
+	{
+		return String.format("person %s, city %s, street %s, phone %s, web %s, eshop %s", person, city, street, phone, web, eshop); 
+	}
 
 }

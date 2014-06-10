@@ -250,6 +250,8 @@ public class EditDetailsFragment extends SherlockFragment implements OnClickList
     	{
     		addPickupPlace("");
     	}
+    	
+    	this.switchCustomDelivery(deliveryOpts.customDistribution);
     }
     
     private void updateFarm()

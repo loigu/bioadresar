@@ -91,7 +91,7 @@ public class CoexLocation implements LocationInfo, OnClickListener {
 		
 		id = origin.id;
 		name = origin.name;
-		setLocation(lat, lon);
+		setLocation(origin.lat, origin.lon);
 		source = origin.source;
 		description = origin.description;
 

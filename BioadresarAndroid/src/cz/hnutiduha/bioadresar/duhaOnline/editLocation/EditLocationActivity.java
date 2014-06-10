@@ -27,18 +27,6 @@ public class EditLocationActivity extends AddLocationActivity {
 		super();
 	}
 	
-	/*
-	 * 
-client	www
-cmd	add_comment
-lang	cs
-place-comment-text	test test test is the best
-place-id	668
-place-rating	5
-user-email	loigu@volny.cz
-user-name	jirka
-	 */
-	
     protected List<NameValuePair> formatMessage(EditAppendixFragment.Cache cache) {
     	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 		nameValuePairs.add(new BasicNameValuePair("client", "android"));
