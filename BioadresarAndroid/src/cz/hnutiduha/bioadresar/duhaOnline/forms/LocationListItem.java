@@ -15,7 +15,7 @@ public class LocationListItem extends LinearLayout {
 	public LocationListItem(Context context, LocationInfo location, Location centerOfOurUniverse) {
 		super(context);
 		distance = location.getDistance(centerOfOurUniverse);
-		this.sourceId = location.getId();
+		this.locationId = location.getId();
 		this.sourceId = location.getSource().getSourceId();
 		
 		location.inflateListView(this, centerOfOurUniverse);

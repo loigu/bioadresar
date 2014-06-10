@@ -408,7 +408,7 @@ public class CoexLocation implements LocationInfo, OnClickListener {
 	@Override
 	public View inflateListView(ViewGroup parent, Location centerOfOurUniverse) {
     	LayoutInflater inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    	View v = inflater.inflate(R.layout.farm_list_item_layout, null);
+    	View v = inflater.inflate(R.layout.farm_list_item_layout, parent);
 		
 		LinearLayout toDetail = (LinearLayout)v.findViewById(R.id.toDetailArea);
 		setToDetailListener(toDetail);

@@ -363,7 +363,9 @@ public class ListActivity extends SherlockActivity implements View.OnClickListen
     {
     	int desiredPos = getFarmPos(farm.getSource().getSourceId(), farm.getId(), farm.getDistance(centerOfOurUniverse));
     	if (desiredPos == -1)
+    	{
     		return;
+    	}
     	
     	LinearLayout newFarm = new LocationListItem(this, farm, centerOfOurUniverse);
     	

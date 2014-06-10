@@ -17,7 +17,6 @@ import java.util.TreeSet;
 import cz.hnutiduha.bioadresar.data.DataFilter;
 import cz.hnutiduha.bioadresar.data.IdFilter;
 import cz.hnutiduha.bioadresar.data.LocationInfoDistanceComparator;
-import cz.hnutiduha.bioadresar.duhaOnline.net.ConnectionHelper;
 import cz.hnutiduha.bioadresar.util.Alphabet;
 import android.content.ContentValues;
 import android.content.Context;
@@ -279,7 +278,6 @@ public class CoexCache extends SQLiteOpenHelper {
 		c.close();
 
 		allLocationsList = res;
-
 		return res;
 	}
 
