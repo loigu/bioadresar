@@ -23,6 +23,7 @@ import cz.hnutiduha.bioadresar.data.DataSource;
 import cz.hnutiduha.bioadresar.data.LocationInfo;
 import cz.hnutiduha.bioadresar.detail.DetailActivity;
 import cz.hnutiduha.bioadresar.duhaOnline.editLocation.EditLocationActivity;
+import cz.hnutiduha.bioadresar.duhaOnline.forms.DetailFragment;
 import cz.hnutiduha.bioadresar.duhaOnline.forms.FarmOverlayView;
 import cz.hnutiduha.bioadresar.map.MapActivity;
 
@@ -121,7 +122,11 @@ public class CoexLocation implements LocationInfo, OnClickListener {
 	
 	@Override
 	public GeoPoint getGeoPoint() {
-		if (location == null) { return null; }
+		if (lat < -90 || lat > 90 || lon < -180 || lon > 180)
+		{
+			Log.e("data", "geo point requested on location without coordinates");
+			return null;
+		}
 		
 		return new GeoPoint((int)(lat * 1E6), (int)(lon * 1E6));
 	}
@@ -422,8 +427,7 @@ public class CoexLocation implements LocationInfo, OnClickListener {
 
 	@Override
 	public Fragment getDetailFragment(Activity parent) {
-		// TODO Auto-generated method stub
-		return null;
+		return new DetailFragment(this, parent, true);
 	}
 
 	@Override

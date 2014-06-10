@@ -35,10 +35,10 @@ public class FarmOverlayItem extends OverlayItem implements OnClickListener{
 	FarmMapView map;
 	View balloon = null;
 	
-	public FarmOverlayItem(GeoPoint point, LocationInfo nextFarm, FarmMapView map)
+	public FarmOverlayItem(GeoPoint point, LocationInfo data, FarmMapView map)
 	{
-		super(point, nextFarm.getName(), nextFarm.getName());
-		this.data = nextFarm;
+		super(point, data.getName(), data.getName());
+		this.data = data;
 		this.map = map;
 	}
 	

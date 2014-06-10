@@ -57,11 +57,6 @@ public class FarmsOverlay extends ItemizedOverlay<OverlayItem> implements OnSing
 	public static Drawable boundCenterBottom(Drawable drawable) {
 		return ItemizedOverlay.boundCenterBottom(drawable);
 	}
-
-	public void addOverlay(OverlayItem overlay) {
-	    overlays.add(overlay);
-	    populate();
-	}
 	
 	@Override
 	protected OverlayItem createItem(int i) {
