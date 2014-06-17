@@ -62,6 +62,8 @@ public class MenuHandler implements OnNavigationListener{
 	            .setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItem.SHOW_AS_ACTION_ALWAYS);
 		}
 		
+		// TODO: refresh & about 
+		
 		/* NOTE: dropDown is used now
 		SubMenu subMenu = menu.addSubMenu("");
 		subMenu.setIcon(R.drawable.menu_icon);

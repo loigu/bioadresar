@@ -11,12 +11,14 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
 import cz.hnutiduha.bioadresar.data.DataFilter;
 import cz.hnutiduha.bioadresar.data.IdFilter;
 import cz.hnutiduha.bioadresar.data.LocationInfoDistanceComparator;
+import cz.hnutiduha.bioadresar.duhaOnline.net.ConnectionHelper;
 import cz.hnutiduha.bioadresar.util.Alphabet;
 import android.content.ContentValues;
 import android.content.Context;
@@ -35,36 +37,63 @@ public class CoexCache extends SQLiteOpenHelper {
 
 	private static CoexCache defaultDb = null;
 
-	private static Context appContext = null;
+	protected Context appContext = null;
 
 	protected SQLiteDatabase db = null;
 	private CoexDatabase parent = null;
 
-	private static final int databaseVersion = 2;
+	private static final int databaseVersion = 3;
 	
 	private CoexCache(Context context, CoexDatabase parent) throws IOException {
 		super(context, context.getFilesDir().getPath() + File.separator
 				+ DB_NAME, null, databaseVersion);
 		this.parent = parent;
+		this.appContext = context;
 		
 		String dbPath = context.getFilesDir().getPath()
 				+ File.separator + DB_NAME;
 		createDb(dbPath, context);
 		openDb(dbPath, SQLiteDatabase.OPEN_READWRITE);
-		
-		/* coex has broken filter, this will load all locations
-		if (ConnectionHelper.isOnline(context))
-		{
-			new CoexCacheUpdater(this).execute();
+	}
+	
+	public long getLastUpdateTime()
+	{
+		long lastUpdate = 0;
+		Cursor c = db.query("config", new String[] { "value" },
+				"variable = 'lastUpdated'", null, null, null, null);
+		c.moveToNext();
+
+		if (!c.isAfterLast()) {
+			lastUpdate = c.getLong(0);
 		}
-		*/
+		c.close();
+		
+		return lastUpdate;
+	}
+	
+	protected void reload()
+	{
+		//TODO: what about references in activities?
+
+	}
+	
+	public void checkUpdate()
+	{
+		if (ConnectionHelper.isOnline(appContext))
+		{
+			long now = System.currentTimeMillis() / 1000L;
+			long lastUpdate = getLastUpdateTime();
+			// nice value, 28 days
+			if (now - lastUpdate > 2419200)
+			{
+				new CoexCacheUpdater(this).execute();
+			}
+		}
 	}
 
 	public static CoexCache getDefaultDb(Context context, CoexDatabase parent) {
 		if (defaultDb == null) {
 			try {
-
-				appContext = context;
 				defaultDb = new CoexCache(context, parent);
 
 			} catch (IOException e) {
@@ -678,6 +707,44 @@ public class CoexCache extends SQLiteOpenHelper {
 		c.close();
 
 		return ret;
+	}
+	
+	protected void updateMemoryCache(Hashtable<Long, CoexLocation> newData)
+	{
+			if (allLocationsHash != null)
+			{
+				for (Entry<Long, CoexLocation> entry : newData.entrySet())
+				{
+					allLocationsHash.remove(entry.getKey());
+					allLocationsHash.put(entry.getKey(), entry.getValue());
+				}
+			}
+			
+			if (allLocationsList != null)
+			{
+				for (CoexLocation oldData : allLocationsList)
+				{
+					if (newData.contains(Long.valueOf(oldData.id)))
+					{
+						allLocationsList.remove(oldData);
+						allLocationsList.add(newData.get(Long.valueOf(oldData.id)));
+					}
+				}
+			}
+			
+			if (farmsSortedFromLastLocation != null)
+			{
+				for (CoexLocation oldData : farmsSortedFromLastLocation)
+				{
+					if (newData.contains(Long.valueOf(oldData.id)))
+					{
+						farmsSortedFromLastLocation.remove(oldData);
+						farmsSortedFromLastLocation.add(newData.get(Long.valueOf(oldData.id)));
+					}
+				}
+			}
+			
+			// TODO: what about data cached in activities
 	}
 
 	protected void updateLocationCache(CoexLocation location,

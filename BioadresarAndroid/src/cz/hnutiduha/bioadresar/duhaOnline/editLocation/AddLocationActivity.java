@@ -260,7 +260,7 @@ response:
 		List<NameValuePair> nameValuePairs = formatMessage(cache);
 		
 		showProgress();
-		new CoexConnector(this, nameValuePairs).execute();		
+		new CoexConnector(this, nameValuePairs, CoexConnector.METHOD_POST).execute();		
     }
     
 	@Override
@@ -364,7 +364,7 @@ response:
       switch (requestCode) {
         case REQUEST_CODE_RECOVER_PLAY_SERVICES:
           if (resultCode == RESULT_CANCELED) {
-            Toast.makeText(this, "Google Play Services must be installed.",
+            Toast.makeText(this, R.string.install_google_play,
                 Toast.LENGTH_SHORT).show();
             finish();
           }

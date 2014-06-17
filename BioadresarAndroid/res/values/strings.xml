@@ -51,6 +51,9 @@
     <string name="address">Adresa</string>
     <string name="eshop">E-shop</string>
     <string name="about_label">O Aplikaci</string>
+    <string name="install_google_play">Tato funkce vyžaduje nainstalované Google Play Services</string>
+    <string name="update_start">Aktualizuji databázi</string>
+    <string name="update_finished">Databáze aktualizována</string>
     <string name="config_label">Nastavení</string>
     <string name="config_summary">Chování aplikace po startu</string>
     <string name="homepage">http://trilobajt.cz/adresar</string>
@@ -70,7 +73,7 @@
     <string name="yes">Ano</string>
     <string name="no">Ne</string>
     <string name="virtualLocation">zadaná</string>
-    <string name="versionName">1.3</string>
+    <string name="versionName">1.4</string>
     <string name="next25">Dalších 25</string>
     <string name="activities">Aktivity</string>
     <string name="requireGps">Vyžadovat gps</string>

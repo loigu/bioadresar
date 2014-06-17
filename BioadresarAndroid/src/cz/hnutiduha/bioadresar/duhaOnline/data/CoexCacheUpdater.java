@@ -1,6 +1,7 @@
 package cz.hnutiduha.bioadresar.duhaOnline.data;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,6 +17,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
+import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.InvalidDataException;
 import cz.hnutiduha.bioadresar.duhaOnline.net.CoexConnector;
 
@@ -98,34 +101,35 @@ public class CoexCacheUpdater extends AsyncTask<Void, CoexLocation, long[]>
 
 		return location;
 	}
-
+	
+	Hashtable<Long, CoexLocation> changedLocations = null;
+	
 	@Override
 	protected long[] doInBackground(Void... params)
 	{
-		long lastUpdate = 0;
-		Cursor c = cache.db.query("config", new String[] { "value" },
-				"variable = 'lastUpdated'", null, null, null, null);
-		c.moveToNext();
-
-		if (!c.isAfterLast()) {
-			lastUpdate = c.getLong(0);
-		}
-		c.close();
+		Toast.makeText(cache.appContext, R.string.update_start,
+                Toast.LENGTH_SHORT).show();
 		
+		changedLocations = new Hashtable<Long, CoexLocation>();
+		
+		// get location list GET http://www.adresarfarmaru.cz/connector?lang=cs&client=www&cmd=locations&changed_from=1398194242
 		long[] idList = null;
 		List<NameValuePair> args = new ArrayList<NameValuePair>(2);
 		args.add(new BasicNameValuePair("cmd", "locations"));
-		args.add(new BasicNameValuePair("changed_from", String.valueOf(lastUpdate)));
+		args.add(new BasicNameValuePair("changed_from", String.valueOf(cache.getLastUpdateTime())));
 		try
 		{
 			
-			JSONArray list = new JSONArray(CoexConnector.post(args));
+			JSONArray list = new JSONArray(CoexConnector.get(args));
 			idList = new long[list.length()];
 			Log.d("update", String.format("got %d locations", list.length()));
 			for(int i = 0; i < list.length(); i++)
 			{
 				CoexLocation location = parseBasicInfo(list.getJSONObject(i));
 				idList[i] = location.id;
+				
+				// we use POST, but officially it should be
+				// http://www.adresarfarmaru.cz/connector?lang=cs&client=www&cmd=locations&detail=614
 				
 				args = new ArrayList<NameValuePair>(2);
 				args.add(new BasicNameValuePair("cmd", "detail"));
@@ -149,13 +153,15 @@ public class CoexCacheUpdater extends AsyncTask<Void, CoexLocation, long[]>
 	protected void onProgressUpdate(CoexLocation ... locations)
 	{
 		cache.updateLocationCache(locations[0], updateTime);
+		changedLocations.put(Long.valueOf(locations[0].id), locations[0]);
 	}
 	
 	protected void onPostExecute(long[] idList)
 	{
 		if (idList == null) { return; }
+		
 		//TODO: remove deleted
-		//remove bookmarks for deleted
+		//TODO: remove bookmarks for deleted
 		
 		// NOTE: deleted products/activities left in db
 		
@@ -164,5 +170,11 @@ public class CoexCacheUpdater extends AsyncTask<Void, CoexLocation, long[]>
 		row.put("variable", "lastUpdated");
 		row.put("value", updateTime);
 		cache.db.insertWithOnConflict("config", null, row, SQLiteDatabase.CONFLICT_REPLACE);
+		
+		Toast.makeText(cache.appContext, R.string.update_finished,
+                Toast.LENGTH_SHORT).show();
+		
+		cache.updateMemoryCache(changedLocations);
+		changedLocations = null;
 	}
 }
