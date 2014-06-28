@@ -38,6 +38,10 @@ public class CoexDatabase implements DataSource<CoexLocation> {
 		{
 			defaultDb = new CoexDatabase(context);
 		}
+		else
+		{
+			defaultDb.cache.checkUpdate();
+		}
 		
 		return defaultDb;
 	}

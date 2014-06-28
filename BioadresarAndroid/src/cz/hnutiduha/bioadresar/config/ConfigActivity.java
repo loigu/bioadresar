@@ -1,18 +1,18 @@
 package cz.hnutiduha.bioadresar.config;
 
-import com.actionbarsherlock.app.SherlockPreferenceActivity;
-
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
+import cz.hnutiduha.bioadresar.TrackablePreferenceActivity;
 import cz.hnutiduha.bioadresar.data.LocationCache;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
-public class ConfigActivity extends SherlockPreferenceActivity implements OnPreferenceChangeListener {
-	protected void onCreate(Bundle savedInstanceState) {
+public class ConfigActivity extends TrackablePreferenceActivity implements OnPreferenceChangeListener {
+	public void onCreate(Bundle savedInstanceState) {
 	   super.onCreate(savedInstanceState);
 	   addPreferencesFromResource(R.xml.preferences);	   
 	

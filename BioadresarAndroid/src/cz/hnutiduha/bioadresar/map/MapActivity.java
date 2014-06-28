@@ -24,13 +24,14 @@ import android.app.Activity;
 import android.os.Bundle;
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
+import cz.hnutiduha.bioadresar.TrackableMapActivity;
 import cz.hnutiduha.bioadresar.data.DataSource;
 import cz.hnutiduha.bioadresar.data.DataSourceFactory;
 import cz.hnutiduha.bioadresar.data.LocationCache;
 import cz.hnutiduha.bioadresar.data.LocationInfo;
 import cz.hnutiduha.bioadresar.view.SearchView;
 
-public class MapActivity extends com.actionbarsherlock.app.SherlockMapActivity {
+public class MapActivity extends TrackableMapActivity {
 	
 	public static final String EXTRA_LOCATION_ID = "farmIdToShow";
 	public static final String EXTRA_SOURCE = "locationSource";
@@ -121,10 +122,10 @@ public class MapActivity extends com.actionbarsherlock.app.SherlockMapActivity {
 		super.onStart();
 		mapView.reinstallOurLocationMark();
 	}
-    
+
 	@Override
 	protected boolean isRouteDisplayed() {
-		// NOTE: we don't have time to research this topic :)
+		// TODO Auto-generated method stub
 		return false;
 	}
 }

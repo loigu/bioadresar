@@ -17,6 +17,22 @@ public class DeliveryOptions {
 			System.arraycopy(origin.placesWithTime, 0, placesWithTime, 0, origin.placesWithTime.length);
 		}
 	}
+	
+	public String toString()
+	{
+		StringBuilder bldr = new StringBuilder();
+		for (String placeWithTime : placesWithTime)
+		{
+			bldr.append(placeWithTime);
+			bldr.append('\n');
+		}
+		if (customDistribution)
+		{
+			bldr.append("rozvoz domů");
+		}
+		
+		return bldr.toString();
+	}
 
 	public DeliveryOptions() {
 	}

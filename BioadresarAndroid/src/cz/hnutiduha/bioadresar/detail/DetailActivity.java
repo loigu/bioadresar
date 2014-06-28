@@ -17,9 +17,6 @@
 
 package cz.hnutiduha.bioadresar.detail;
 
-
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -31,11 +28,12 @@ import com.actionbarsherlock.view.MenuItem;
 
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
+import cz.hnutiduha.bioadresar.TrackableFragmentActivity;
 import cz.hnutiduha.bioadresar.data.DataSource;
 import cz.hnutiduha.bioadresar.data.DataSourceFactory;
 import cz.hnutiduha.bioadresar.data.LocationInfo;
 
-public class DetailActivity extends SherlockFragmentActivity{
+public class DetailActivity extends TrackableFragmentActivity{
 	
 	public static final String EXTRA_ID = "locationId";
 	public static final String EXTRA_SOURCE = "locationSource";

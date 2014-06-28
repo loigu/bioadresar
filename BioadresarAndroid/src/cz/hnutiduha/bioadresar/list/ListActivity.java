@@ -22,10 +22,9 @@ import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import com.actionbarsherlock.app.SherlockActivity;
-
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
+import cz.hnutiduha.bioadresar.TrackableActivity;
 import cz.hnutiduha.bioadresar.data.DataFilter;
 import cz.hnutiduha.bioadresar.data.DataSourceFactory;
 import cz.hnutiduha.bioadresar.data.LocationCache;
@@ -224,7 +223,7 @@ class AddLocationsInRectangle extends AddAllLocations
 	}
 }
 
-public class ListActivity extends SherlockActivity implements View.OnClickListener{
+public class ListActivity extends TrackableActivity implements View.OnClickListener{
 	LinearLayout view;
 	Button next25Button;
 	AsyncTask<Void, LocationInfo, Boolean> locationsLoader = null;
@@ -284,7 +283,6 @@ public class ListActivity extends SherlockActivity implements View.OnClickListen
     {
     	super.onStart();
     	refreshLocation();
-    	Log.d("List", "onStart()");
     }
     
     public void onStop()
@@ -292,7 +290,6 @@ public class ListActivity extends SherlockActivity implements View.OnClickListen
     	super.onStop();
     	if (locationsLoader != null)
     		locationsLoader.cancel(true);
-    	Log.d("List", "onStop()");
     }
     
     @Override

@@ -196,7 +196,8 @@ public class CoexLocation implements LocationInfo, OnClickListener {
 		if (hasContainerDistribution == false)
 			return null;
 		
-		source.fillDetails(this);
+		if (source != null)
+			source.fillDetails(this);
 		
 		return delivery;
 	}
@@ -269,11 +270,13 @@ public class CoexLocation implements LocationInfo, OnClickListener {
 	
 	public void goToMap(View parent)
 	{
+		if (source == null)
+		{
+			Log.e("db", "trying to show map for location without source");
+			return;
+		}
 		Context context = parent.getContext();
 		
-		/* Intent map = new Intent(context, MainTabbedActivity.class);
-		map.putExtra(MainTabbedActivity.defaultActivityPropertyName, MainTabbedActivity.mapActivityTag);
-		*/
 		Intent map = new Intent(context, MapActivity.class);
 		map.putExtra(MapActivity.EXTRA_LOCATION_ID, id);
 		map.putExtra(MapActivity.EXTRA_SOURCE, source.getSourceId());
@@ -291,6 +294,11 @@ public class CoexLocation implements LocationInfo, OnClickListener {
 	
 	public void goToDetail(View parent)
 	{
+		if (source == null)
+		{
+			Log.e("db", "Can't go to detail of location without source");
+			return;
+		}
 		Context context = parent.getContext();
 		Intent detail = new Intent(context, DetailActivity.class);
 		detail.putExtra(DetailActivity.EXTRA_ID, this.id);
@@ -368,6 +376,8 @@ public class CoexLocation implements LocationInfo, OnClickListener {
 	
 	public void setBookmarked(boolean shouldBeBookmarked)
 	{
+		if (source == null) return;
+		
 		source.setBookmark(this, shouldBeBookmarked);
 		Log.d("db", "setting bookmarked of " + this.id + " to " + shouldBeBookmarked);
 		this.bookmarked = Boolean.valueOf(shouldBeBookmarked);
@@ -377,7 +387,14 @@ public class CoexLocation implements LocationInfo, OnClickListener {
 		if (bookmarked == null)
 		{
 			Log.d("db", "loading bookmark for " + this.id);
-			bookmarked = Boolean.valueOf(source.isBookmarked(this));
+			if (source != null)
+			{
+				bookmarked = Boolean.valueOf(source.isBookmarked(this));
+			}
+			else
+			{
+				return false;
+			}
 		}
 		
 		return bookmarked.booleanValue();

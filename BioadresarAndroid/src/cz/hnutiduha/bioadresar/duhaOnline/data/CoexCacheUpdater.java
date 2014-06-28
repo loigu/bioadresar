@@ -16,8 +16,10 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
+import cz.hnutiduha.bioadresar.ActivityTracker;
 import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.InvalidDataException;
 import cz.hnutiduha.bioadresar.duhaOnline.net.CoexConnector;
@@ -107,8 +109,8 @@ public class CoexCacheUpdater extends AsyncTask<Void, CoexLocation, long[]>
 	@Override
 	protected long[] doInBackground(Void... params)
 	{
-		Toast.makeText(cache.appContext, R.string.update_start,
-                Toast.LENGTH_SHORT).show();
+		ActivityTracker.showToastOnActivity(R.string.update_start, Toast.LENGTH_SHORT);
+
 		
 		changedLocations = new Hashtable<Long, CoexLocation>();
 		
@@ -137,8 +139,7 @@ public class CoexCacheUpdater extends AsyncTask<Void, CoexLocation, long[]>
 				fillDetails(location, new JSONObject (CoexConnector.post(args)));
 				Log.d("update", String.format("updating location %d: %s", location.id, location.name));
 				
-				//publishProgress(location);
-				cache.updateLocationCache(location, updateTime);
+				publishProgress(location);
 			}
 			
 		} catch (Exception ex)
@@ -152,8 +153,10 @@ public class CoexCacheUpdater extends AsyncTask<Void, CoexLocation, long[]>
 	
 	protected void onProgressUpdate(CoexLocation ... locations)
 	{
-		cache.updateLocationCache(locations[0], updateTime);
-		changedLocations.put(Long.valueOf(locations[0].id), locations[0]);
+		// NOTE: we don't get lastChange from coex so we assume now is better than nothing
+		boolean updated = cache.updateLocationCache(locations[0], updateTime);
+		if (updated)
+			changedLocations.put(Long.valueOf(locations[0].id), locations[0]);
 	}
 	
 	protected void onPostExecute(long[] idList)
@@ -171,10 +174,16 @@ public class CoexCacheUpdater extends AsyncTask<Void, CoexLocation, long[]>
 		row.put("value", updateTime);
 		cache.db.insertWithOnConflict("config", null, row, SQLiteDatabase.CONFLICT_REPLACE);
 		
-		Toast.makeText(cache.appContext, R.string.update_finished,
-                Toast.LENGTH_SHORT).show();
+		if (changedLocations.size() > 0)
+		{
+			cache.updateMemoryCache(changedLocations);
+			ActivityTracker.showToastOnActivity(R.string.update_finished, Toast.LENGTH_SHORT);
+		}
+		else
+		{
+			ActivityTracker.showToastOnActivity(R.string.data_up_to_date, Toast.LENGTH_SHORT);
+		}
 		
-		cache.updateMemoryCache(changedLocations);
 		changedLocations = null;
 	}
 }

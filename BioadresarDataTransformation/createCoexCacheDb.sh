@@ -24,6 +24,7 @@ function createBaseLayout()
 	
 	
 	echo 'CREATE TABLE locationTypes (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT);' | callSqlite
+	# NOTE: coex doesn't send lastChange through api, we store our last change instead
 	echo 'CREATE TABLE locations (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, gpsLatitude REAL NOT NULL, gpsLongitude REAL NOT NULL, description TEXT, typeId INTEGER NOT NULL, lastChange INTEGER NOT NULL);' | callSqlite
 
 	echo 'CREATE TABLE contacts (_id INTEGER PRIMARY KEY AUTOINCREMENT, locationId INTEGER, person TEXT, street TEXT, city TEXT, zip TEXT, phone TEXT, email TEXT, web TEXT, eshop TEXT);' | callSqlite
@@ -35,16 +36,18 @@ function createBaseLayout()
 
 function buildFtsTable()
 {
+	log "create fts"
+	
 	echo 'CREATE VIRTUAL TABLE locations_fts USING fts3(
-		_id INTEGER, 
-		name STRING, 
-		description STRING, 
-		typeName STRING, 
-		activities STRING, 
-		products STRING, 
-		categories STRING, 
+		_id INTEGER,
+		name STRING,
+		description STRING,
+		typeName STRING,
+		activities STRING,
+		products STRING,
 		contacts STRING,
-		other STRING
+		other STRING,
+		UNIQUE(_id)
 	);' | callSqlite
 }
 

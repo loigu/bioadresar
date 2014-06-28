@@ -17,18 +17,18 @@
 
 package cz.hnutiduha.bioadresar.about;
 
-import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
+import cz.hnutiduha.bioadresar.TrackableActivity;
 import android.os.Bundle;
 import android.text.util.Linkify;
 import android.view.View;
 import android.widget.TextView;
 
-public class AboutActivity extends SherlockActivity {
+public class AboutActivity extends TrackableActivity {
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {

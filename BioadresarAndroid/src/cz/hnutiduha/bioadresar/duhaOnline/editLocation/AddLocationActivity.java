@@ -9,7 +9,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.android.gms.common.ConnectionResult;
@@ -33,6 +32,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
+import cz.hnutiduha.bioadresar.TrackableFragmentActivity;
 import cz.hnutiduha.bioadresar.data.LocationInfo;
 import cz.hnutiduha.bioadresar.duhaOnline.data.CoexLocation;
 import cz.hnutiduha.bioadresar.duhaOnline.data.DeliveryOptions;
@@ -40,7 +40,7 @@ import cz.hnutiduha.bioadresar.duhaOnline.data.EntityWithComment;
 import cz.hnutiduha.bioadresar.duhaOnline.data.LocationContact;
 import cz.hnutiduha.bioadresar.duhaOnline.net.CoexConnector;
 
-public class AddLocationActivity extends SherlockFragmentActivity implements FragmentNavigator, CoexConnector.JSONReceiver{
+public class AddLocationActivity extends TrackableFragmentActivity implements FragmentNavigator, CoexConnector.JSONReceiver{
 	protected CoexLocation location = null;
 	protected CoexLocation originalLocation = null;
 	ProgressBar progress;

@@ -89,9 +89,29 @@ public class LocationContact implements Comparable<LocationContact> {
 		return 0;
 	}
 	
+	private static void appendToBuilder(StringBuilder bldr, String prefix, String something)
+	{
+		if (something == null || something.isEmpty())
+			return;
+		
+		if (bldr.length() > 0)
+			bldr.append(", ");
+		
+		bldr.append(prefix);
+		bldr.append(something);
+	}
+	
 	public String toString()
 	{
-		return String.format("person %s, city %s, street %s, phone %s, web %s, eshop %s", person, city, street, phone, web, eshop); 
+		StringBuilder bldr = new StringBuilder();
+		appendToBuilder(bldr, "", person);
+		appendToBuilder(bldr, "", street);
+		appendToBuilder(bldr, "", city);
+		appendToBuilder(bldr, "phone", phone);
+		appendToBuilder(bldr, "web", web);
+		appendToBuilder(bldr, "eshop", eshop);
+		
+		return bldr.toString(); 
 	}
 
 }

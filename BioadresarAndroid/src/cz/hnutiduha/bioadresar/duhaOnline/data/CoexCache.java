@@ -15,13 +15,19 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
+import cz.hnutiduha.bioadresar.ActivityTracker;
+import cz.hnutiduha.bioadresar.MainMenuActivity;
+import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.data.DataFilter;
 import cz.hnutiduha.bioadresar.data.IdFilter;
 import cz.hnutiduha.bioadresar.data.LocationInfoDistanceComparator;
 import cz.hnutiduha.bioadresar.duhaOnline.net.ConnectionHelper;
 import cz.hnutiduha.bioadresar.util.Alphabet;
+import android.app.Activity;
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.SQLException;
@@ -29,8 +35,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
+import android.support.v4.content.IntentCompat;
 import android.util.Log;
 import android.util.SparseArray;
+import android.widget.Toast;
 
 public class CoexCache extends SQLiteOpenHelper {
 	private static String DB_NAME = "adresarfarmaruCache";
@@ -42,11 +50,11 @@ public class CoexCache extends SQLiteOpenHelper {
 	protected SQLiteDatabase db = null;
 	private CoexDatabase parent = null;
 
-	private static final int databaseVersion = 3;
+	private static final int databaseSchemaVersion = 4;
 	
 	private CoexCache(Context context, CoexDatabase parent) throws IOException {
 		super(context, context.getFilesDir().getPath() + File.separator
-				+ DB_NAME, null, databaseVersion);
+				+ DB_NAME, null, databaseSchemaVersion);
 		this.parent = parent;
 		this.appContext = context;
 		
@@ -73,8 +81,17 @@ public class CoexCache extends SQLiteOpenHelper {
 	
 	protected void reload()
 	{
-		//TODO: what about references in activities?
+		Log.d("db", "db update finished, reloading...");
+		
+		ActivityTracker.showToastOnActivity(R.string.data_reload, Toast.LENGTH_LONG);	
 
+		Activity lastActivity = ActivityTracker.getLastActivity();
+		if (lastActivity == null) { return; }
+		
+		Intent intent = IntentCompat.makeRestartActivityTask(new ComponentName(lastActivity, MainMenuActivity.class));
+		if (intent == null) { Log.e("db", "wtf, no intent"); }
+		lastActivity.finish();
+	    lastActivity.startActivity(intent);
 	}
 	
 	public void checkUpdate()
@@ -83,10 +100,15 @@ public class CoexCache extends SQLiteOpenHelper {
 		{
 			long now = System.currentTimeMillis() / 1000L;
 			long lastUpdate = getLastUpdateTime();
-			// nice value, 28 days
-			if (now - lastUpdate > 2419200)
+			// nice value, 7 days
+			if (now - lastUpdate > 604800)
 			{
+				Log.d("db", "starting data update");
 				new CoexCacheUpdater(this).execute();
+			}
+			else
+			{
+				Log.d("db", "not updating, last update " + lastUpdate);
 			}
 		}
 	}
@@ -100,6 +122,8 @@ public class CoexCache extends SQLiteOpenHelper {
 				Log.e("db", "error opening db " + e.toString());
 			}
 		}
+		defaultDb.checkUpdate();
+		
 		return defaultDb;
 	}
 
@@ -118,13 +142,13 @@ public class CoexCache extends SQLiteOpenHelper {
 	 * */
 	private void createDb(String dbPath, Context context) throws IOException {
 		int dbVersion = checkDb(dbPath);
-		if (dbVersion == 0) {
+		if (dbVersion < databaseSchemaVersion) {
 			File dbFile = new File(dbPath);
 			if (dbFile.exists()) {
 				dbFile.delete();
 				runFixtures(context, dbVersion);
 			}
-
+			
 			// WTF is this? this.getReadableDatabase();
 
 			try {
@@ -137,7 +161,7 @@ public class CoexCache extends SQLiteOpenHelper {
 
 		openDb(dbPath, SQLiteDatabase.OPEN_READWRITE);
 		db.execSQL("INSERT OR REPLACE INTO config(variable, value) VALUES('databaseVersion', "
-				+ String.valueOf(databaseVersion) + ");");
+				+ String.valueOf(databaseSchemaVersion) + ");");
 	}
 
 	/**
@@ -215,13 +239,13 @@ public class CoexCache extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase arg0) {
-		// TODO Auto-generated method stub
+		// NOTE Auto-generated method stub
 
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase arg0, int arg1, int arg2) {
-		// TODO Auto-generated method stub
+		// NOTE Auto-generated method stub
 
 	}
 
@@ -617,7 +641,7 @@ public class CoexCache extends SQLiteOpenHelper {
 		int ret = -1;
 		Cursor c = db.query(tableName, new String[] { "_id" }, "name='"
 				+ entityName + "'", null, null, null, null);
-		c.moveToFirst();
+		c.moveToNext();
 		if (!c.isAfterLast()) {
 			ret = c.getInt(0);
 		}
@@ -645,7 +669,7 @@ public class CoexCache extends SQLiteOpenHelper {
 		// get id
 		Cursor c = db.query(tableName, new String[] { "_id" }, "name='"
 				+ entity.name + "'", null, null, null, null);
-		c.moveToFirst();
+		c.moveToNext();
 		if (!c.isAfterLast()) {
 			entity.id = c.getInt(0);
 		}
@@ -664,11 +688,25 @@ public class CoexCache extends SQLiteOpenHelper {
 			sortedEntities.add(new EntityWithComment(entity.id, entity.name, "", false));
 	}
 
+	protected String getCacheLocationTypeName(int typeId)
+	{
+		// get the new id
+		Cursor c = db.query("locationTypes", new String[] { "name" }, "_id=" + typeId, null, null, null, null);
+		c.moveToNext();
+		String ret = null;
+		if (!c.isAfterLast()) {
+			ret = c.getString(0);
+		}
+		c.close();
+		
+		return ret;
+	}
+	
 	protected int getCacheLocationTypeId(String typeName, int coexTypeId) {
 		int ret = CoexLocation.INVALID_OBJECT_TYPE;
 		Cursor c = db.query("locationTypes", new String[] { "_id" }, "name='"
 				+ typeName + "'", null, null, null, null);
-		c.moveToFirst();
+		c.moveToNext();
 		if (!c.isAfterLast()) {
 			ret = c.getInt(0);
 		}
@@ -700,7 +738,7 @@ public class CoexCache extends SQLiteOpenHelper {
 		// get the new id
 		c = db.query("locationTypes", new String[] { "_id" }, "name='"
 				+ typeName + "'", null, null, null, null);
-		c.moveToFirst();
+		c.moveToNext();
 		if (!c.isAfterLast()) {
 			ret = c.getInt(0);
 		}
@@ -744,10 +782,52 @@ public class CoexCache extends SQLiteOpenHelper {
 				}
 			}
 			
-			// TODO: what about data cached in activities
+			this.reload();
+	}
+	
+	private void updateFts(CoexLocation location)
+	{
+		/*
+		 CREATE VIRTUAL TABLE locations_fts USING fts3(
+		_id INTEGER, name STRING, description STRING, typeName STRING, 
+		activities STRING, products STRING, 
+		contacts STRING, other STRING );
+		*/
+		
+		// make values & remove accents
+		ContentValues row = new ContentValues();
+		row.put("_id", location.id);
+		row.put("name", Alphabet.removeAccents(location.name));
+		row.put("description", Alphabet.removeAccents(location.description));
+		row.put("typeName", Alphabet.removeAccents(getCacheLocationTypeName(location.type)));
+		
+		StringBuilder bldr = new StringBuilder();
+		for (EntityWithComment activity : location.activities)
+		{
+			bldr.append(" ");
+			bldr.append(activity.toString());
+		}
+		row.put("activities", Alphabet.removeAccents(bldr.toString()));
+		
+		bldr = new StringBuilder();
+		for (EntityWithComment product : location.products)
+		{
+			bldr.append(" ");
+			bldr.append(product.toString());
+		}
+		row.put("products",  Alphabet.removeAccents(bldr.toString()));
+		row.put("contacts",  Alphabet.removeAccents(location.contactInfo.toString()));
+		if (location.delivery != null)
+		{
+			row.put("other", Alphabet.removeAccents(location.delivery.toString()));
+		}
+		
+		// insert or replace
+		db.insertWithOnConflict("locations_fts", "description", row, SQLiteDatabase.CONFLICT_REPLACE);	
 	}
 
-	protected void updateLocationCache(CoexLocation location,
+	/// @return true if location was updated, false otherwise
+	protected boolean updateLocationCache(CoexLocation location,
 			long lastChangeTime) {
 		long dbChangeTime = getLastChangeTime(location.id);
 		
@@ -755,7 +835,7 @@ public class CoexCache extends SQLiteOpenHelper {
 		if (lastChangeTime <= dbChangeTime)
 		{
 			Log.d("cache", String.format("not updating location %s (actual)", location.name));
-			return;
+			return false;
 		}
 		Log.d("cache", String.format("updating location %s", location.name));
 		
@@ -794,6 +874,11 @@ public class CoexCache extends SQLiteOpenHelper {
 		row.clear();
 		row.put("lastChange", lastChangeTime);
 		db.update("locations", row, "_id = "+ location.id, null);
+		
+		updateFts(location);
+		
+		location.source = parent;
+		return true;
 	}
 
 	private void updateContactInDb(long locationId, LocationContact newContact) {
