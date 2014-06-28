@@ -89,29 +89,46 @@ public class LocationContact implements Comparable<LocationContact> {
 		return 0;
 	}
 	
-	private static void appendToBuilder(StringBuilder bldr, String prefix, String something)
+	private static void appendToBuilder(StringBuilder bldr, String separator, String prefix, String something)
 	{
 		if (something == null || something.isEmpty())
 			return;
 		
 		if (bldr.length() > 0)
-			bldr.append(", ");
+			bldr.append(separator);
 		
 		bldr.append(prefix);
 		bldr.append(something);
 	}
 	
-	public String toString()
+	public String toString(String separator)
 	{
 		StringBuilder bldr = new StringBuilder();
-		appendToBuilder(bldr, "", person);
-		appendToBuilder(bldr, "", street);
-		appendToBuilder(bldr, "", city);
-		appendToBuilder(bldr, "phone", phone);
-		appendToBuilder(bldr, "web", web);
-		appendToBuilder(bldr, "eshop", eshop);
+		appendToBuilder(bldr, separator, "", person);
+		appendToBuilder(bldr, separator, "", street);
+		appendToBuilder(bldr, separator, "", city);
+		appendToBuilder(bldr, separator, "", zip);
+		appendToBuilder(bldr, separator, "mail", email);
+		appendToBuilder(bldr, separator, "phone", phone);
+		appendToBuilder(bldr, separator, "web", web);
+		appendToBuilder(bldr, separator, "eshop", eshop);
 		
 		return bldr.toString(); 
+	}
+	
+	public String toString()
+	{
+		return toString(", ");
+	}
+	public String formatAddress(String separator)
+	{
+		StringBuilder bldr = new StringBuilder();
+		appendToBuilder(bldr, separator, "", person);
+		appendToBuilder(bldr, separator, "", street);
+		appendToBuilder(bldr, separator, "", city);
+		appendToBuilder(bldr, separator, "", zip);
+		
+		return bldr.toString();
 	}
 
 }

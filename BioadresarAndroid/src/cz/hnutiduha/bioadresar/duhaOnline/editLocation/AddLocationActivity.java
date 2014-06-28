@@ -135,7 +135,7 @@ public class AddLocationActivity extends TrackableFragmentActivity implements Fr
 			dialog.show();
 	}
 	
-	protected static String formatCoexLocation(CoexLocation farm, String comment) 
+	protected String formatCoexLocation(CoexLocation farm, String comment) 
 	{
 		
 		StringBuilder message = new StringBuilder();
@@ -162,8 +162,7 @@ public class AddLocationActivity extends TrackableFragmentActivity implements Fr
 		message.append("GPS: latitude ").append(farm.getLatitude()).append(", longitude ").append(farm.getLongitude()).append('\n');
 		
 		LocationContact contact = farm.getContact();
-		message.append("Kontaktní osoba: ").append(contact.person).append(", e-mail: ").append(contact.email).append("\n");
-		message.append("Adresa: \n\tulice: ").append(contact.street).append("\n\tměsto: ").append(contact.city).append("\n");
+		message.append("Kontakt: \n\t").append(contact.formatAddress("\n\t")).append("\n");
 
 		message.append("Telefon: ").append(contact.phone).append("\n");		
 		message.append("Web: ").append(contact.web).append("\n");
@@ -283,9 +282,11 @@ response:
 	}
 
 	@Override
-	public void readJSONResponse(JSONObject result) {
+	public void readJSONResponse(String resultString) {
 		try
 		{
+			JSONObject result = new JSONObject(resultString);
+			
 			if (result.has("ok"))
 			{
 				fragmentNotification(result.getString("ok"));
@@ -294,6 +295,10 @@ response:
 			else if (result.has("error"))
 			{
 				fragmentNotification(result.getString("error"));
+			}
+			else
+			{
+				fragmentNotification("wtf, unknown result: " + result.toString(2));
 			}
 		}
 		catch (JSONException ex)

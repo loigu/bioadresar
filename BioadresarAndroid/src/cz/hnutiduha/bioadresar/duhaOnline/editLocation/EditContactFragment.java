@@ -19,7 +19,7 @@ import cz.hnutiduha.bioadresar.util.StringOperations;
 public class EditContactFragment extends SherlockFragment implements OnClickListener, NamedFragment{
 	FragmentNavigator fragmentNavigator;
 	CoexLocation location = null;
-	EditText city, street, mail, web, eshop, phone, person;
+	EditText city, street, mail, web, eshop, phone, person, zip;
 	
 	public EditContactFragment(CoexLocation farm) {
 		super();
@@ -37,6 +37,7 @@ public class EditContactFragment extends SherlockFragment implements OnClickList
         
         city = (EditText) me.findViewById(R.id.city);
         street = (EditText) me.findViewById(R.id.street);
+        zip = (EditText) me.findViewById(R.id.zip);
         mail = (EditText) me.findViewById(R.id.mail);
         web = (EditText) me.findViewById(R.id.web);
         eshop = (EditText) me.findViewById(R.id.eshop);
@@ -59,6 +60,7 @@ public class EditContactFragment extends SherlockFragment implements OnClickList
         
         city.setText(contact.city);
         street.setText(contact.street);
+        zip.setText(contact.zip);
         mail.setText(contact.email);
         web.setText(contact.web);
         eshop.setText(contact.eshop);
@@ -70,6 +72,7 @@ public class EditContactFragment extends SherlockFragment implements OnClickList
     	LocationContact contact = new LocationContact();
     	contact.city = StringOperations.getStringFromEditBox(city);
     	contact.street = StringOperations.getStringFromEditBox(street);
+    	contact.zip = StringOperations.getStringFromEditBox(zip);
     	contact.email = StringOperations.getStringFromEditBox(mail);
     	contact.web = StringOperations.getStringFromEditBox(web);
     	contact.eshop = StringOperations.getStringFromEditBox(eshop);

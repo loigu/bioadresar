@@ -144,14 +144,14 @@ public class DetailFragment extends SherlockFragment implements OnClickListener{
         StringBuilder products = new StringBuilder();
         for(EntityWithComment product : location.getProducts())
         {
-        	if (products.length() > 0) products.append(" ,");
+        	if (products.length() > 0) products.append(", ");
          	products.append(product.toString());
         }
 		
         StringBuilder activities = new StringBuilder();
         for(EntityWithComment activity : location.getActivities())
         {
-        	if (activities.length() > 0) activities.append(" ,");
+        	if (activities.length() > 0) activities.append(", ");
          	activities.append(activity.toString());
         }
 		
@@ -164,17 +164,7 @@ public class DetailFragment extends SherlockFragment implements OnClickListener{
     	setFieldTextOrHideEmpty(contact.eshop, Linkify.WEB_URLS, R.id.eshopLayout, R.id.eshopText);
     	setFieldTextOrHideEmpty(contact.phone, Linkify.PHONE_NUMBERS, R.id.phoneLayout, R.id.phoneText);
 
-    	// TODO: format by fields
-    	String address = "";
-        if (contact.street != null && contact.street.length() != 0)
-        	address += contact.street;
-        if (contact.city != null && contact.city.length() != 0)
-        {
-        	if (!address.equals(""))
-        		address += ", ";
-        	address += contact.city;
-        }
-    	setFieldTextOrHideEmpty(address, Linkify.MAP_ADDRESSES, R.id.addressLabel, R.id.addressText);
+    	setFieldTextOrHideEmpty(contact.formatAddress("\n"), Linkify.MAP_ADDRESSES, R.id.addressLabel, R.id.addressText);
     	
     	location.fillDeliveryOptions(view, R.id.containerLayout, R.id.containerDistributionPlacesLayout,  R.id.containerDistributionPlacesText, R.id.customConteinerDistributionText);
     }

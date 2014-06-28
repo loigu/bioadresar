@@ -21,11 +21,15 @@ public class DeliveryOptions {
 	public String toString()
 	{
 		StringBuilder bldr = new StringBuilder();
-		for (String placeWithTime : placesWithTime)
+		if (placesWithTime != null)
 		{
-			bldr.append(placeWithTime);
-			bldr.append('\n');
+			for (String placeWithTime : placesWithTime)
+			{
+				bldr.append(placeWithTime);
+				bldr.append('\n');
+			}
 		}
+		
 		if (customDistribution)
 		{
 			bldr.append("rozvoz domů");

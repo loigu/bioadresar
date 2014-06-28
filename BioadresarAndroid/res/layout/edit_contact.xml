@@ -7,7 +7,7 @@
     android:orientation="vertical" >
 
     <LinearLayout
-        android:id="@+id/editProducts"
+        android:id="@+id/editContact"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="10dp"
@@ -44,11 +44,25 @@
                     android:hint="@string/street_with_number"
                     android:inputType="textPostalAddress"
                     android:maxLines="1"
+                    android:nextFocusDown="@+id/zip"
+                    android:nextFocusForward="@+id/zip"
+                    android:nextFocusLeft="@+id/city"
+                    android:nextFocusRight="@+id/zip"
+                    android:nextFocusUp="@+id/city" />
+
+                <EditText
+                    android:id="@+id/zip"
+                    style="@style/HnutiDuha.InputMedium"
+                    android:layout_width="match_parent"
+                    android:layout_weight="0.1"
+                    android:hint="@string/zip"
+                    android:inputType="textPostalAddress"
+                    android:maxLines="1"
                     android:nextFocusDown="@+id/web"
                     android:nextFocusForward="@+id/web"
-                    android:nextFocusLeft="@+id/city"
+                    android:nextFocusLeft="@+id/street"
                     android:nextFocusRight="@+id/web"
-                    android:nextFocusUp="@+id/city" />
+                    android:nextFocusUp="@+id/street" />
 
                 <EditText
                     android:id="@+id/web"
@@ -60,9 +74,9 @@
                     android:maxLines="1"
                     android:nextFocusDown="@+id/eshop"
                     android:nextFocusForward="@+id/eshop"
-                    android:nextFocusLeft="@+id/street"
+                    android:nextFocusLeft="@+id/zip"
                     android:nextFocusRight="@+id/eshop"
-                    android:nextFocusUp="@+id/street" />
+                    android:nextFocusUp="@+id/zip" />
 
                 <EditText
                     android:id="@+id/eshop"

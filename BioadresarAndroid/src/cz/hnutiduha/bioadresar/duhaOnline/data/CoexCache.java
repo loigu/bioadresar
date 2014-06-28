@@ -50,7 +50,7 @@ public class CoexCache extends SQLiteOpenHelper {
 	protected SQLiteDatabase db = null;
 	private CoexDatabase parent = null;
 
-	private static final int databaseSchemaVersion = 4;
+	private static final int databaseSchemaVersion = 5;
 	
 	private CoexCache(Context context, CoexDatabase parent) throws IOException {
 		super(context, context.getFilesDir().getPath() + File.separator

@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
@@ -21,15 +22,15 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
-import org.json.JSONObject;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 public class CoexConnector extends AsyncTask<Void, Void, String>
 {
 	public interface JSONReceiver {
 		public void postFailed(Exception reason);
-		public void readJSONResponse(JSONObject response);
+		public void readJSONResponse(String response);
 	}
 	
 	public static final int METHOD_POST=1;
@@ -55,7 +56,7 @@ public class CoexConnector extends AsyncTask<Void, Void, String>
 
 		StatusLine statusLine = response.getStatusLine();
 		int statusCode = statusLine.getStatusCode();
-		if (statusCode == 200) {
+		if (statusCode == HttpStatus.SC_OK) {
 			HttpEntity entity = response.getEntity();
 			InputStream content = entity.getContent();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
@@ -68,7 +69,6 @@ public class CoexConnector extends AsyncTask<Void, Void, String>
 			throw new ClientProtocolException("Error status code: "
 					+ statusCode);
 		}
-		
 		return builder.toString();
 	}
 
@@ -76,6 +76,7 @@ public class CoexConnector extends AsyncTask<Void, Void, String>
 		// Create a new HttpClient and Post Header
 		HttpClient httpClient = new DefaultHttpClient();
 		HttpPost httpPost = new HttpPost(CONNECTOR_URL);
+		httpPost.setHeader("Connection", "close");
 
 		httpPost.setEntity(new UrlEncodedFormEntity(args, HTTP.UTF_8));
 
@@ -86,6 +87,7 @@ public class CoexConnector extends AsyncTask<Void, Void, String>
 	
 	public static String get(List<NameValuePair> args)  throws IOException, ClientProtocolException, URISyntaxException {
         HttpGet request = new HttpGet();
+        request.setHeader("Connection", "close");
         
         StringBuilder uri = new StringBuilder(CONNECTOR_URL);
         char separator = '?';
@@ -117,6 +119,8 @@ public class CoexConnector extends AsyncTask<Void, Void, String>
 					return post(params);
 				case METHOD_GET:
 					return get(params);
+				default:
+					throw new Exception("unknown method " + method);
 			}
 		}
 		catch (Exception ex)
@@ -127,7 +131,8 @@ public class CoexConnector extends AsyncTask<Void, Void, String>
 		return null;
 	}
 	
-	protected void onPostExecute(JSONObject response)
+	@Override
+	protected void onPostExecute(String response)
 	{
 		if (response != null)
 		{

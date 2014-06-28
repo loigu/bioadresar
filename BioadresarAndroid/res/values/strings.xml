@@ -31,6 +31,7 @@
     <string name="lat">délka</string>
     <string name="lon">šířka</string>
     <string name="street_with_number">Ulice a čp</string>
+    <string name="zip">PSČ</string>
     <string name="description">Popis</string>
     <string name="contact">Kontakt</string>
     <string name="main_tab_title">Menu</string>
