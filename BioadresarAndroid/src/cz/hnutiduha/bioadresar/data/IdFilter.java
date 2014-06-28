@@ -35,7 +35,6 @@ public class IdFilter<T extends LocationInfo> implements DataFilter<T> {
 		{
 			if (!matchingIds.contains(entry.getKey()))
 			{
-				Log.d("Filter", "farm " + entry.getKey() + " removed");
 				continue;
 			}
 			ret.put(entry.getKey(), entry.getValue());
