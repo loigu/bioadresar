@@ -20,6 +20,8 @@ package cz.hnutiduha.bioadresar.duhaOnline.data;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.text.TextUtils;
+
 public class LocationContact implements Comparable<LocationContact> {
 	public String email, web, eshop, street, city, person, phone, zip;
 
@@ -91,7 +93,7 @@ public class LocationContact implements Comparable<LocationContact> {
 	
 	private static void appendToBuilder(StringBuilder bldr, String separator, String prefix, String something)
 	{
-		if (something == null || something.isEmpty())
+		if (something == null || TextUtils.isEmpty(something))
 			return;
 		
 		if (bldr.length() > 0)
