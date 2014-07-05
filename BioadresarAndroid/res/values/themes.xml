@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <dimen name="row_height">35dp</dimen>
-    <dimen name="btn_in_row_height">35dp</dimen>
-    <dimen name="left_row_width">110dp</dimen>
+    <dimen name="row_height">33dp</dimen>
+    <dimen name="btn_in_row_height">33dp</dimen>
+    <dimen name="left_row_width">100dp</dimen>
 
     <style name="Theme.HnutiDuhaTheme" parent="Theme.Sherlock">
         <item name="actionBarStyle">@style/Widget.HnutiDuha.ActionBar</item>
@@ -25,11 +25,11 @@
     <style name="HnutiDuha.ActionBar.SearchTextStyle" parent="@android:style/TextAppearance.Medium">
         <item name="android:textColor">@color/DuhaSearchTextGray</item>
         <item name="android:textColorHighlight">@color/DuhaSelectionBackground</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="HnutiDuha.TextMedium" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/Black</item>
     </style>
 
@@ -46,24 +46,24 @@
     </style>
 
     <style name="HnutiDuha.TextLargeWhite" parent="@style/HnutiDuha.TextMediumWhite">
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="HnutiDuha.TextLarge" parent="@style/HnutiDuha.TextMedium">
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="HnutiDuha.HeaderLargeWhite" parent="@style/HnutiDuha.HeaderMediumWhite">
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="HnutiDuha.HeaderLarge" parent="@style/HnutiDuha.HeaderMedium">
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="HnutiDuha.InputMedium" parent="@style/HnutiDuha.TextMedium">
         <item name="android:layout_height">@dimen/row_height</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">12sp</item>
         <item name="android:background">@drawable/field_background</item>
         <item name="background">@drawable/field_background</item>
         <item name="android:layout_marginBottom">10dp</item>
