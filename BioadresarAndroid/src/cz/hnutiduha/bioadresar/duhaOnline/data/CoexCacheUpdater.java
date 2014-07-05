@@ -119,8 +119,13 @@ public class CoexCacheUpdater extends AsyncTask<Void, CoexLocation, long[]>
 		args.add(new BasicNameValuePair("changed_from", String.valueOf(cache.getLastUpdateTime())));
 		try
 		{
+			String response = CoexConnector.get(args);
+			if (response.equalsIgnoreCase("{}"))
+			{
+				return new long[0];
+			}
 			
-			JSONArray list = new JSONArray(CoexConnector.get(args));
+			JSONArray list = new JSONArray(response);
 			idList = new long[list.length()];
 			Log.d("update", String.format("got %d locations", list.length()));
 			for(int i = 0; i < list.length(); i++)

@@ -81,6 +81,12 @@ public class CoexCache extends SQLiteOpenHelper {
 	
 	protected void reload()
 	{
+		if (!ActivityTracker.isResetEnabled())
+		{
+			Log.d("db", "db update finished, reset disabled");
+			return;
+		}
+		
 		Log.d("db", "db update finished, reloading...");
 		
 		ActivityTracker.showToastOnActivity(R.string.data_reload, Toast.LENGTH_LONG);	

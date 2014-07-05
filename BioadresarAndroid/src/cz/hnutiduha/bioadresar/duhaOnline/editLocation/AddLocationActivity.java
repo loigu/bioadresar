@@ -30,10 +30,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import cz.hnutiduha.bioadresar.ActivityTracker;
 import cz.hnutiduha.bioadresar.MenuHandler;
 import cz.hnutiduha.bioadresar.R;
 import cz.hnutiduha.bioadresar.TrackableFragmentActivity;
 import cz.hnutiduha.bioadresar.data.LocationInfo;
+import cz.hnutiduha.bioadresar.duhaOnline.data.CoexCache;
 import cz.hnutiduha.bioadresar.duhaOnline.data.CoexLocation;
 import cz.hnutiduha.bioadresar.duhaOnline.data.DeliveryOptions;
 import cz.hnutiduha.bioadresar.duhaOnline.data.EntityWithComment;
@@ -378,11 +380,21 @@ response:
       super.onActivityResult(requestCode, resultCode, data);
     }
     
+	@Override
+	public void onPause()
+	{
+		super.onPause();
+		
+		ActivityTracker.setResetEnabled(true);
+	}
+    
     @Override
     public void onResume()
     {
     	super.onResume();
     	
+    	// little hack to prevent reset in middle of editing
+    	ActivityTracker.setResetEnabled(false);
     	int googlePlayInstalled = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
     	if (googlePlayInstalled != ConnectionResult.SUCCESS)
     		GooglePlayServicesUtil.getErrorDialog(googlePlayInstalled, this, REQUEST_CODE_RECOVER_PLAY_SERVICES).show();

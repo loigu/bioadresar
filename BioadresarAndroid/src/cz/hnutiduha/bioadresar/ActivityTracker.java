@@ -7,6 +7,18 @@ import android.widget.Toast;
 public class ActivityTracker {
 	private static Activity lastActivity = null;
 	
+	private static boolean resetEnabled = true;
+	
+	public static boolean isResetEnabled()
+	{
+		return resetEnabled;
+	}
+	
+	public static void setResetEnabled(boolean enabled)
+	{
+		resetEnabled = enabled;
+	}
+	
 	public static Activity getLastActivity()
 	{
 		return lastActivity;
