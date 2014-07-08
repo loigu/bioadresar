@@ -23,7 +23,7 @@ public class ConfigActivity extends TrackablePreferenceActivity implements OnPre
 	public boolean onPreferenceChange(Preference preference, Object newValue) {
 		if (preference.getKey().equals("defaultLocation"))
 		{
-			LocationCache.updateLocation(LocationCache.getDefaultLocation(this, (String)newValue));
+			LocationCache.updateLocation(LocationCache.getDefaultLocation());
 		}
 		return true;
 	}

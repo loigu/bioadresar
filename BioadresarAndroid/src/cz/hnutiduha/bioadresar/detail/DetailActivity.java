@@ -42,7 +42,8 @@ public class DetailActivity extends TrackableFragmentActivity{
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    	// NOTE: we do not support saved instance reload (needs farm packing)
+        super.onCreate(null);
         
         Intent myIntent= getIntent();
         int sourceId = myIntent.getIntExtra(EXTRA_SOURCE, DataSourceFactory.SOURCE_INVALID);

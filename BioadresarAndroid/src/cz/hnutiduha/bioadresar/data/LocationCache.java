@@ -59,7 +59,7 @@ public class LocationCache implements LocationListener {
 	/*
 	 * @param regionName name of region to use as default location or null (in case of null, default region will be loaded from preferences)
 	 */
-	public static Location getDefaultLocation(Context context, String regionName)
+	public static Location getDefaultLocation()
 	{
 	    Log.d("location", "using default location...");
 	    Location currentLocation = new Location(LocationManager.PASSIVE_PROVIDER);
@@ -71,7 +71,6 @@ public class LocationCache implements LocationListener {
 		currentLocation.setTime(System.currentTimeMillis());
 				
 		return currentLocation;
-	
 	}
 	
 	public static void centerOnLocation(Location loc)
@@ -88,6 +87,11 @@ public class LocationCache implements LocationListener {
 		
 	public static Location getCenter()
 	{
+		if (location == null)
+		{
+			location = getDefaultLocation();
+		}
+		
 		return location;
 	}
 	
@@ -110,7 +114,7 @@ public class LocationCache implements LocationListener {
 		if (provider == null)
 		{
 			Log.w("gps", "no location provider available");
-			onLocationChanged(getDefaultLocation(context, null));
+			onLocationChanged(getDefaultLocation());
 			return;
 		}
 		locationProvider = provider;
@@ -119,7 +123,7 @@ public class LocationCache implements LocationListener {
 		if (lastLocation == null)
 		{
 			Log.w("gps", "no known location");
-			lastLocation = getDefaultLocation(context, null);
+			lastLocation = getDefaultLocation();
 		}
 		onLocationChanged(lastLocation);
 		

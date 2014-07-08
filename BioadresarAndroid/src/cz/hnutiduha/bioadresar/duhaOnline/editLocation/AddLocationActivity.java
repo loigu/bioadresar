@@ -60,7 +60,14 @@ public class AddLocationActivity extends TrackableFragmentActivity implements Fr
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    	// NOTE: we do not support resume (fragments must have empty constructors and we must implement farm pack
+        super.onCreate(null);
+        if (savedInstanceState != null)
+        {
+        	finish();
+        	return;
+        }
+    	
         setContentView(R.layout.edit_farm);
         
     	MenuHandler.installDropDown(getSupportActionBar(), this);
