@@ -35,6 +35,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
+import android.os.AsyncTask.Status;
 import android.support.v4.content.IntentCompat;
 import android.util.Log;
 import android.util.SparseArray;
@@ -44,13 +45,18 @@ public class CoexCache extends SQLiteOpenHelper {
 	private static String DB_NAME = "adresarfarmaruCache";
 
 	private static CoexCache defaultDb = null;
+	
+	// 7 days
+	public static long updateInterval = 604800;
+	// lunar month wauuuuu
+	public static long cleanupInterval = updateInterval * 4;
 
 	protected Context appContext = null;
 
 	protected SQLiteDatabase db = null;
 	private CoexDatabase parent = null;
 
-	private static final int databaseSchemaVersion = 5;
+	private static final int databaseSchemaVersion = 6;
 	
 	private CoexCache(Context context, CoexDatabase parent) throws IOException {
 		super(context, context.getFilesDir().getPath() + File.separator
@@ -64,19 +70,46 @@ public class CoexCache extends SQLiteOpenHelper {
 		openDb(dbPath, SQLiteDatabase.OPEN_READWRITE);
 	}
 	
-	public long getLastUpdateTime()
+	private long getLongVariable(String name, long defaultValue)
 	{
-		long lastUpdate = 0;
 		Cursor c = db.query("config", new String[] { "value" },
-				"variable = 'lastUpdated'", null, null, null, null);
+				"variable = '" + name + "'", null, null, null, null);
 		c.moveToNext();
 
 		if (!c.isAfterLast()) {
-			lastUpdate = c.getLong(0);
+			defaultValue = c.getLong(0);
 		}
 		c.close();
 		
-		return lastUpdate;
+		return defaultValue;
+	}
+	
+	private void setLongVariable(String name, long value)
+	{
+		ContentValues row = new ContentValues();
+		row.put("variable", name);
+		row.put("value", value);
+		db.insertWithOnConflict("config", null, row, SQLiteDatabase.CONFLICT_REPLACE);
+	}
+	
+	public long getLastUpdateTime()
+	{
+		return getLongVariable("lastUpdated", 0);
+	}
+	
+	public void setLastUpdateTime(long time)
+	{
+		setLongVariable("lastUpdated", time);
+	}
+	
+	public long getLastCleanupTime()
+	{
+		return getLongVariable("lastCleanup", 0);
+	}
+	
+	public void setLastCleanupTime(long time)
+	{
+		setLongVariable("lastCleanup", time);
 	}
 	
 	protected void reload()
@@ -100,17 +133,32 @@ public class CoexCache extends SQLiteOpenHelper {
 	    lastActivity.startActivity(intent);
 	}
 	
+	private static CoexCacheUpdater updater = null;
+	
+	private static synchronized void startUpdate(CoexCache cache)
+	{
+		if (updater != null)
+		{
+			Status st = updater.getStatus();
+			if (st.equals(Status.RUNNING) || st.equals(Status.PENDING))
+				return;
+		}
+		
+		updater = new CoexCacheUpdater(cache);
+		updater.execute();
+	}
+	
 	public void checkUpdate()
 	{
+		
 		if (ConnectionHelper.isOnline(appContext))
 		{
 			long now = System.currentTimeMillis() / 1000L;
 			long lastUpdate = getLastUpdateTime();
 			// nice value, 7 days
-			if (now - lastUpdate > 604800)
+			if (now - lastUpdate > updateInterval)
 			{
-				Log.d("db", "starting data update");
-				new CoexCacheUpdater(this).execute();
+				CoexCache.startUpdate(this);
 			}
 			else
 			{
@@ -895,6 +943,8 @@ public class CoexCache extends SQLiteOpenHelper {
 				return;
 			}
 		}
+		
+		// db.delete("contacts", "locationId = " + locationId, null);
 
 		ContentValues values = new ContentValues();
 		values.put("locationId", locationId);
@@ -926,7 +976,7 @@ public class CoexCache extends SQLiteOpenHelper {
 	
 	private void deleteEntityFromDb(long locationId, int entityId, String idColumnName, String tableName)
 	{
-		db.delete(tableName, String.format("locationId = %d AND %s = %d", locationId, idColumnName, entityId), null);
+		db.delete(tableName, "locationId = ? AND ? = ?", new String[] {String.valueOf(locationId), idColumnName, String.valueOf(entityId)});
 	}
 	
 

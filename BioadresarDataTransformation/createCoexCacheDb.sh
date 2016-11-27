@@ -23,11 +23,11 @@ function createBaseLayout()
 	echo 'CREATE TABLE activities (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE);' | callSqlite
 	
 	
-	echo 'CREATE TABLE locationTypes (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT);' | callSqlite
+	echo 'CREATE TABLE locationTypes (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE);' | callSqlite
 	# NOTE: coex doesn't send lastChange through api, we store our last change instead
 	echo 'CREATE TABLE locations (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, gpsLatitude REAL NOT NULL, gpsLongitude REAL NOT NULL, description TEXT, typeId INTEGER NOT NULL, lastChange INTEGER NOT NULL);' | callSqlite
 
-	echo 'CREATE TABLE contacts (_id INTEGER PRIMARY KEY AUTOINCREMENT, locationId INTEGER, person TEXT, street TEXT, city TEXT, zip TEXT, phone TEXT, email TEXT, web TEXT, eshop TEXT);' | callSqlite
+	echo 'CREATE TABLE contacts (_id INTEGER PRIMARY KEY AUTOINCREMENT, locationId INTEGER UNIQUE, person TEXT, street TEXT, city TEXT, zip TEXT, phone TEXT, email TEXT, web TEXT, eshop TEXT);' | callSqlite
 
 	echo 'CREATE TABLE location_product (_id INTEGER PRIMARY KEY AUTOINCREMENT, locationId INTEGER NOT NULL, productId INTEGER NOT NULL, comment TEXT, mainProduct INTEGER NOT NULL, UNIQUE (locationId, productId));' | callSqlite
 		echo 'CREATE TABLE location_activity (_id INTEGER PRIMARY KEY AUTOINCREMENT, locationId INTEGER NOT NULL, activityId INTEGER NOT NULL, comment TEXT, mainActivity INTEGER NOT NULL, UNIQUE (locationId, activityId));' | callSqlite
@@ -58,6 +58,8 @@ fi
 
 createBaseLayout
 buildFtsTable
+
+echo "INSERT into config('variable', 'value') values('databaseVersion', '6');" | callSqlite
 
 exit 0
 

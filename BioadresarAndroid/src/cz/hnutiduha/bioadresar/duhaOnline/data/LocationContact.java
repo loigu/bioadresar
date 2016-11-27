@@ -17,10 +17,12 @@
 
 package cz.hnutiduha.bioadresar.duhaOnline.data;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 public class LocationContact implements Comparable<LocationContact> {
 	public String email, web, eshop, street, city, person, phone, zip;
@@ -42,16 +44,64 @@ public class LocationContact implements Comparable<LocationContact> {
 	public LocationContact() {
 
 	}
+	
+	private String getStringOrDefault(JSONObject details, String fieldName, String defaultValue)
+	{
+		try
+		{
+			return details.getString(fieldName);
+		} catch (JSONException ex)
+		{
+			Log.w("data", "can't get " + fieldName, ex);
+			return defaultValue;
+		}
+	}
+	
+	private boolean parseExplodedEmail(JSONObject details)
+	{
+		if (!details.has("emailsExploded")) { return false; }
+		
+		try
+		{
+			StringBuilder bldr = new StringBuilder();
+			JSONArray emails = details.getJSONArray("emailsExploded");
+			for (int i = 0; i < emails.length(); i++)
+			{
+				JSONObject email = emails.getJSONObject(i);
+				bldr.append(((i != 0) ? ", " : "") + email.getString("id") + "@" + email.get("domain") + "." + email.get("tld"));
+			}
+			this.email = bldr.toString();
+			return true;
+			
+		} catch (JSONException ex)
+		{
+			Log.e("data", "invalid email format", ex);
+		}
+		
+		return false;
+	}
+	
+	private void parseEmail(JSONObject details)
+	{
+		if (!parseExplodedEmail(details))
+			this.email = getStringOrDefault(details, "email", null);
+	}
 
-	public LocationContact(JSONObject details) throws JSONException {
-		this.person = details.getString("person");
-		this.street = details.getString("street");
-		this.city = details.getString("city");
-		this.zip = details.getString("zip");
-		this.phone = details.getString("phone");
-		this.email = details.getString("email");
-		this.web = details.getString("web");
-		this.eshop = details.getString("eshop");
+	public LocationContact(JSONObject details) {
+		this.person = getStringOrDefault(details, "person", this.person);
+		this.street = getStringOrDefault(details, "street", this.street);
+		this.city = getStringOrDefault(details, "city", this.city);
+		this.zip = getStringOrDefault(details, "zip", this.zip);
+		this.phone = getStringOrDefault(details, "phone", this.phone);
+		this.web = getStringOrDefault(details, "web", this.web);
+		this.eshop = getStringOrDefault(details, "eshop", this.eshop);
+		
+		parseEmail(details);
+		
+		/* unused fields
+		this.region = getStringOrDefault(details, "region", this.region);
+		this.web2 = getStringOrDefault(details, "web2", this.web2);
+		*/
 	}
 
 	@Override

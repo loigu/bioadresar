@@ -45,6 +45,16 @@ public class CoexLocation implements LocationInfo, OnClickListener {
 	
 	// TODO: coex does not provide this through api
 	protected DeliveryOptions delivery = null;
+	
+	// TODO: is_edu -> + edu_program edu_longer_stay ?skolni stupne?
+	// TODO: is_bio ->
+	// TODO: accessibility 
+	// TODO: season_from season_to
+	// TODO: rating_count, rating
+	// TODO: pickup_place production_locations_note 
+	// TODO: is_kpz -> share_type shre_type_description commitment (string) copartners_count (int) copartners_wanted (bool)
+	// TODO: join things with same coordinates
+	// TODO: druh hospodareni
 
 	
 	protected CoexDatabase source = null;
